@@ -1,4 +1,6 @@
-AM_CFLAGS = -WALL -Wshadow
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CFLAGS = -Wall -Wshadow
 
 AM_LDFLAGS = -lm -lpthread -rdynamic
 

@@ -1,13 +1,16 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-AM_CFLAGS = -Wall -Wshadow
+# Need for getopt_long
+AM_CPPFLAGS = -D_GNU_SOURCE
 
-AM_LDFLAGS = -lm -lpthread -rdynamic
+AM_CFLAGS = -Wall -ggdb -pedantic-errors
+
+#AM_LDFLAGS = -lm -lpthread -rdynamic
 
 bin_PROGRAMS = mctop
 
 mctop_SOURCES =			\
-	src/options.h \
-	src/config.h \
-	src/config.cpp \
-	src/main.cpp
+	options.h \
+	config.h config.cpp \
+	cli.h cli.cpp \
+	main.cpp

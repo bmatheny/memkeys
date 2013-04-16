@@ -13,31 +13,32 @@ AM_INIT_AUTOMAKE([1.10 foreign])
 AC_LANG([C++])
 
 # Checks for programs
-AC_PROG_CXX
+CXXFLAGS="$CXXFLAGS -std=c++0x" # Will fail if not g++44 or later
+AC_PROG_CXX([g++44 g++ gcc cxx cc++ c++])
 AC_PROG_LIBTOOL
 
 # Check for typedefs, structures, and compiler characteristics
 AC_TYPE_UINT16_T
 
+# Check for headers
+AC_CHECK_HEADERS([getopt.h])
+
 # Checks for libraries
 AC_CHECK_LIB([pthread], [pthread_create])
+AC_CHECK_LIB(getopt,getopt_long)
+AC_CHECK_LIB(gnugetopt,getopt_long)
 AC_ARG_WITH(libpcap_includes,
   [  --with-libpcap-includes=DIR    libpcap include directory],
   [with_libpcap_includes="$withval"],[with_libpcap_includes="no"])
-
 AC_ARG_WITH(libpcap_libraries,
   [  --with-libpcap-libraries=DIR   libpcap library directory],
   [with_libpcap_libraries="$withval"],[with_libpcap_libraries="no"])
-
-
 if test "x$with_libpcap_includes" != "xno"; then
    CPPFLAGS="${CPPFLAGS} -I${with_libpcap_includes}"
 fi
-
 if test "x$with_libpcap_libraries" != "xno"; then
    LDFLAGS="${LDFLAGS} -L${with_libpcap_libraries}"
 fi
-
 LPCAP=""
 AC_CHECK_LIB(pcap, pcap_datalink,, LPCAP="no")
 if test "x$LPCAP" = "xno"; then
@@ -49,6 +50,9 @@ if test "x$LPCAP" = "xno"; then
   echo "   shared library that may be installed in an unusual place"
   exit 1
 fi
+
+# Check functions
+AC_CHECK_FUNCS([getopt_long])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])

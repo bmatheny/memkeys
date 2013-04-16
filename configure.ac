@@ -3,6 +3,7 @@ AC_PREREQ([2.59])
 AC_INIT([mctop], [0.1], [bmatheny@mobocracy.net])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([mconfig.h:mconfig.h.in])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Initialize automake
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])

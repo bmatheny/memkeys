@@ -5,12 +5,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 ## Additional flags to pass to aclocal when it is invoked automatically at
 ## make time. The ${ACLOCAL_FLAGS} variable is picked up from the environment
 ## to provide a way for the user to supply additional arguments.
-ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
-
-bin_PROGRAMS = mctop
-
-mctop_SOURCES = src/options.h src/config.h src/config.cpp \
-								src/main.cpp
+ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 ## Define an independent executable script for inclusion in the distribution
 ## archive. It will not be installed on an end user's system, however.

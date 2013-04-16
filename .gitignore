@@ -66,9 +66,9 @@ nutcracker
 /config/missing
 /config
 
-/config.h
-/config.h.in
-/config.h.in~
+/mconfig.h
+/mconfig.h.in
+/mconfig.h.in~
 /config.log
 /config.status
 /configure.scan

@@ -9,6 +9,9 @@ AC_CONFIG_MACRO_DIR([m4])
 # Initialize automake
 AM_INIT_AUTOMAKE([1.10 foreign])
 
+# Checks for language
+AC_LANG([C++])
+
 # Checks for programs
 AC_PROG_CXX
 AC_PROG_LIBTOOL

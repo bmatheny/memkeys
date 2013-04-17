@@ -8,11 +8,15 @@
 using namespace logging;
 using namespace std;
 
-// hidden
+/**
+ * Interal to this logging implementations.
+ */
 static Loggers loggers;
 static string ROOT_LOGGER_NAME = "";
 
-// static
+/**
+ * Static methods. This is how you get a handle on a logger.
+ */
 LoggerPtr Logger::getLogger(const string &name)
 {
     Loggers::iterator it = loggers.find(name);

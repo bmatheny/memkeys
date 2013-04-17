@@ -1,5 +1,7 @@
 #include <stdexcept>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "config.h"
 #include "options.h"
@@ -28,34 +30,34 @@ void Config::setDiscardThreshold(const double threshold)
         throw range_error("threshold must be >= 0");
     }
     logger->debug("Setting discard threshold to " + to_string((long double)threshold));
-    _discardThreshold = threshold;
+    discardThreshold = threshold;
 }
-double Config::discardThreshold() const
+double Config::getDiscardThreshold() const
 {
-    return _discardThreshold;
+    return discardThreshold;
 }
 
 void Config::setInterface(const string &value)
 {
     logger->debug("Setting interface to " + value);
-    _interface = value;
+    interface = value;
 }
-string Config::interface() const
+string Config::getInterface() const
 {
-    return _interface;
+    return interface;
 }
 
 /**
  * Set the port to use for listening.
  */
-void Config::setPort(const int port)
+void Config::setPort(const int _port)
 {
-    REQUIRE_UINT("port", port, uint16_t);
-    _port = (uint16_t)port;
+    REQUIRE_UINT("port", _port, uint16_t);
+    port = (uint16_t)_port;
 }
-uint16_t Config::port() const
+uint16_t Config::getPort() const
 {
-    return _port;
+    return port;
 }
 
 /**
@@ -64,11 +66,11 @@ uint16_t Config::port() const
 void Config::setRefreshInterval(const int interval)
 {
     REQUIRE_UINT("refreshInterval", interval, uint16_t);
-    _refreshInterval = (uint16_t)interval;
+    refreshInterval = (uint16_t)interval;
 }
-uint16_t Config::refreshInterval() const
+uint16_t Config::getRefreshInterval() const
 {
-    return _refreshInterval;
+    return refreshInterval;
 }
 
 /**
@@ -95,11 +97,22 @@ Level Config::verbosity() const
     return logger->getLevel();
 }
 
+string Config::toString() const
+{
+    ostringstream configs;
+    configs << setw(20) << "Discard Threshold";
+    configs << ": " << getDiscardThreshold() << endl;
+    configs << setw(20) << "Interface";
+    configs << ": " << getInterface() << endl;
+    return configs.str();
+}
+
 // private constructor
 Config::Config()
-    : _port(11211)
-    , _discardThreshold(0.0)
-    , _refreshInterval(500)
+    : discardThreshold(0.0)
+    , interface("")
+    , port(11211)
+    , refreshInterval(500)
     , logger(Logger::getLogger("config"))
 {
     logger->setLevel(Level::INFO);

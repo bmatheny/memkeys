@@ -54,7 +54,6 @@ string Cli::help(const char * progname)
 void Cli::parse(int argc, char ** argv, Config * cfg)
 {
     int c;
-    int port = 0;
     char * progname = argv[0];
     while (1) {
         int option_index = 0;
@@ -69,8 +68,7 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
                 cfg->setInterface(optarg);
                 break;
             case 'p':
-                port = ::atoi(optarg);
-                cfg->setPort(port);
+                cfg->setPort(::atoi(optarg));
                 break;
             case 'r':
                 cfg->setRefreshInterval(::atoi(optarg));

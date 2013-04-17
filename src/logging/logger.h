@@ -6,9 +6,10 @@
 #include <sstream>
 #include "logging/level.h"
 
-#define LOG(level) \
-    if (level > logger::Logger::ReportingLevel()) ; \
-    else logger::Logger().Get(level)
+// INFO [date] function() [file:line] logger: message
+#define WHERESTR "%s [%s] %s() [%s:%d] %s: %s"
+#define LOG_TRACE(logger, msg, args...) { \
+}
 
 namespace logging {
 

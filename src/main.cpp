@@ -26,6 +26,11 @@ int main(int argc, char ** argv) {
         mainLogger->fatal("Unhandled error");
         exit(EXIT_FAILURE);
     }
-    cout << "Port: " << cfg->port() << endl;
+    if (cfg->getInterface().empty()) {
+        mainLogger->fatal("No interface specified (-i NIC)");
+        exit(EXIT_FAILURE);
+    }
+    mainLogger->debug("Configuration:");
+    mainLogger->debug(cfg->toString());
     return 0;
 }

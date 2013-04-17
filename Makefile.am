@@ -2,6 +2,9 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 configure mconfig.h.in mconfig.h.i
 
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
+# Keep objects in separate directories when possible
+AUTOMAKE_OPTIONS = subdir-objects
+
 SUBDIRS = src
 
 dist_noinst_SCRIPTS = autogen.sh

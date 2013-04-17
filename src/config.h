@@ -2,11 +2,14 @@
 #define CONFIG_H
 
 #include <string>
+#include "logging/logger.h"
 
 class Config
 {
 public:
     static Config * instance();
+
+    logging::Logger logger() const;
 
     void setDiscardThreshold(const double threshold);
     double discardThreshold() const;
@@ -21,8 +24,8 @@ public:
     uint16_t refreshInterval() const;
 
     void increaseVerbosity();
-    void decreaseVerbosity();
-    uint8_t verbosity() const;
+    void makeLessVerbose();
+    logging::Level verbosity() const;
 
 private:
     Config();
@@ -30,7 +33,7 @@ private:
     std::string _interface;
     uint16_t _port;
     uint16_t _refreshInterval;
-    uint8_t _verbosity;
+    logging::Logger _logger;
     // TODO free string memory in destructor
 };
 

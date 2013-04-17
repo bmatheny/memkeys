@@ -1,16 +1,27 @@
 #include <stdexcept>
+#include <iostream>
 
 #include "config.h"
 #include "options.h"
 
 static Config * cfg_instance = NULL;
 
+using namespace std;
+using namespace logging;
+
+// static
 Config * Config::instance()
 {
     if (cfg_instance == NULL)
         cfg_instance = new Config();
 
     return cfg_instance;
+}
+
+// Return the currently configured logger
+Logger Config::logger() const
+{
+    return _logger;
 }
 
 /**
@@ -20,8 +31,9 @@ Config * Config::instance()
 void Config::setDiscardThreshold(const double threshold)
 {
     if (threshold < 0.0) {
-        throw std::range_error("threshold must be >= 0");
+        throw range_error("threshold must be >= 0");
     }
+    logger().debug("Setting discard threshold to " + to_string(threshold));
     _discardThreshold = threshold;
 }
 double Config::discardThreshold() const
@@ -29,11 +41,11 @@ double Config::discardThreshold() const
     return _discardThreshold;
 }
 
-void Config::setInterface(const std::string &value)
+void Config::setInterface(const string &value)
 {
     _interface = value;
 }
-std::string Config::interface() const
+string Config::interface() const
 {
     return _interface;
 }
@@ -67,21 +79,27 @@ uint16_t Config::refreshInterval() const
 /**
  * Manage how verbose we get.
  */
-void Config::decreaseVerbosity()
+void Config::makeLessVerbose()
 {
-    if (verbosity() > 0) {
-        _verbosity -= 1;
+    Logger log = logger();
+    Level level = log.getLevel();
+    if (level == Level::TRACE) {
+        return;
     }
+    log.setLevel(Level::fromValue(level.getValue() - 1));
 }
 void Config::increaseVerbosity()
 {
-    if (verbosity() < SIZE_BITS(uint8_t)) {
-        _verbosity += 1;
+    Logger log = logger();
+    Level level = log.getLevel();
+    if (level == Level::FATAL) {
+        return;
     }
+    log.setLevel(Level::fromValue(level.getValue() + 1));
 }
-uint8_t Config::verbosity() const
+Level Config::verbosity() const
 {
-    return _verbosity;
+    return logger().getLevel();
 }
 
 // private constructor
@@ -89,6 +107,7 @@ Config::Config()
     : _port(11211)
     , _discardThreshold(0.0)
     , _refreshInterval(500)
-    , _verbosity(0)
+    , _logger(Logger::getLogger("root"))
 {
+    _logger.setLevel(Level::INFO);
 }

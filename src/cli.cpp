@@ -54,6 +54,7 @@ string Cli::help(const char * progname)
 void Cli::parse(int argc, char ** argv, Config * cfg)
 {
     int c;
+    int port = 0;
     char * progname = argv[0];
     while (1) {
         int option_index = 0;
@@ -68,13 +69,14 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
                 cfg->setInterface(optarg);
                 break;
             case 'p':
-                cfg->setPort(::atoi(optarg));
+                port = ::atoi(optarg);
+                cfg->setPort(port);
                 break;
             case 'r':
                 cfg->setRefreshInterval(::atoi(optarg));
                 break;
             case 'h':
-                cout << Cli::help(progname) << endl;
+                cout << Cli::help(progname);
                 exit(EXIT_SUCCESS);
             case 'v':
                 cfg->increaseVerbosity();
@@ -85,12 +87,12 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
                 cout << "License: Apache 2.0" << endl;
                 exit(EXIT_SUCCESS);
             case '?':
-                cerr << "Unknown flag specified" << endl;
-                cout << Cli::help(progname) << endl;
+                cout << "Unknown flag specified" << endl;
+                cout << Cli::help(progname);
                 exit(EXIT_FAILURE);
             default:
-                cerr << "Unknown flag specified" << endl;
-                cout << Cli::help(progname) << endl;
+                cout << "Unknown flag specified" << endl;
+                cout << Cli::help(progname);
                 exit(EXIT_FAILURE);
         }
     }

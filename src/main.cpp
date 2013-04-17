@@ -3,21 +3,29 @@
 
 #include "cli.h"
 #include "config.h"
+#include "logging/logger.h"
 
 int main(int argc, char ** argv) {
+    using namespace std;
+    using namespace logging;
+
+    Logger::getRootLogger()->setLevel(Level::TRACE);
+    LoggerPtr mainLogger = Logger::getLogger("main");
+    mainLogger->info("Starting application");
+
     Config * cfg = Config::instance();
     try {
         Cli::parse(argc, argv, cfg);
-    } catch (std::exception &ex) {
-        std::string msg("There was an error parsing command line arguments: ");
+    } catch (exception &ex) {
+        string msg("There was an error parsing command line arguments: ");
         msg.append(ex.what());
-        std::cout << msg << std::endl;
-        std::cout << Cli::help(argv[0]);
+        mainLogger->fatal(msg);
+        cout << Cli::help(argv[0]);
         exit(EXIT_FAILURE);
     } catch (...) {
-        cfg->logger().fatal("Unhandled error");
+        mainLogger->fatal("Unhandled error");
         exit(EXIT_FAILURE);
     }
-    std::cout << "Port: " << cfg->port() << std::endl;
+    cout << "Port: " << cfg->port() << endl;
     return 0;
 }

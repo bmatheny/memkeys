@@ -9,8 +9,6 @@ class Config
 public:
     static Config * instance();
 
-    logging::Logger logger() const;
-
     void setDiscardThreshold(const double threshold);
     double discardThreshold() const;
 
@@ -33,7 +31,7 @@ private:
     std::string _interface;
     uint16_t _port;
     uint16_t _refreshInterval;
-    logging::Logger _logger;
+    logging::LoggerPtr logger;
     // TODO free string memory in destructor
 };
 

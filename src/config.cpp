@@ -18,12 +18,6 @@ Config * Config::instance()
     return cfg_instance;
 }
 
-// Return the currently configured logger
-Logger Config::logger() const
-{
-    return _logger;
-}
-
 /**
  * Set the discard threshold for stats. When displaying cache keys, only keys
  * being requested at or above this rate will be displayed.
@@ -33,7 +27,7 @@ void Config::setDiscardThreshold(const double threshold)
     if (threshold < 0.0) {
         throw range_error("threshold must be >= 0");
     }
-    logger().debug("Setting discard threshold to " + to_string(threshold));
+    logger->debug("Setting discard threshold to " + to_string((long double)threshold));
     _discardThreshold = threshold;
 }
 double Config::discardThreshold() const
@@ -43,6 +37,7 @@ double Config::discardThreshold() const
 
 void Config::setInterface(const string &value)
 {
+    logger->debug("Setting interface to " + value);
     _interface = value;
 }
 string Config::interface() const
@@ -81,25 +76,23 @@ uint16_t Config::refreshInterval() const
  */
 void Config::makeLessVerbose()
 {
-    Logger log = logger();
-    Level level = log.getLevel();
+    Level level = logger->getLevel();
     if (level == Level::TRACE) {
         return;
     }
-    log.setLevel(Level::fromValue(level.getValue() - 1));
+    logger->setLevel(Level::fromValue(level.getValue() - 1));
 }
 void Config::increaseVerbosity()
 {
-    Logger log = logger();
-    Level level = log.getLevel();
+    Level level = logger->getLevel();
     if (level == Level::FATAL) {
         return;
     }
-    log.setLevel(Level::fromValue(level.getValue() + 1));
+    logger->setLevel(Level::fromValue(level.getValue() + 1));
 }
 Level Config::verbosity() const
 {
-    return logger().getLevel();
+    return logger->getLevel();
 }
 
 // private constructor
@@ -107,7 +100,7 @@ Config::Config()
     : _port(11211)
     , _discardThreshold(0.0)
     , _refreshInterval(500)
-    , _logger(Logger::getLogger("root"))
+    , logger(Logger::getLogger("config"))
 {
-    _logger.setLevel(Level::INFO);
+    logger->setLevel(Level::INFO);
 }

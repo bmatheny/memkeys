@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([mconfig.h:mconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Initialize automake
-AM_INIT_AUTOMAKE([1.10 foreign])
+AM_INIT_AUTOMAKE([1.9.6 foreign])
 
 # Checks for language
 AC_LANG([C++])

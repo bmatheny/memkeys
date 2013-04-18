@@ -30,6 +30,8 @@ class Pcap {
  protected:
   Pcap();
   virtual ~Pcap();
+
+  virtual bpf_u_int32 getSubnetMask() = 0;
   std::string getPcapError() const;
 
   static char errorBuffer[];

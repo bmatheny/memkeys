@@ -7,29 +7,35 @@ namespace mctop {
 
 using namespace std;
 
-PcapLive::PcapLive(const string &device)
+PcapLive::PcapLive(const Config * cfg)
     :
         Pcap(),
-        device(device)
+        config(cfg),
+        device(Device::getDevice(cfg->getInterface()))
 {
-  logger->debug(CONTEXT, "Using device %s for capture", device.c_str());
+  logger->debug(CONTEXT, "Using device %s for capture", getInterfaceC());
 }
 PcapLive::~PcapLive()
 {
   logger->debug(CONTEXT, "Shutting down");
 }
 
+bpf_u_int32 PcapLive::getSubnetMask()
+{
+  return getDevice().getSubnetMask();
+}
+
 void PcapLive::open()
 {
-  const char *dev = getDeviceC();
+  const char *dev = getInterfaceC();
   logger->info(CONTEXT, "Opening device %s for capture", dev);
-  handle = pcap_open_live(dev,  /* device to capture on */
-                          40,   /* how many bytes per packet */
-                          true, /* promiscuous */
-                          50,   /* read timeout, in ms */
+  handle = pcap_open_live(dev,                      /* device to capture on */
+                          config->getSnapLength(),  /* how many bytes per packet */
+                          config->isPromiscuous(),  /* promiscuous */
+                          config->getReadTimeout(), /* read timeout, in ms */
                           errorBuffer);
   if (handle == NULL) {
-    string msg = "Could not open device " + getDevice() + " for reading: " + errorBuffer;
+    string msg = "Could not open device " + getInterface() + " for reading: " + errorBuffer;
     logger->error(CONTEXT, msg.c_str());
     throw MctopException(msg);
   }

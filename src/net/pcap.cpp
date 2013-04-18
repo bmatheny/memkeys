@@ -1,10 +1,5 @@
 #include <string>
 
-extern "C" {
-#include <netinet/in.h>
-#include <arpa/inet.h>
-}
-
 #include "net/pcap.h"
 #include "exception.h"
 
@@ -18,19 +13,18 @@ char Pcap::errorBuffer[PCAP_ERRBUF_SIZE] = {0};
 void Pcap::apply_filter(const string &filter)
 {
   int rc = 0;
-  bpf_u_int32 netmask;
   struct bpf_program bpf;
-  inet_pton(AF_INET, "255.255.255.0", &netmask); // FIXME do this for real
   if (handle == NULL) {
-    logger->error(CONTEXT, "No pcap session open, can't apply filter");
-    throw MctopException("No pcap session open, can't apply filter");
+    string emsg = "No pcap session open, can't apply filter";
+    logger->error(CONTEXT, emsg.c_str());
+    throw MctopException(emsg);
   }
   logger->info(CONTEXT,
                "Applying filter (%s) to pcap session", filter.c_str());
   rc = pcap_compile(handle, &bpf,
                     const_cast<char*>(filter.c_str()),
                     true, /*optimize*/
-                    netmask);
+                    getSubnetMask());
   if (rc == -1) {
     string msg = "Couldn't parse pcap filter " + filter + ": " + getPcapError();
     logger->error(CONTEXT, msg.c_str());
@@ -43,6 +37,10 @@ void Pcap::apply_filter(const string &filter)
     throw MctopException(msg);
   }
   pcap_freecode(&bpf);
+}
+
+void Pcap::capture(PcapCallback cb, int cnt /* default to forever */)
+{
 }
 
 void Pcap::close()

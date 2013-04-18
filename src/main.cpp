@@ -24,18 +24,18 @@ int main(int argc, char ** argv) {
     msg.append(ex.what());
     mainLogger->fatal(msg);
     cout << Cli::help(argv[0]);
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   } catch (...) {
     mainLogger->fatal("Unhandled error");
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
   if (cfg->getInterface().empty()) {
     mainLogger->fatal("No interface specified (-i NIC)");
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
   mainLogger->debug("Configuration\n" + cfg->toString());
 
-  PcapLive * session = new PcapLive(cfg->getInterface());
+  PcapLive * session = new PcapLive(cfg);
   int rc = EXIT_SUCCESS;
   try {
     session->open();

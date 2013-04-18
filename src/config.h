@@ -22,8 +22,17 @@ class Config
   void setPort(const int port);
   uint16_t getPort() const;
 
+  int getReadTimeout() const
+  { return _readTimeout; }
+
   void setRefreshInterval(const int interval);
   uint16_t getRefreshInterval() const;
+
+  int getSnapLength() const
+  { return _snapLength; }
+
+  bool isPromiscuous() const
+  { return _isPromiscuous; }
 
   void increaseVerbosity();
   void makeLessVerbose();
@@ -35,8 +44,11 @@ class Config
   Config();
   double discardThreshold;
   std::string interface;
+  bool _isPromiscuous;
   uint16_t port;
+  int _readTimeout;
   uint16_t refreshInterval;
+  int _snapLength;
   LoggerPtr logger;
 };
 

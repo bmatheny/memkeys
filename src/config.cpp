@@ -124,9 +124,12 @@ string Config::toString() const
 Config::Config()
 : discardThreshold(0.0)
 , interface("")
+, _isPromiscuous(true)
 , port(11211)
-    , refreshInterval(500)
-    , logger(Logger::getLogger("config"))
+, _readTimeout(1000)
+, refreshInterval(500)
+, _snapLength(1518)
+, logger(Logger::getLogger("config"))
 {}
 
 } // end namespace

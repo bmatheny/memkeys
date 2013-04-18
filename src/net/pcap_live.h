@@ -2,23 +2,30 @@
 #define _NET_PCAP_LIVE_H
 
 #include "net/pcap.h"
+#include "net/device.h"
+#include "config.h"
 
 namespace mctop {
 
 class PcapLive : public Pcap
 {
  public: 
-  PcapLive(const std::string &device);
+  PcapLive(const Config * cfg);
   virtual ~PcapLive();
 
-  std::string getDevice() const
+  Device getDevice() const
   { return device; }
-  const char * getDeviceC() { return device.c_str(); }
+
+  const char * getInterfaceC() { return getDevice().getDeviceName().c_str(); }
+  std::string getInterface() const
+  { return getDevice().getDeviceName(); }
 
   virtual void open();
+  virtual bpf_u_int32 getSubnetMask();
 
  private:
-  const std::string device;
+  const Config * config;
+  const Device device;
 
 };
 

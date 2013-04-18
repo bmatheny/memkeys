@@ -24,6 +24,7 @@ mctop_SOURCES =			\
 	logging/level.h logging/level.cpp \
 	logging/logger.h logging/logger.cpp \
 	config.h config.cpp \
+	net/device.h net/device.cpp \
 	net/pcap.h net/pcap.cpp \
 	net/pcap_live.h net/pcap_live.cpp \
 	cli.h cli.cpp \

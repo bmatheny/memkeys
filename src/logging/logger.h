@@ -8,8 +8,6 @@
 #include "logging/level.h"
 #include "logging/record.h"
 
-// INFO [date] function() [file:line] logger: message
-#define WHERESTR "%s [%s] %s() [%s:%d] %s: %s"
 #define CONTEXT logging::Record(__FILE__, __LINE__, __PRETTY_FUNCTION__)
 #define LOG_WITH_VARARGS(level, rec, fmt, logger) { \
     va_list argp; \

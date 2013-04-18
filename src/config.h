@@ -34,7 +34,6 @@ private:
     uint16_t port;
     uint16_t refreshInterval;
     logging::LoggerPtr logger;
-    // TODO free string memory in destructor
 };
 
 #endif

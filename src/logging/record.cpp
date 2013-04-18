@@ -4,7 +4,8 @@
 
 #include "logging/record.h"
 
-using namespace logging;
+namespace logging {
+
 using namespace std;
 
 /**
@@ -114,3 +115,5 @@ string Record::getTimestamp() const
     std::snprintf(result, 100, "%s.%03ld", buffer, (long)tv.tv_usec / 1000);
     return result;
 }
+
+} // end namespace logging

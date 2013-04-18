@@ -3,7 +3,8 @@
 
 #include "logging/level.h"
 
-using namespace logging;
+namespace logging {
+
 using namespace std;
 
 static ValueMap valueMap;
@@ -80,3 +81,4 @@ uint32_t Level::getValue() const
     return value;
 }
 
+} // end namespace logging

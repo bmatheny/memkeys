@@ -3,7 +3,8 @@
 
 #include "logging/logger.h"
 
-using namespace logging;
+namespace logging {
+
 using namespace std;
 
 /**
@@ -182,3 +183,5 @@ string Logger::format(const Record &rec)
     out << rec.getMessage();
     return out.str();
 }
+
+} // end namespace logging

@@ -1,7 +1,5 @@
 #include <stdexcept>
 #include <iostream>
-#include <ctime>
-#include <sys/time.h>
 
 #include "logging/logger.h"
 
@@ -50,11 +48,11 @@ LoggerPtr Logger::getRootLogger()
  */
 Level Logger::getLevel() const
 {
-    return level;
+    return _level;
 }
-void Logger::setLevel(const Level &_level)
+void Logger::setLevel(const Level &level)
 {
-    level = _level;
+    _level = level;
 }
 
 /**
@@ -62,7 +60,7 @@ void Logger::setLevel(const Level &_level)
  */
 string Logger::getName() const
 {
-    return name;
+    return _name;
 }
 
 /**
@@ -70,11 +68,11 @@ string Logger::getName() const
  */
 void Logger::setParent(const LoggerPtr &logger)
 {
-    parent = logger;
+    _parent = logger;
 }
 LoggerPtr Logger::getParent() const
 {
-    return parent;
+    return _parent;
 }
 
 /**
@@ -82,11 +80,11 @@ LoggerPtr Logger::getParent() const
  */
 void Logger::setUseParent(const bool use_parent)
 {
-    useParent = use_parent;
+    _useParent = use_parent;
 }
 bool Logger::getUseParent() const
 {
-    return useParent;
+    return _useParent;
 }
 
 /**
@@ -95,66 +93,92 @@ bool Logger::getUseParent() const
 void Logger::log(const Level &level, const string &msg)
 {
     if (level.getValue() >= getLevel().getValue()) {
-        ostringstream out;
-        out << level.getName() << " ";
-        out << "[" << getTimestamp() << "] ";
-        out << getName() << ": ";
-        out << msg;
-        cout << out.str() << endl;
+        Record rec = Record();
+        rec.setLevel(level);
+        rec.setLoggerName(getName());
+        rec.setMessage(msg);
+        log(level, rec);
+    }
+}
+void Logger::log(const Level &level, const Record &record)
+{
+    if (level.getValue() >= getLevel().getValue()) {
+        cout << format(record) << endl;
         LoggerPtr logger = getParent();
         if (logger != NULL && logger->getUseParent()) {
-            logger->log(level, msg);
+            logger->log(level, record);
         }
     }
 }
+
 void Logger::trace(const string &msg)
 {
     log(Level::TRACE, msg);
+}
+void Logger::trace(Record record, const string &fmt, ...)
+{
+    LOG_WITH_VARARGS(Level::TRACE, record, fmt, this);
 }
 
 void Logger::debug(const string &msg)
 {
     log(Level::DEBUG, msg);
 }
+void Logger::debug(Record record, const string &fmt, ...)
+{
+    LOG_WITH_VARARGS(Level::DEBUG, record, fmt, this);
+}
 
 void Logger::info(const string &msg)
 {
     log(Level::INFO, msg);
+}
+void Logger::info(Record record, const string &fmt, ...)
+{
+    LOG_WITH_VARARGS(Level::INFO, record, fmt, this);
 }
 
 void Logger::warning(const string &msg)
 {
     log(Level::WARNING, msg);
 }
+void Logger::warning(Record record, const string &fmt, ...)
+{
+    LOG_WITH_VARARGS(Level::WARNING, record, fmt, this);
+}
 
 void Logger::error(const string &msg)
 {
     log(Level::ERROR, msg);
+}
+void Logger::error(Record record, const string &fmt, ...)
+{
+    LOG_WITH_VARARGS(Level::ERROR, record, fmt, this);
 }
 
 void Logger::fatal(const string &msg)
 {
     log(Level::FATAL, msg);
 }
-
-
-inline std::string Logger::getTimestamp() const
+void Logger::fatal(Record record, const string &fmt, ...)
 {
-    time_t now = time(NULL);
-    struct tm *timeinfo = localtime(&now);
-    struct timeval tv;
-    char buffer[80] = {0};
-
-    gettimeofday(&tv, NULL);
-
-    strftime(buffer, 80, "%Y%m%d-%H:%M:%S", timeinfo);
-
-    char result[100] = {0};
-    std::snprintf(result, 100, "%s.%03ld", buffer, (long)tv.tv_usec / 1000);
-    return result;
+    LOG_WITH_VARARGS(Level::FATAL, record, fmt, this);
 }
 
-
 // protected
-Logger::Logger(const string &name) : name(name), level(Level::WARNING)
+Logger::Logger(const string &name) : _name(name), _level(Level::WARNING)
 {}
+
+string Logger::format(const Record &rec)
+{
+    ostringstream out;
+    out << rec.getLevel().getName() << " ";
+    out << "[" << rec.getTimestamp() << "] ";
+    if (!rec.getMethodName().empty()) {
+        out << "[" << rec.getFileName() << ":" << rec.getLineNumber() << "][";
+        out << rec.getMethodName() << "] ";
+    }
+    out << rec.getLoggerName() << ": ";
+    out << rec.getMessage();
+    return out.str();
+}

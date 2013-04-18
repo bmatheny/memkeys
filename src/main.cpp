@@ -11,8 +11,7 @@ int main(int argc, char ** argv) {
 
     Logger::getRootLogger()->setLevel(Level::TRACE);
     LoggerPtr mainLogger = Logger::getLogger("main");
-    mainLogger->info("Starting application");
-
+    mainLogger->info(CONTEXT, "Starting Application %s", argv[0]);
     Config * cfg = Config::instance();
     try {
         Cli::parse(argc, argv, cfg);

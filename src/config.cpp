@@ -29,7 +29,7 @@ void Config::setDiscardThreshold(const double threshold)
     if (threshold < 0.0) {
         throw range_error("threshold must be >= 0");
     }
-    logger->debug("Setting discard threshold to " + to_string((long double)threshold));
+    logger->debug(CONTEXT, "Setting discard threshold to %.02f", threshold);
     discardThreshold = threshold;
 }
 double Config::getDiscardThreshold() const
@@ -39,7 +39,7 @@ double Config::getDiscardThreshold() const
 
 void Config::setInterface(const string &value)
 {
-    logger->debug("Setting interface to " + value);
+    logger->debug(CONTEXT, "Setting interface to %s", value.c_str());
     interface = value;
 }
 string Config::getInterface() const
@@ -53,6 +53,7 @@ string Config::getInterface() const
 void Config::setPort(const int _port)
 {
     REQUIRE_UINT("port", _port, uint16_t);
+    logger->debug(CONTEXT, "Setting port to %d", _port);
     port = (uint16_t)_port;
 }
 uint16_t Config::getPort() const
@@ -114,6 +115,4 @@ Config::Config()
     , port(11211)
     , refreshInterval(500)
     , logger(Logger::getLogger("config"))
-{
-    logger->setLevel(Level::INFO);
-}
+{}

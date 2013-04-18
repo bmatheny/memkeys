@@ -11,6 +11,7 @@ bin_PROGRAMS = mctop
 
 mctop_SOURCES =			\
 	options.h \
+	logging/record.h logging/record.cpp \
 	logging/level.h logging/level.cpp \
 	logging/logger.h logging/logger.cpp \
 	config.h config.cpp \

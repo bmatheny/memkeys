@@ -17,7 +17,7 @@ PcapLive::PcapLive(const Config * cfg)
 }
 PcapLive::~PcapLive()
 {
-  logger->debug(CONTEXT, "Shutting down");
+  logger->info(CONTEXT, "Shutting down live capture");
 }
 
 bpf_u_int32 PcapLive::getSubnetMask()

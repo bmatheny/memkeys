@@ -41,6 +41,17 @@ void Pcap::apply_filter(const string &filter)
 
 void Pcap::capture(PcapCallback cb, int cnt /* default to forever */)
 {
+  if (handle == NULL) {
+    string msg = "No pcap session available";
+    logger->error(CONTEXT, msg.c_str());
+    throw MctopException(msg);
+  }
+  if (pcap_loop(handle, cnt, cb, NULL) < 0) {
+    string msg = "Could not start capture loop: ";
+    msg.append(getPcapError());
+    logger->error(CONTEXT, msg.c_str());
+    throw MctopException(msg);
+  }
 }
 
 void Pcap::close()
@@ -56,6 +67,7 @@ Pcap::Pcap() : handle(NULL), logger(Logger::getLogger("pcap"))
 {}
 Pcap::~Pcap()
 {
+  close();
   logger->debug(CONTEXT, "Deleting logger");
   delete logger;
 }

@@ -27,5 +27,7 @@ mctop_SOURCES =			\
 	net/device.h net/device.cpp \
 	net/pcap.h net/pcap.cpp \
 	net/pcap_live.h net/pcap_live.cpp \
+	report/report.h report/report.cpp \
+	report/text.h report/text.cpp \
 	cli.h cli.cpp \
 	main.cpp

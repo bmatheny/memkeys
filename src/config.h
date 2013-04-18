@@ -11,6 +11,8 @@ class Config
  public:
   static Config * instance();
 
+  virtual ~Config();
+
   void setDiscardThreshold(const double threshold);
   double getDiscardThreshold() const;
 

@@ -44,6 +44,8 @@ LoggerPtr Logger::getRootLogger()
   return rootLogger;
 }
 
+Logger::~Logger() {}
+
 /**
  * Manage the logging.Level associated with this logger.
  */

@@ -32,6 +32,8 @@ class Logger
   static LoggerPtr getLogger(const std::string &name);
   static LoggerPtr getRootLogger();
 
+  virtual ~Logger();
+
   Level getLevel() const;
   void setLevel(const Level &level);
 

@@ -1,7 +1,10 @@
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <getopt.h>
+
+extern "C" {
+  #include <getopt.h>
+}
 
 #include "cli.h"
 #include "config.h"
@@ -101,7 +104,7 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
 string Cli::mkHelpLead(const struct option opt, const string &key)
 {
   ostringstream txt;
-  ssize_t len = 0, pad = 33, alloc = 33;
+  ssize_t len = 0, alloc = 33;
   char * os = NULL;
   txt << "    -" << ((char)opt.val) << ", --" << opt.name;
   if (opt.has_arg == 1) {

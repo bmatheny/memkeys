@@ -1,6 +1,9 @@
 #include <string>
 #include <ctime>
-#include <sys/time.h>
+
+extern "C" {
+  #include <sys/time.h>
+}
 
 #include "logging/record.h"
 

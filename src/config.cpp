@@ -21,6 +21,11 @@ Config * Config::instance()
   return cfg_instance;
 }
 
+Config::~Config()
+{
+  delete logger;
+}
+
 /**
  * Set the discard threshold for stats. When displaying cache keys, only keys
  * being requested at or above this rate will be displayed.
@@ -106,6 +111,12 @@ string Config::toString() const
   configs << ": " << getDiscardThreshold() << endl;
   configs << setw(20) << "Interface";
   configs << ": " << getInterface() << endl;
+  configs << setw(20) << "Port";
+  configs << ": " << getPort() << endl;
+  configs << setw(20) << "Refresh Interval";
+  configs << ": " << getRefreshInterval() << "ms" << endl;
+  configs << setw(20) << "Verbosity";
+  configs << ": " << verbosity().getName();
   return configs.str();
 }
 

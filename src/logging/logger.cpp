@@ -3,7 +3,7 @@
 
 #include "logging/logger.h"
 
-namespace logging {
+namespace mctop {
 
 using namespace std;
 
@@ -184,4 +184,4 @@ string Logger::format(const Record &rec)
   return out.str();
 }
 
-} // end namespace logging
+} // end namespace mctop

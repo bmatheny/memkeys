@@ -4,7 +4,7 @@
 
 #include "logging/record.h"
 
-namespace logging {
+namespace mctop {
 
 using namespace std;
 
@@ -116,4 +116,4 @@ string Record::getTimestamp() const
   return result;
 }
 
-} // end namespace logging
+} // end namespace mctop

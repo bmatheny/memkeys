@@ -11,7 +11,6 @@ namespace mctop {
 static Config * cfg_instance = NULL;
 
 using namespace std;
-using namespace logging;
 
 // static
 Config * Config::instance()

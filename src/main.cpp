@@ -8,7 +8,6 @@
 int main(int argc, char ** argv) {
   using namespace std;
   using namespace mctop;
-  using namespace logging;
 
   Logger::getRootLogger()->setLevel(Level::TRACE);
   LoggerPtr mainLogger = Logger::getLogger("main");

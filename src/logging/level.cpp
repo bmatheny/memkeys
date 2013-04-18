@@ -3,7 +3,7 @@
 
 #include "logging/level.h"
 
-namespace logging {
+namespace mctop {
 
 using namespace std;
 
@@ -79,4 +79,4 @@ uint32_t Level::getValue() const
   return value;
 }
 
-} // end namespace logging
+} // end namespace mctop

@@ -5,7 +5,7 @@
 #include <map>
 #include "options.h"
 
-namespace logging {
+namespace mctop {
 
 class Level
 {
@@ -34,6 +34,6 @@ class Level
 typedef std::map<uint32_t,Level> ValueMap;
 typedef std::map<std::string,Level> NameMap;
 
-} // end namespace logging
+} // end namespace mctop
 
 #endif

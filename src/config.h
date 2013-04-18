@@ -25,7 +25,7 @@ class Config
 
   void increaseVerbosity();
   void makeLessVerbose();
-  logging::Level verbosity() const;
+  Level verbosity() const;
 
   std::string toString() const;
 
@@ -35,7 +35,7 @@ class Config
   std::string interface;
   uint16_t port;
   uint16_t refreshInterval;
-  logging::LoggerPtr logger;
+  LoggerPtr logger;
 };
 
 } // end namespace

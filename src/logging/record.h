@@ -4,7 +4,7 @@
 #include <string>
 #include "logging/level.h"
 
-namespace logging {
+namespace mctop {
 
 class Record
 {
@@ -43,6 +43,6 @@ class Record
   std::string _methodName;
 };
 
-} // end namespace logging
+} // end namespace mctop
 
 #endif

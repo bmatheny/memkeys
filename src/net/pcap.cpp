@@ -39,14 +39,14 @@ void Pcap::apply_filter(const string &filter)
   pcap_freecode(&bpf);
 }
 
-void Pcap::capture(PcapCallback cb, int cnt /* default to forever */)
+void Pcap::capture(PcapCallback cb, int cnt /* default to forever */, u_char *userData)
 {
   if (handle == NULL) {
     string msg = "No pcap session available";
     logger->error(CONTEXT, msg.c_str());
     throw MctopException(msg);
   }
-  if (pcap_loop(handle, cnt, cb, NULL) < 0) {
+  if (pcap_loop(handle, cnt, cb, userData) < 0) {
     string msg = "Could not start capture loop: ";
     msg.append(getPcapError());
     logger->error(CONTEXT, msg.c_str());

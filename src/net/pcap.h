@@ -24,7 +24,7 @@ class Pcap {
  public:
   virtual void open() = 0;
   void apply_filter(const std::string &filter);
-  void capture(PcapCallback cb, int cnt = -1 /* loop forever */);
+  void capture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);
   void close();
 
  protected:

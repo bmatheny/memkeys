@@ -12,20 +12,20 @@ using namespace std;
  * Constructor for a new log record.
  */
 Record::Record()
-    : _filename("")
-    , _level(Level::OFF)
-    , _lineNumber(0)
-    , _loggerName("")
-    , _message("")
-    , _methodName("")
+    : _filename(""),
+      _level(Level::OFF),
+      _lineNumber(0),
+      _loggerName(""),
+      _message(""),
+      _methodName("")
 {}
 Record::Record(const string &fname, const uint32_t ln, const string &name)
-    : _filename(fname)
-    , _level(Level::OFF)
-    , _lineNumber(ln)
-    , _loggerName("")
-    , _message("")
-    , _methodName(name)
+  : _filename(fname),
+    _level(Level::OFF),
+    _lineNumber(ln),
+    _loggerName(""),
+    _message(""),
+    _methodName(name)
 {}
 
 /**
@@ -33,11 +33,11 @@ Record::Record(const string &fname, const uint32_t ln, const string &name)
  */
 string Record::getFileName() const
 {
-    return _filename;
+  return _filename;
 }
 void Record::setFileName(const string &filename)
 {
-    _filename = filename;
+  _filename = filename;
 }
 
 /**
@@ -45,11 +45,11 @@ void Record::setFileName(const string &filename)
  */
 Level Record::getLevel() const
 {
-    return _level;
+  return _level;
 }
 void Record::setLevel(const Level &level)
 {
-    _level = level;
+  _level = level;
 }
 
 /**
@@ -57,11 +57,11 @@ void Record::setLevel(const Level &level)
  */
 uint32_t Record::getLineNumber() const
 {
-    return _lineNumber;
+  return _lineNumber;
 }
 void Record::setLineNumber(const uint32_t lineNumber)
 {
-    _lineNumber = lineNumber;
+  _lineNumber = lineNumber;
 }
 
 /*
@@ -69,11 +69,11 @@ void Record::setLineNumber(const uint32_t lineNumber)
  */
 string Record::getLoggerName() const
 {
-    return _loggerName;
+  return _loggerName;
 }
 void Record::setLoggerName(const string &name)
 {
-    _loggerName = name;
+  _loggerName = name;
 }
 
 /**
@@ -81,11 +81,11 @@ void Record::setLoggerName(const string &name)
  */
 string Record::getMessage() const
 {
-    return _message;
+  return _message;
 }
 void Record::setMessage(const string &msg)
 {
-    _message = msg;
+  _message = msg;
 }
 
 /**
@@ -93,27 +93,27 @@ void Record::setMessage(const string &msg)
  */
 string Record::getMethodName() const
 {
-    return _methodName;
+  return _methodName;
 }
 void Record::setMethodName(const string &name)
 {
-    _methodName = name;
+  _methodName = name;
 }
 
 string Record::getTimestamp() const
 {
-    time_t now = time(NULL);
-    struct tm *timeinfo = localtime(&now);
-    struct timeval tv;
-    char buffer[80] = {0};
+  time_t now = time(NULL);
+  struct tm *timeinfo = localtime(&now);
+  struct timeval tv;
+  char buffer[80] = {0};
 
-    gettimeofday(&tv, NULL);
+  gettimeofday(&tv, NULL);
 
-    strftime(buffer, 80, "%Y%m%d-%H:%M:%S", timeinfo);
+  strftime(buffer, 80, "%Y%m%d-%H:%M:%S", timeinfo);
 
-    char result[100] = {0};
-    std::snprintf(result, 100, "%s.%03ld", buffer, (long)tv.tv_usec / 1000);
-    return result;
+  char result[100] = {0};
+  std::snprintf(result, 100, "%s.%03ld", buffer, (long)tv.tv_usec / 1000);
+  return result;
 }
 
 } // end namespace logging

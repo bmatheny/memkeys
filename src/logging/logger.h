@@ -28,45 +28,45 @@ typedef Logger* LoggerPtr;
 
 class Logger
 {
-public:
-    static LoggerPtr getLogger(const std::string &name);
-    static LoggerPtr getRootLogger();
+ public:
+  static LoggerPtr getLogger(const std::string &name);
+  static LoggerPtr getRootLogger();
 
-    Level getLevel() const;
-    void setLevel(const Level &level);
+  Level getLevel() const;
+  void setLevel(const Level &level);
 
-    std::string getName() const;
+  std::string getName() const;
 
-    void setParent(const LoggerPtr &logger);
-    LoggerPtr getParent() const;
+  void setParent(const LoggerPtr &logger);
+  LoggerPtr getParent() const;
 
-    void setUseParent(const bool use_parent);
-    bool getUseParent() const;
+  void setUseParent(const bool use_parent);
+  bool getUseParent() const;
 
-    void log(const Level &level, const std::string &msg);
-    void log(const Level &level, const Record &rec);
+  void log(const Level &level, const std::string &msg);
+  void log(const Level &level, const Record &rec);
 
-    void trace(const std::string &msg);
-    void trace(Record rec, const std::string &fmt, ...);
-    void debug(const std::string &msg);
-    void debug(Record rec, const std::string &fmt, ...);
-    void info(const std::string &msg);
-    void info(Record rec, const std::string &fmt, ...);
-    void warning(const std::string &msg);
-    void warning(Record rec, const std::string &fmt, ...);
-    void error(const std::string &msg);
-    void error(Record rec, const std::string &fmt, ...);
-    void fatal(const std::string &msg);
-    void fatal(Record rec, const std::string &fmt, ...);
-protected:
-    Logger(const std::string &name);
-    std::string format(const Record &rec);
+  void trace(const std::string &msg);
+  void trace(Record rec, const std::string &fmt, ...);
+  void debug(const std::string &msg);
+  void debug(Record rec, const std::string &fmt, ...);
+  void info(const std::string &msg);
+  void info(Record rec, const std::string &fmt, ...);
+  void warning(const std::string &msg);
+  void warning(Record rec, const std::string &fmt, ...);
+  void error(const std::string &msg);
+  void error(Record rec, const std::string &fmt, ...);
+  void fatal(const std::string &msg);
+  void fatal(Record rec, const std::string &fmt, ...);
+ protected:
+  Logger(const std::string &name);
+  std::string format(const Record &rec);
 
-private:
-    const std::string _name;
-    LoggerPtr _parent;
-    bool _useParent;
-    Level _level;
+ private:
+  const std::string _name;
+  LoggerPtr _parent;
+  bool _useParent;
+  Level _level;
 };
 
 typedef std::map<std::string,LoggerPtr> Loggers;

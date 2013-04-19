@@ -23,7 +23,8 @@ LoggerPtr Logger::getLogger(const string &name)
     return it->second;
   } else {
     LoggerPtr logger = new Logger(name);
-    if (name != ROOT_LOGGER_NAME) {
+    logger->trace("Created logger");
+    if (!logger->isRootLogger()) {
       LoggerPtr root = Logger::getRootLogger();
       logger->setParent(root);
       logger->setUseParent(true);
@@ -35,16 +36,21 @@ LoggerPtr Logger::getLogger(const string &name)
 }
 LoggerPtr Logger::getRootLogger()
 {
-  static LoggerPtr rootLogger = NULL;
-  if (rootLogger == NULL) {
-    rootLogger = Logger::getLogger(ROOT_LOGGER_NAME);
-    rootLogger->setParent(NULL);
-    rootLogger->setUseParent(false);
+  Loggers::iterator it = loggers.find(ROOT_LOGGER_NAME);
+  if (it != loggers.end()) {
+    return it->second;
+  } else {
+    LoggerPtr logger = new Logger(ROOT_LOGGER_NAME);
+    logger->setParent(NULL);
+    logger->setUseParent(false);
+    loggers.insert(it, Loggers::value_type(ROOT_LOGGER_NAME, logger));
+    return logger;
   }
-  return rootLogger;
 }
 
-Logger::~Logger() {}
+Logger::~Logger() {
+  trace("Destroying logger (self)");
+}
 
 /**
  * Manage the logging.Level associated with this logger.
@@ -88,6 +94,12 @@ void Logger::setUseParent(const bool use_parent)
 bool Logger::getUseParent() const
 {
   return _useParent;
+}
+
+bool Logger::isRootLogger() const
+{
+  static bool is_root = (getName() == ROOT_LOGGER_NAME);
+  return is_root;
 }
 
 /**

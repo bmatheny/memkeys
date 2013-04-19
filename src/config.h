@@ -21,6 +21,7 @@ class Config
 
   void setPort(const int port);
   uint16_t getPort() const;
+  std::string getPortAsString() const;
 
   int getReadTimeout() const
   { return _readTimeout; }

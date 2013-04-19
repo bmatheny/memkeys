@@ -8,7 +8,7 @@
 #include "logging/level.h"
 #include "logging/record.h"
 
-#define CONTEXT mctop::Record(__FILE__, __LINE__, __PRETTY_FUNCTION__)
+#define CONTEXT mctop::Record(__FILE__, __LINE__, __FUNCTION__)
 #define LOG_WITH_VARARGS(level, rec, fmt, logger) { \
     va_list argp; \
     char buffer[1024]; \
@@ -44,6 +44,8 @@ class Logger
 
   void setUseParent(const bool use_parent);
   bool getUseParent() const;
+
+  bool isRootLogger() const;
 
   void log(const Level &level, const std::string &msg);
   void log(const Level &level, const Record &rec);

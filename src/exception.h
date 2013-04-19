@@ -12,6 +12,12 @@ class MctopException : public std::runtime_error
   MctopException(const std::string &msg) : std::runtime_error(msg) {}
 };
 
+class MctopConfigurationError : public MctopException
+{
+ public:
+  MctopConfigurationError(const std::string &msg) : MctopException(msg) {}
+};
+
 } // end namespace mctop
 
 #endif

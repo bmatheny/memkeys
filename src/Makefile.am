@@ -30,4 +30,5 @@ mctop_SOURCES =			\
 	report/report.h report/report.cpp \
 	report/text.h report/text.cpp \
 	cli.h cli.cpp \
+	mctop.h mctop.cpp \
 	main.cpp

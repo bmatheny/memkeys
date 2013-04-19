@@ -2,37 +2,15 @@
 #include <stdexcept>
 #include <string>
 
+extern "C" {
+#include <unistd.h>
+}
+
 #include "exception.h"
 #include "cli.h"
 #include "config.h"
+#include "mctop.h"
 #include "logging/logger.h"
-#include "net/pcap_live.h"
-#include "report/report.h"
-#include "report/text.h"
-
-namespace mctop {
-class CaptureEngine
-{
- public:
-  CaptureEngine(const Config * cfg, const Report &report)
-      : logger(Logger::getLogger("CaptureEngine"))
-  {}
-  ~CaptureEngine() {
-    if (logger != NULL) {
-      delete logger;
-    }
-  }
-  const LoggerPtr logger;
-};
-
-void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
-             const u_char* packet)
-{
-  CaptureEngine * ce = (CaptureEngine*)userData;
-  ce->logger->info("Hello world");
-}
-
-}
 
 int main(int argc, char ** argv) {
   using namespace std;
@@ -42,7 +20,9 @@ int main(int argc, char ** argv) {
   Logger::getRootLogger()->setLevel(Level::TRACE);
   LoggerPtr mainLogger = Logger::getLogger("main");
   mainLogger->info(string("Starting Application ") + argv[0]);
+  mainLogger->debug(string("PID is ") + to_string((long long unsigned int)getpid()));
   Config * cfg = Config::instance();
+  Mctop * app = NULL;
   try {
     Cli::parse(argc, argv, cfg);
   } catch (exception &ex) {
@@ -55,26 +35,24 @@ int main(int argc, char ** argv) {
     mainLogger->fatal("Unhandled error");
     return EXIT_FAILURE;
   }
-  if (cfg->getInterface().empty()) {
-    mainLogger->fatal("No interface specified (-i NIC)");
-    return EXIT_FAILURE;
-  }
+
   mainLogger->debug("Configuration\n" + cfg->toString());
 
-  PcapLive session(cfg);
-  CaptureEngine * engine = new CaptureEngine(cfg, TextReport(cfg));
+  try {
+    app = Mctop::getInstance(cfg);
+  } catch (MctopConfigurationError &ex) {
+    mainLogger->fatal(string("Error setting up application: ") + ex.what());
+    return EXIT_FAILURE;
+  }
+
   int rc = EXIT_SUCCESS;
   try {
-    session.open();
-    session.apply_filter("port " + to_string((long long unsigned int)cfg->getPort()));
-    session.capture(process, -1, (u_char*)engine);
-    session.close();
-  } catch (MctopException &ex) {
-    string msg("Exception setting up pcap session: ");
-    msg.append(ex.what());
-    mainLogger->fatal(msg);
+    app->run();
+  } catch (exception &ex) {
+    mainLogger->error(string("Error running application: ") + ex.what());
     rc = EXIT_FAILURE;
   }
+
   delete mainLogger;
   delete cfg;
   delete Logger::getRootLogger();

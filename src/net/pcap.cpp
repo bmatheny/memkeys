@@ -3,12 +3,23 @@
 #include "net/pcap.h"
 #include "exception.h"
 
+extern "C" {
+#include <unistd.h>
+}
+
 namespace mctop {
 
 using namespace std;
 
 // protected and static
 char Pcap::errorBuffer[PCAP_ERRBUF_SIZE] = {0};
+
+Pcap::~Pcap()
+{
+  close();
+  logger->debug(CONTEXT, "Deleting logger");
+  delete logger;
+}
 
 void Pcap::apply_filter(const string &filter)
 {
@@ -46,7 +57,7 @@ void Pcap::capture(PcapCallback cb, int cnt /* default to forever */, u_char *us
     logger->error(CONTEXT, msg.c_str());
     throw MctopException(msg);
   }
-  if (pcap_loop(handle, cnt, cb, userData) < 0) {
+  if (pcap_loop(handle, cnt, cb, userData) == -1) {
     string msg = "Could not start capture loop: ";
     msg.append(getPcapError());
     logger->error(CONTEXT, msg.c_str());
@@ -58,6 +69,8 @@ void Pcap::close()
 {
   if (handle != NULL) {
     logger->info(CONTEXT, "Closing pcap session");
+    pcap_breakloop(handle);
+    sleep(1);
     pcap_close(handle);
   }
 }
@@ -65,12 +78,6 @@ void Pcap::close()
 // protected
 Pcap::Pcap() : handle(NULL), logger(Logger::getLogger("pcap"))
 {}
-Pcap::~Pcap()
-{
-  close();
-  logger->debug(CONTEXT, "Deleting logger");
-  delete logger;
-}
 std::string Pcap::getPcapError() const
 {
   if (handle == NULL) {

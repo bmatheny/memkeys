@@ -1,6 +1,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <iomanip>
 
 #include "config.h"
@@ -65,6 +66,10 @@ void Config::setPort(const int _port)
 uint16_t Config::getPort() const
 {
   return port;
+}
+string Config::getPortAsString() const
+{
+  return to_string((long long unsigned int)getPort());
 }
 
 /**

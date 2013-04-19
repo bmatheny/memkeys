@@ -26,10 +26,10 @@ class Pcap {
   void apply_filter(const std::string &filter);
   void capture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);
   void close();
+  virtual ~Pcap();
 
  protected:
   Pcap();
-  virtual ~Pcap();
 
   virtual bpf_u_int32 getSubnetMask() = 0;
   std::string getPcapError() const;

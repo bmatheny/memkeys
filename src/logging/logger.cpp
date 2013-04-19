@@ -23,13 +23,13 @@ LoggerPtr Logger::getLogger(const string &name)
     return it->second;
   } else {
     LoggerPtr logger = new Logger(name);
-    logger->trace("Created logger");
     if (!logger->isRootLogger()) {
       LoggerPtr root = Logger::getRootLogger();
       logger->setParent(root);
       logger->setUseParent(true);
       logger->setLevel(root->getLevel());
     }
+    logger->trace("Created logger");
     loggers.insert(it, Loggers::value_type(name, logger));
     return logger;
   }
@@ -50,7 +50,10 @@ LoggerPtr Logger::getRootLogger()
 
 Logger::~Logger() {
   trace("~Logger destroyed");
-  // FIXME should this be deleted from the map? Probably
+  Loggers::iterator it = loggers.find(getName());
+  if (it != loggers.end()) {
+    loggers.erase(it);
+  }
 }
 
 /**

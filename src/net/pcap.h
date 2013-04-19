@@ -23,14 +23,15 @@ typedef pcap_handler PcapCallback;
 class Pcap {
  public:
   virtual void open() = 0;
-  void apply_filter(const std::string &filter);
-  void capture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);
-  void close();
+  void setFilter(const std::string &filter);
+  void startCapture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);
+  void stopCapture();
   virtual ~Pcap();
 
  protected:
   Pcap();
 
+  void close(); // closed by destructor
   virtual bpf_u_int32 getSubnetMask() = 0;
   std::string getPcapError() const;
 

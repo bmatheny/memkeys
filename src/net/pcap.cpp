@@ -3,10 +3,6 @@
 #include "net/pcap.h"
 #include "exception.h"
 
-extern "C" {
-#include <unistd.h>
-}
-
 namespace mctop {
 
 using namespace std;
@@ -21,7 +17,7 @@ Pcap::~Pcap()
   delete logger;
 }
 
-void Pcap::apply_filter(const string &filter)
+void Pcap::setFilter(const string &filter)
 {
   int rc = 0;
   struct bpf_program bpf;
@@ -50,14 +46,17 @@ void Pcap::apply_filter(const string &filter)
   pcap_freecode(&bpf);
 }
 
-void Pcap::capture(PcapCallback cb, int cnt /* default to forever */, u_char *userData)
+void Pcap::startCapture(PcapCallback cb,
+                        int cnt /* default to forever */,
+                        u_char *userData)
 {
   if (handle == NULL) {
     string msg = "No pcap session available";
     logger->error(CONTEXT, msg.c_str());
     throw MctopException(msg);
   }
-  if (pcap_loop(handle, cnt, cb, userData) == -1) {
+  int rc = pcap_loop(handle, cnt, cb, userData);
+  if (rc == -1) {
     string msg = "Could not start capture loop: ";
     msg.append(getPcapError());
     logger->error(CONTEXT, msg.c_str());
@@ -65,27 +64,40 @@ void Pcap::capture(PcapCallback cb, int cnt /* default to forever */, u_char *us
   }
 }
 
-void Pcap::close()
+void Pcap::stopCapture()
 {
   if (handle != NULL) {
-    logger->info(CONTEXT, "Closing pcap session");
+    logger->debug(CONTEXT, "Stopping capture loop");
     pcap_breakloop(handle);
-    sleep(1);
-    pcap_close(handle);
   }
 }
 
 // protected
 Pcap::Pcap() : handle(NULL), logger(Logger::getLogger("pcap"))
 {}
+
+void Pcap::close()
+{
+  if (handle != NULL) {
+    logger->info(CONTEXT, "Closing pcap session");
+    // This is important. The ordering of shutdown MUST be:
+    // start loop with pcap_loop
+    // call pcap_breakloop
+    // return from pcap_loop
+    // call pcap_close
+    pcap_close(handle);
+    handle = NULL;
+  }
+}
+
 std::string Pcap::getPcapError() const
 {
   if (handle == NULL) {
-    return "No pcap session";
+    return "No pcap session (session handle is NULL)";
   }
   char * err = pcap_geterr(handle);
   if (err == NULL) {
-    return "No pcap error";
+    return "No pcap error (pcap_geterr returned NULL)";
   }
   return err;
 }

@@ -24,6 +24,7 @@ Config * Config::instance()
 
 Config::~Config()
 {
+  logger->trace(CONTEXT, "Deleting logger");
   delete logger;
 }
 

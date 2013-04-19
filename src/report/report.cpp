@@ -4,18 +4,17 @@
 
 namespace mctop {
 
-// protected
-Report::Report(const Config* cfg, const LoggerPtr logger)
-  : config(cfg),
-    logger(logger)
-{
-}
-
 Report::~Report()
 {
   if (logger != NULL) {
     delete logger;
   }
 }
+
+// protected
+Report::Report(const Config* cfg, const LoggerPtr logger)
+  : config(cfg),
+    logger(logger)
+{}
 
 } // end namespace top

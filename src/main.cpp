@@ -53,6 +53,7 @@ int main(int argc, char ** argv) {
     rc = EXIT_FAILURE;
   }
 
+  delete app;
   delete mainLogger;
   delete cfg;
   delete Logger::getRootLogger();

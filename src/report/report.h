@@ -9,10 +9,10 @@ namespace mctop {
 class Report {
  public:
   virtual void render() = 0;
+  virtual ~Report();
 
  protected:
   Report(const Config *cfg, const LoggerPtr logger);
-  virtual ~Report();
 
   const Config * config;
   const LoggerPtr logger;

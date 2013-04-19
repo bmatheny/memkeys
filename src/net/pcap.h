@@ -32,6 +32,9 @@ class Pcap {
   virtual void open() = 0;
   void close();
 
+  virtual bpf_u_int32 getSubnetMask() const = 0;
+  virtual bpf_u_int32 getNetwork() const = 0;
+
   void setFilter(const std::string &filter);
   void startCapture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);
   void stopCapture();
@@ -39,7 +42,6 @@ class Pcap {
  protected:
   Pcap();
 
-  virtual bpf_u_int32 getSubnetMask() = 0;
   std::string getPcapError() const;
 
   static char errorBuffer[];

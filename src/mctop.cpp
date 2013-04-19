@@ -64,6 +64,7 @@ void Mctop::run()
   signal(SIGINT, signal_cb);
   state.setState(state_STARTING);
   session->open();
+  logger->debug(to_string((long long int)session->getNetwork()));
   session->setFilter(string("port ") + config->getPortAsString());
   try {
     state.setState(state_RUNNING);
@@ -114,6 +115,10 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
                     const u_char* packet)
 {
   static uint64_t pkt_count = 0;
+  static uint64_t cmd_count = 0;
+  static uint64_t req_count = 0;
+  static uint64_t res_count = 0;
+
   CaptureEngine * ce = (CaptureEngine*)userData;
   if (ce->isShutdown()) {
     ce->logger->info("Shutting down");
@@ -121,9 +126,16 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
   }
   pkt_count += 1;
   MemcacheCommand mc = ce->parse(pkthdr, packet);
-  if ((pkt_count % 10) == 0) {
-    ce->logger->info(string("Captured ") + to_string((long long unsigned int)pkt_count) + " packets");
+  if (!mc.isCommand()) {
+    ce->logger->debug("Not a memcache command");
     return;
+  }
+  cmd_count += 1;
+  if (mc.isRequest()) {
+    ce->logger->trace(string("memcache request: ") + mc.getCommandName());
+    req_count += 1;
+  } else {
+    res_count += 1;
   }
 }
 

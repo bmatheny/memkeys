@@ -17,17 +17,17 @@ class Device {
 
   std::string getDeviceName() const
   { return _deviceName; }
-  bpf_u_int32 getIpAddress() const
-  { return _ipAddress; }
+  bpf_u_int32 getNetwork() const
+  { return _network; }
   bpf_u_int32 getSubnetMask() const
   { return _subnetMask; }
 
  protected:
-  Device(const std::string &name, const bpf_u_int32 address, const bpf_u_int32 mask);
+  Device(const std::string &name, const bpf_u_int32 network, const bpf_u_int32 mask);
 
  private:
   const std::string _deviceName;
-  const bpf_u_int32 _ipAddress;
+  const bpf_u_int32 _network;
   const bpf_u_int32 _subnetMask;
 };
 

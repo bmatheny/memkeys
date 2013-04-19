@@ -25,17 +25,21 @@ class MemcacheCommand
   bool isResponse() const
     { return (cmd_type == MC_RESPONSE); }
 
-  uint32_t getObjectSize() const;
+  std::string getCommandName() const
+    { return commandName; }
   std::string getKey() const;
+  uint32_t getObjectSize() const;
   std::string getSourceAddress() const
     { return sourceAddress; }
 
  protected:
   void setSourceAddress(const void * src);
+  void setCommandName(const std::string &name);
 
   memcache_command_t cmd_type;
   std::string payload;
   std::string sourceAddress;
+  std::string commandName;
 };
 
 } // end namespace mctop

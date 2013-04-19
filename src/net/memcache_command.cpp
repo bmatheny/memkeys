@@ -44,16 +44,19 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char*
   if (ipHeader->ip_p != IPPROTO_TCP) {
     return;
   }
+  cout << ipHeader->ip_src.s_addr << endl;
   setSourceAddress(&(ipHeader->ip_src));
 
   tcpHeader = (struct tcphdr*)(packet + ether_header_sz + ip_sz);
   data = (u_char*)(packet + ether_header_sz + ip_sz + tcphdr_sz);
   dataLength = pkthdr->len - (ether_header_sz + ip_sz + tcphdr_sz);
 
+  cout << getSourceAddress() << endl;
   for (int i = 0; i < dataLength; i++) {
     uint32_t cv = data[i];
-    cout << setw(15) << i << setw(5) << cv << " ";
+    //cout << setw(15) << i << setw(5) << cv << " ";
     if ((cv >= 32 && cv <= 126) || cv == 10 || cv == 11 || cv == 13) {
+      /*
       if (cv == 10) {
         cout << "\\n";
       } else if (cv == 11) {
@@ -62,13 +65,13 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char*
         cout << "\\r";
       } else {
         cout << (char)cv;
-      }
+      } */
       dataStr += (char)cv;
     } else {
-      cout << "<>";
+      //cout << "<>";
       dataStr += ".";
     }
-    cout << endl;
+    //cout << endl;
   }
 }
 

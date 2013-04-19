@@ -21,7 +21,12 @@ PcapLive::~PcapLive()
   logger->info(CONTEXT, "Shutting down");
 }
 
-bpf_u_int32 PcapLive::getSubnetMask()
+bpf_u_int32 PcapLive::getNetwork() const
+{
+  return getDevice().getNetwork();
+}
+
+bpf_u_int32 PcapLive::getSubnetMask() const
 {
   return getDevice().getSubnetMask();
 }

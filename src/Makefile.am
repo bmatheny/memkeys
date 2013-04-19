@@ -20,6 +20,7 @@ bin_PROGRAMS = mctop
 
 mctop_SOURCES =			\
 	exception.h options.h \
+	state.h state.cpp \
 	logging/record.h logging/record.cpp \
 	logging/level.h logging/level.cpp \
 	logging/logger.h logging/logger.cpp \
@@ -29,6 +30,7 @@ mctop_SOURCES =			\
 	net/pcap_live.h net/pcap_live.cpp \
 	report/report.h report/report.cpp \
 	report/text.h report/text.cpp \
+	net/memcache_command.h net/memcache_command.cpp \
 	net/capture_engine.h net/capture_engine.cpp \
 	cli.h cli.cpp \
 	mctop.h mctop.cpp \

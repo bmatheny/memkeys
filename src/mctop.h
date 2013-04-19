@@ -1,7 +1,10 @@
 #ifndef _MCTOP_MCTOP_H
 #define _MCTOP_MCTOP_H
 
+#include <string>
+
 #include "config.h"
+#include "state.h"
 #include "net/pcap.h"
 #include "net/capture_engine.h"
 #include "logging/logger.h"
@@ -17,7 +20,16 @@ class Mctop {
   virtual void run();
 
   // called by signal handler
-  virtual void shutdown();
+  void tryShutdown();
+  // called by signal handler after timeout
+  void forceShutdown();
+
+  bool isRunning() const
+    { return state.isRunning(); }
+  bool isShutdown() const
+    { return state.isTerminated(); }
+  std::string getStateName() const
+    { return state.getName(); }
 
  protected:
   Mctop(const Config * config);
@@ -26,6 +38,7 @@ class Mctop {
   const LoggerPtr logger;
   Pcap * session;
   CaptureEngine * engine;
+  State state;
 };
 
 } // end namespace mctop

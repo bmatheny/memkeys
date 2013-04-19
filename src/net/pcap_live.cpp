@@ -1,7 +1,8 @@
 #include <string>
 
-#include "net/pcap_live.h"
 #include "exception.h"
+#include "state.h"
+#include "net/pcap_live.h"
 
 namespace mctop {
 
@@ -27,6 +28,9 @@ bpf_u_int32 PcapLive::getSubnetMask()
 
 void PcapLive::open()
 {
+  if (!state.checkAndSet(state_NEW, state_STARTING)) {
+    logger->warning(CONTEXT, "Device already open");
+  }
   const char *dev = getInterfaceC();
   logger->info(CONTEXT, "Opening device %s for capture", dev);
   handle = pcap_open_live(dev,                      /* device to capture on */
@@ -37,6 +41,7 @@ void PcapLive::open()
   if (handle == NULL) {
     string msg = "Could not open device " + getInterface() + " for reading: " + errorBuffer;
     logger->error(CONTEXT, msg.c_str());
+    state.setState(state_NEW);
     throw MctopException(msg);
   }
 }

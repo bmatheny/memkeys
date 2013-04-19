@@ -21,7 +21,7 @@ void Pcap::setFilter(const string &filter)
 {
   int rc = 0;
   struct bpf_program bpf;
-  if (handle == NULL) {
+  if (!state.isStarting()) {
     string emsg = "No pcap session open, can't apply filter";
     logger->error(CONTEXT, emsg.c_str());
     throw MctopException(emsg);
@@ -50,13 +50,14 @@ void Pcap::startCapture(PcapCallback cb,
                         int cnt /* default to forever */,
                         u_char *userData)
 {
-  if (handle == NULL) {
+  if (!state.isStarting()) {
     string msg = "No pcap session available";
     logger->error(CONTEXT, msg.c_str());
     throw MctopException(msg);
   }
+  state.setState(state_RUNNING);
   int rc = pcap_loop(handle, cnt, cb, userData);
-  if (rc == -1) {
+  if (rc == -1 && !(state.isStopping() || state.isTerminated())) {
     string msg = "Could not start capture loop: ";
     msg.append(getPcapError());
     logger->error(CONTEXT, msg.c_str());
@@ -66,19 +67,15 @@ void Pcap::startCapture(PcapCallback cb,
 
 void Pcap::stopCapture()
 {
-  if (handle != NULL) {
+  if (handle != NULL && state.checkAndSet(state_RUNNING, state_STOPPING)) {
     logger->debug(CONTEXT, "Stopping capture loop");
     pcap_breakloop(handle);
   }
 }
 
-// protected
-Pcap::Pcap() : handle(NULL), logger(Logger::getLogger("pcap"))
-{}
-
 void Pcap::close()
 {
-  if (handle != NULL) {
+  if (handle != NULL && state.checkAndSet(state_STOPPING, state_TERMINATED)) {
     logger->info(CONTEXT, "Closing pcap session");
     // This is important. The ordering of shutdown MUST be:
     // start loop with pcap_loop
@@ -89,6 +86,13 @@ void Pcap::close()
     handle = NULL;
   }
 }
+
+// protected
+Pcap::Pcap()
+  : handle(NULL),
+    logger(Logger::getLogger("pcap")),
+    state()
+{}
 
 std::string Pcap::getPcapError() const
 {

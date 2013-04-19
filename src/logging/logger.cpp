@@ -49,7 +49,8 @@ LoggerPtr Logger::getRootLogger()
 }
 
 Logger::~Logger() {
-  trace("Destroying logger (self)");
+  trace("~Logger destroyed");
+  // FIXME should this be deleted from the map? Probably
 }
 
 /**
@@ -98,8 +99,7 @@ bool Logger::getUseParent() const
 
 bool Logger::isRootLogger() const
 {
-  static bool is_root = (getName() == ROOT_LOGGER_NAME);
-  return is_root;
+  return (getName() == ROOT_LOGGER_NAME);
 }
 
 /**
@@ -193,7 +193,11 @@ string Logger::format(const Record &rec)
     out << "[" << rec.getFileName() << ":" << rec.getLineNumber() << "][";
     out << rec.getMethodName() << "] ";
   }
-  out << rec.getLoggerName() << ": ";
+  if (isRootLogger()) {
+    out << "(root): ";
+  } else {
+    out << rec.getLoggerName() << ": ";
+  }
   out << rec.getMessage();
   return out.str();
 }

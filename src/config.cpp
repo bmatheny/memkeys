@@ -63,7 +63,7 @@ uint16_t Config::getPort() const
 }
 string Config::getPortAsString() const
 {
-  return to_string((long long unsigned int)getPort());
+  return to_string((llui_t)getPort());
 }
 
 /**

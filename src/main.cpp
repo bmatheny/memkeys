@@ -18,7 +18,7 @@ int main(int argc, char ** argv) {
   Logger::getRootLogger()->setLevel(Level::TRACE);
   LoggerPtr mainLogger = Logger::getLogger("main");
   mainLogger->info(string("Starting Application ") + argv[0]);
-  mainLogger->debug(string("PID is ") + to_string((long long unsigned int)getpid()));
+  mainLogger->debug(string("PID is ") + to_string((llui_t)getpid()));
   Config * cfg = Config::instance();
   Mctop * app = NULL;
   try {

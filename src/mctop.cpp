@@ -61,7 +61,7 @@ void Mctop::run()
   signal(SIGINT, signal_cb);
   state.setState(state_STARTING);
   session->open();
-  logger->debug("My address: " + to_string((long long int)session->getIpAddress()));
+  logger->debug("My address: " + to_string((llsi_t)session->getIpAddress()));
   session->setFilter(string("port ") + config->getPortAsString());
   try {
     state.setState(state_RUNNING);
@@ -122,7 +122,7 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
     return;
   }
   pkt_count += 1;
-  if ((pkt_count % 10000) == 0) {
+  if ((pkt_count % 10000) == 0 && ce->logger->isDebug()) {
     pcap_stat stats = ce->getStats();
     long long unsigned int recv = stats.ps_recv;
     long long unsigned int drop = stats.ps_drop;
@@ -143,7 +143,7 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
     ce->logger->trace(string("memcache request: ") + mc.getCommandName());
   } else {
     ce->logger->trace(string("memcache response: ") + mc.getObjectKey() + " " +
-                      to_string((long long unsigned int)mc.getObjectSize()));
+                      to_string((llui_t)mc.getObjectSize()));
   }
 #endif
 

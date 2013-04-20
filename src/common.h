@@ -22,4 +22,8 @@
 #include "logging/logger.h"
 #include "options.h"
 
+// Need for typecasting in to_string for older versions of g++
+typedef long long unsigned int llui_t;
+typedef long long int llsi_t;
+
 #endif

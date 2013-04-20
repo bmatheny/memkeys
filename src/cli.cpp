@@ -1,18 +1,11 @@
-#include <iostream>
-#include <sstream>
 #include <cstdlib>
 
 extern "C" {
   #include <getopt.h>
 }
 
+#include "common.h"
 #include "cli.h"
-#include "config.h"
-#include "options.h"
-
-#ifdef HAVE_CONFIG_H
-#include "mconfig.h"
-#endif
 
 #ifndef PACKAGE_STRING
 #define PACKAGE_STRING "mctop (unknown version)"

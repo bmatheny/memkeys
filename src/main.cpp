@@ -6,11 +6,9 @@ extern "C" {
 #include <unistd.h>
 }
 
-#include "exception.h"
+#include "common.h"
 #include "cli.h"
-#include "config.h"
 #include "mctop.h"
-#include "logging/logger.h"
 
 int main(int argc, char ** argv) {
   using namespace std;

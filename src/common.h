@@ -11,8 +11,15 @@
   #endif
 #endif
 
+#include <iomanip>
+#include <iostream>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+
 #include "config.h"
 #include "exception.h"
 #include "logging/logger.h"
+#include "options.h"
 
 #endif

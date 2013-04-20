@@ -1,11 +1,4 @@
-#include <stdexcept>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <iomanip>
-
-#include "config.h"
-#include "options.h"
+#include "common.h"
 
 namespace mctop {
 

@@ -3,10 +3,9 @@
 #include <string>
 #include <pcrecpp.h>
 
-#include "net/memcache_command.h"
+#include "net/net.h"
 
 extern "C" {
-#include <pcap.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>

@@ -1,7 +1,8 @@
-#ifndef LOGGING_RECORD_H
-#define LOGGING_RECORD_H
+#ifndef _LOGGING_RECORD_H
+#define _LOGGING_RECORD_H
 
 #include <string>
+#include <stdexcept>
 #include "logging/level.h"
 
 namespace mctop {
@@ -13,6 +14,10 @@ class Record
   Record(const std::string &fname,
          const uint32_t ln,
          const std::string &name);
+  Record(const std::string &fname,
+         const uint32_t ln,
+         const std::string &name,
+         const std::exception &ex);
 
   std::string getFileName() const;
   void setFileName(const std::string &fname);
@@ -32,6 +37,10 @@ class Record
   std::string getMethodName() const;
   void setMethodName(const std::string &name);
 
+  std::string getThrownMessage() const;
+  void setThrownMessage(const std::string &ex);
+  bool hasThrown() const;
+
   std::string getTimestamp() const;
 
  private:
@@ -41,6 +50,7 @@ class Record
   std::string _loggerName;
   std::string _message;
   std::string _methodName;
+  std::string _thrownMessage;
 };
 
 } // end namespace mctop

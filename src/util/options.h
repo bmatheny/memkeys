@@ -1,5 +1,5 @@
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#ifndef _UTIL_OPTIONS_H
+#define _UTIL_OPTIONS_H
 
 #include <sstream>
 
@@ -20,7 +20,7 @@
     uint64_t usize = USIZE_BITS(type); \
     if ((type)value <= 0) { \
         throw std::range_error(name " must be >= 0"); \
-    } else if ((type)value > usize) { \
+    } else if (value > usize) { \
         std::ostringstream oss; \
         oss << name << " must be <= " << usize; \
         throw std::range_error(oss.str()); \

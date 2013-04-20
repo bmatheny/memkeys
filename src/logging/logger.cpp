@@ -11,7 +11,6 @@ using namespace std;
  * Interal to this logging implementations.
  */
 static Loggers loggers;
-static Level DEFAULT_LEVEL = Level::WARNING;
 static string ROOT_LOGGER_NAME = "";
 
 /**
@@ -187,7 +186,7 @@ void Logger::fatal(Record record, const string &fmt, ...)
 }
 
 // protected
-Logger::Logger(const string &name) : _name(name), _level(DEFAULT_LEVEL)
+Logger::Logger(const string &name) : _name(name), _level(Level::WARNING)
 {}
 
 string Logger::format(const Record &rec)
@@ -198,6 +197,9 @@ string Logger::format(const Record &rec)
   if (!rec.getMethodName().empty()) {
     out << "[" << rec.getFileName() << ":" << rec.getLineNumber() << "][";
     out << rec.getMethodName() << "] ";
+  }
+  if (rec.hasThrown()) {
+    out << "[exception(" << rec.getThrownMessage() << ")] ";
   }
   if (isRootLogger()) {
     out << "(root): ";

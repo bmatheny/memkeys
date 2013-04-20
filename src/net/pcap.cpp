@@ -1,7 +1,7 @@
 #include <string>
 
-#include "net/pcap.h"
-#include "exception.h"
+#include "net/net.h"
+#include "util/util.h"
 
 namespace mctop {
 

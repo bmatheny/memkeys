@@ -9,8 +9,7 @@ namespace mctop {
 class Config
 {
  public:
-  static Config * instance();
-
+  static Config * getInstance();
   virtual ~Config();
 
   void setDiscardThreshold(const double threshold);

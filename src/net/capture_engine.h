@@ -6,10 +6,6 @@
 #include "net/pcap.h"
 #include "report/report.h"
 
-extern "C" {
-#include <pcap.h>
-}
-
 // Basic holder for userdata when processing packets. Provides a logger, report
 // instance, and a config
 

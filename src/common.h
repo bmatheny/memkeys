@@ -5,6 +5,16 @@
 #include "mconfig.h"
 #endif
 
+#ifndef PACKAGE_NAME
+#define PACKAGE_NAME "mctop"
+#endif
+#ifndef PACKAGE_STRING
+#define PACKAGE_STRING "mctop (unknown version)"
+#endif
+#ifndef PACKAGE_BUGREPORT
+#define PACKAGE_BUGREPORT "bmatheny@mobocracy.net"
+#endif
+
 #ifdef DEBUGGING
   #if DEBUGGING
     #define _DEBUG 1
@@ -17,11 +27,9 @@
 #include <stdexcept>
 #include <string>
 
-#include "util/state.h"
+#include "util/util.h"
+#include "logging/logging.h"
 #include "config.h"
-#include "exception.h"
-#include "logging/logger.h"
-#include "options.h"
 
 // Need for typecasting in to_string for older versions of g++
 typedef long long unsigned int llui_t;

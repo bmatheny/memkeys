@@ -2,23 +2,24 @@
 
 namespace mctop {
 
-static Config * cfg_instance = NULL;
+static Config * instance = NULL;
 
 using namespace std;
 
 // static
-Config * Config::instance()
+Config * Config::getInstance()
 {
-  if (cfg_instance == NULL)
-    cfg_instance = new Config();
+  if (instance == NULL)
+    instance = new Config();
 
-  return cfg_instance;
+  return instance;
 }
 
 Config::~Config()
 {
   logger->trace(CONTEXT, "Deleting logger");
   delete logger;
+  instance = NULL;
 }
 
 /**

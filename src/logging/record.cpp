@@ -15,20 +15,30 @@ using namespace std;
  * Constructor for a new log record.
  */
 Record::Record()
-    : _filename(""),
+    : _filename(),
       _level(Level::OFF),
       _lineNumber(0),
-      _loggerName(""),
-      _message(""),
-      _methodName("")
+      _loggerName(),
+      _message(),
+      _methodName()
 {}
 Record::Record(const string &fname, const uint32_t ln, const string &name)
   : _filename(fname),
     _level(Level::OFF),
     _lineNumber(ln),
-    _loggerName(""),
-    _message(""),
+    _loggerName(),
+    _message(),
     _methodName(name)
+{}
+Record::Record(const string &fname, const uint32_t ln, const string &name,
+               const exception &ex)
+  : _filename(fname),
+    _level(Level::OFF),
+    _lineNumber(ln),
+    _loggerName(),
+    _message(),
+    _methodName(name),
+    _thrownMessage(ex.what())
 {}
 
 /**
@@ -101,6 +111,23 @@ string Record::getMethodName() const
 void Record::setMethodName(const string &name)
 {
   _methodName = name;
+}
+
+/**
+ * Manage thrown messages.
+ * FIXME ran into a weird issue where when we actually set the message things
+ * got screwed up which is why we only keep the message.
+ */
+string Record::getThrownMessage() const
+{
+  return _thrownMessage;
+}
+void Record::setThrownMessage(const std::string &exmsg)
+{
+  _thrownMessage = exmsg;
+}
+bool Record::hasThrown() const {
+  return (!_thrownMessage.empty());
 }
 
 string Record::getTimestamp() const

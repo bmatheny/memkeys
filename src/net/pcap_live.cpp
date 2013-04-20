@@ -1,15 +1,16 @@
 #include "common.h"
-#include "net/pcap_live.h"
+#include "net/net.h"
 
 namespace mctop {
 
 using namespace std;
 
 PcapLive::PcapLive(const Config * cfg)
-    :
-        Pcap(),
-        config(cfg),
-        device(Device::getDevice(cfg->getInterface()))
+    : Pcap(),
+      config(cfg),
+      // TODO this should be provided to constructor, otherwise exception thrown
+      // in constructor
+      device(Device::getDevice(cfg->getInterface()))
 {
   logger->debug(CONTEXT, "Using device %s for capture", getInterfaceC());
 }

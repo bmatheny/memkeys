@@ -1,5 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 # Need for getopt_long
 AM_CPPFLAGS = -D_GNU_SOURCE
 
@@ -17,7 +19,9 @@ endif
 bin_PROGRAMS = mctop
 
 mctop_SOURCES =			\
-	exception.h options.h \
+	util/util.h \
+	util/exceptions.h \
+	util/options.h \
 	util/state.h util/state.cpp \
 	logging/record.h logging/record.cpp \
 	logging/level.h logging/level.cpp \

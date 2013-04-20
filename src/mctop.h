@@ -4,8 +4,7 @@
 #include <string>
 
 #include "common.h"
-#include "net/pcap.h"
-#include "net/capture_engine.h"
+#include "net/net.h"
 #include "report/report.h"
 
 namespace mctop {
@@ -13,6 +12,7 @@ namespace mctop {
 class Mctop {
  public:
   static Mctop * getInstance(const Config * config);
+  static Mctop * getInstance(int argc, char ** argv);
   virtual ~Mctop();
 
   virtual void run();

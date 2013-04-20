@@ -3,7 +3,7 @@
 
 #include "net/pcap.h"
 #include "net/device.h"
-#include "config.h"
+#include "common.h"
 
 namespace mctop {
 

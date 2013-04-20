@@ -3,10 +3,6 @@
 
 #include <string>
 
-extern "C" {
-#include <pcap.h>
-}
-
 namespace mctop {
 
 class Device;

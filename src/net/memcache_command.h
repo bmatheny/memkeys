@@ -3,9 +3,7 @@
 
 #include <string>
 
-extern "C" {
-#include <pcap.h>
-}
+#include "net/pcap.h"
 
 namespace mctop {
 

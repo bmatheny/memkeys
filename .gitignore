@@ -78,3 +78,5 @@ Makefile
 Makefile.in
 
 src/mctop
+
+*.dirstamp

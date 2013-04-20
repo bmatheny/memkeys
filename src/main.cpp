@@ -2,10 +2,6 @@
 #include <stdexcept>
 #include <string>
 
-extern "C" {
-#include <unistd.h>
-}
-
 #include "common.h"
 #include "cli.h"
 #include "mctop.h"
@@ -13,64 +9,49 @@ extern "C" {
 using namespace std;
 using namespace mctop;
 
-/*
-int main2(int argc, char ** argv) {
-  Mctop * app = NULL;
+int handleConfigurationError(LoggerPtr logger, const char *progname) {
   try {
-    app = Mctop::getInstance(argc, argv);
-  } catch (exception &ex) {
+    throw;
+  } catch (const MctopConfigurationError &er) {
+    logger->fatal(CONTEXT,
+                  "Error configuring %s: %s", PACKAGE_NAME, er.what());
+    cout << Cli::help(progname);
     return EXIT_FAILURE;
-  }
-  try {
-    app->run();
-  } catch (exception &ex) {
-    return EXIT_FAILURE;
-  }
-  return EXIT_SUCCESS;
-} */
-
-int main(int argc, char ** argv) {
-  LoggerPtr mainLogger = NULL;
-  Config * cfg = Config::instance();
-  Mctop * app = NULL;
-  try {
-    Cli::parse(argc, argv, cfg);
-  } catch (exception &ex) {
-    string msg("There was an error parsing command line arguments: ");
-    msg.append(ex.what());
-    mainLogger->fatal(msg);
-    cout << Cli::help(argv[0]);
+  } catch (const MctopException &ex) {
+    logger->fatal(CONTEXT, "Error setting up application: %s", ex.what());
     return EXIT_FAILURE;
   } catch (...) {
-    mainLogger->fatal("Unhandled error");
-    return EXIT_FAILURE;
+    logger->fatal("Unexpected failure");
+    throw;
   }
-  mainLogger = Logger::getLogger("main");
-  mainLogger->setLevel(Level::INFO);
-  mainLogger->info(string("Starting Application ") + argv[0]);
-  mainLogger->debug(string("PID is ") + to_string((llui_t)getpid()));
-  Logger::getRootLogger()->setLevel(cfg->verbosity());
+}
 
-  mainLogger->debug("Configuration\n" + cfg->toString());
-
-  try {
-    app = Mctop::getInstance(cfg);
-  } catch (MctopException &ex) {
-    mainLogger->fatal(string("Error setting up application: ") + ex.what());
-    return EXIT_FAILURE;
-  }
-
+int main(int argc, char ** argv) {
+  LoggerPtr logger = Logger::getLogger("main");
+  Mctop * app = NULL;
   int rc = EXIT_SUCCESS;
+
+  logger->setLevel(Level::INFO);
+
+  // configure and initialize the app
+  try {
+    app = Mctop::getInstance(argc, argv);
+  } catch(...) {
+    return handleConfigurationError(logger, argv[0]);
+  }
+
+  // run the app
   try {
     app->run();
-  } catch (exception &ex) {
-    mainLogger->error(string("Error running application: ") + ex.what());
+  } catch (const exception &ex) {
+    logger->fatal(CONTEXT, "Error running application: %s", ex.what());
     rc = EXIT_FAILURE;
   }
 
+  // handle cleanup
+  delete logger;
   delete app;
-  delete mainLogger;
-  delete cfg;
+  delete Config::getInstance();
   delete Logger::getRootLogger();
   return rc;
 }

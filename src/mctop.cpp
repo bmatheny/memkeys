@@ -3,14 +3,13 @@
 #include <mutex>
 #include <stdexcept>
 
+#include "cli.h"
 #include "mctop.h"
-#include "net/memcache_command.h"
-#include "net/pcap.h"
-#include "net/pcap_live.h"
 
 extern "C" { // need for signal handling
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 }
 
 using namespace std;
@@ -38,6 +37,23 @@ Mctop * Mctop::getInstance(const Config * config)
   instance->session = new PcapLive(config);
   instance->engine = new CaptureEngine(config, instance->session);
   return instance;
+}
+// Used for initializing app main()
+Mctop * Mctop::getInstance(int argc, char ** argv)
+{
+  Config * cfg = Config::getInstance();
+  LoggerPtr mainLogger = Logger::getLogger("main");
+  try {
+    Cli::parse(argc, argv, cfg);
+  } catch (const exception &ex) {
+    throw MctopConfigurationError(ex.what());
+  }
+  mainLogger->setLevel(Level::INFO);
+  mainLogger->info(CONTEXT,
+                   "Starting application %s. PID %d", argv[0], getpid());
+  Logger::getRootLogger()->setLevel(cfg->verbosity());
+  mainLogger->debug("Configuration\n" + cfg->toString());
+  return Mctop::getInstance(cfg);
 }
 
 // Destructor

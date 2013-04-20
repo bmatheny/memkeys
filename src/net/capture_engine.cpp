@@ -1,7 +1,5 @@
 #include "common.h"
-#include "net/pcap.h"
-#include "net/capture_engine.h"
-#include "net/memcache_command.h"
+#include "net/net.h"
 #include "report/report.h"
 #include "report/text.h"
 

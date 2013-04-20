@@ -1,8 +1,8 @@
 #include <string>
 #include <map>
 
-#include "exception.h"
-#include "net/device.h"
+#include "util/util.h"
+#include "net/net.h"
 
 extern "C" {
 #include <arpa/inet.h>
@@ -27,6 +27,7 @@ Device Device::getDevice(const string &name)
   if (status != 0) {
     throw MctopException(string("No readable devices: ") + errbuf);
   }
+  // TODO -> move to find_address_iface(name);
   for (pcap_if_t *d = alldevs; d != NULL; d = d->next) {
     if (string(d->name) == name) {
       for (pcap_addr_t *a = d->addresses; a != NULL; a = a->next) {

@@ -7,13 +7,6 @@ extern "C" {
 #include "common.h"
 #include "cli.h"
 
-#ifndef PACKAGE_STRING
-#define PACKAGE_STRING "mctop (unknown version)"
-#endif
-#ifndef PACKAGE_BUGREPORT
-#define PACKAGE_BUGREPORT "bmatheny@mobocracy.net"
-#endif
-
 namespace mctop {
 
 static const struct option longopts[] = {

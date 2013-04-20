@@ -1,9 +1,8 @@
-#ifndef LOGGING_LEVEL_H
-#define LOGGING_LEVEL_H
+#ifndef _LOGGING_LEVEL_H
+#define _LOGGING_LEVEL_H
 
 #include <string>
 #include <map>
-#include "options.h"
 
 namespace mctop {
 

@@ -1,5 +1,5 @@
-#ifndef LOGGING_LOGGER_H
-#define LOGGING_LOGGER_H
+#ifndef _LOGGING_LOGGER_H
+#define _LOGGING_LOGGER_H
 
 #include <string>
 #include <map>
@@ -9,6 +9,8 @@
 #include "logging/record.h"
 
 #define CONTEXT mctop::Record(__FILE__, __LINE__, __FUNCTION__)
+#define CONTEXT_EX(ex) mctop::Record(__FILE__, __LINE__, __FUNCTION__, ex)
+
 #define LOG_WITH_VARARGS(level, rec, fmt, logger) { \
     va_list argp; \
     char buffer[1024]; \

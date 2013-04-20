@@ -1,5 +1,5 @@
-#ifndef _MCTOP_EXCEPTION_H
-#define _MCTOP_EXCEPTION_H
+#ifndef _UTIL_EXCEPTIONS_H
+#define _UTIL_EXCEPTIONS_H
 
 #include <string>
 #include <stdexcept>

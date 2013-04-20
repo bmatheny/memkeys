@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "logging/level.h"
+#include "util/util.h"
 
 namespace mctop {
 

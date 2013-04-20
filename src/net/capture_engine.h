@@ -1,9 +1,7 @@
 #ifndef _NET_CAPTURE_ENGINE_H
 #define _NET_CAPTURE_ENGINE_H
 
-#include "config.h"
-#include "state.h"
-#include "logging/logger.h"
+#include "common.h"
 #include "net/memcache_command.h"
 #include "net/pcap.h"
 #include "report/report.h"

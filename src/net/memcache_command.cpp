@@ -22,9 +22,8 @@ using namespace std;
 MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr,
                                  const u_char* packet,
                                  const bpf_u_int32 captureAddress)
-    : cmd_type(MC_UNKNOWN),
-      payload(""),
-      sourceAddress("")
+    : cmd_type(MC_UNKNOWN), sourceAddress(),
+      commandName(), objectKey(), objectSize(0)
 {
   const struct ether_header* ethernetHeader;
   static ssize_t ether_header_sz = sizeof(struct ether_header);
@@ -49,7 +48,9 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr,
   }
   setSourceAddress(&(ipHeader->ip_src));
 
-  // This is a request
+  // The packet was destined for our capture address, this is a request
+  // This bit of optimization lets us ignore a reasonably large percentage of
+  // traffic
   if (ipHeader->ip_dst.s_addr == captureAddress) {
     possible_request = true;
   }
@@ -58,7 +59,6 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr,
   data = (u_char*)(packet + ether_header_sz + ip_sz + tcphdr_sz);
   dataLength = pkthdr->len - (ether_header_sz + ip_sz + tcphdr_sz);
 
-  // FIXME needs validation
   if (possible_request && parseRequest(data, dataLength)) {
     cmd_type = MC_REQUEST;
   } else if (!possible_request && parseResponse(data, dataLength)) {

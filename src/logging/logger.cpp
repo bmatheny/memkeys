@@ -11,6 +11,7 @@ using namespace std;
  * Interal to this logging implementations.
  */
 static Loggers loggers;
+static Level DEFAULT_LEVEL = Level::WARNING;
 static string ROOT_LOGGER_NAME = "";
 
 /**
@@ -65,6 +66,8 @@ Level Logger::getLevel() const
 }
 void Logger::setLevel(const Level &level)
 {
+  trace(CONTEXT, "Changing log level from %s to %s",
+        _level.getName().c_str(), level.getName().c_str());
   _level = level;
 }
 
@@ -184,7 +187,7 @@ void Logger::fatal(Record record, const string &fmt, ...)
 }
 
 // protected
-Logger::Logger(const string &name) : _name(name), _level(Level::WARNING)
+Logger::Logger(const string &name) : _name(name), _level(DEFAULT_LEVEL)
 {}
 
 string Logger::format(const Record &rec)

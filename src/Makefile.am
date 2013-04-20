@@ -18,7 +18,7 @@ bin_PROGRAMS = mctop
 
 mctop_SOURCES =			\
 	exception.h options.h \
-	state.h state.cpp \
+	util/state.h util/state.cpp \
 	logging/record.h logging/record.cpp \
 	logging/level.h logging/level.cpp \
 	logging/logger.h logging/logger.cpp \

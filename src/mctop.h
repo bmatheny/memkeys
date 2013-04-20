@@ -4,7 +4,6 @@
 #include <string>
 
 #include "common.h"
-#include "state.h"
 #include "net/pcap.h"
 #include "net/capture_engine.h"
 #include "report/report.h"

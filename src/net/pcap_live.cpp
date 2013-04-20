@@ -1,7 +1,4 @@
-#include <string>
-
-#include "exception.h"
-#include "state.h"
+#include "common.h"
 #include "net/pcap_live.h"
 
 namespace mctop {

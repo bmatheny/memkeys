@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 #include "mctop.h"
-#include "state.h"
 #include "net/memcache_command.h"
 #include "net/pcap.h"
 #include "net/pcap_live.h"
@@ -68,7 +67,7 @@ void Mctop::run()
     session->startCapture(process, -1, (u_char*)engine);
     logger->info(CONTEXT, "Finished packet capture");
   } catch (...) {
-    logger->error(CONTEXT, "There was an error capturing data");
+    logger->error(CONTEXT, "There was an unexpected error capturing data");
   }
   state.setState(state_TERMINATED);
 }

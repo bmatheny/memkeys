@@ -5,9 +5,7 @@ extern "C" {
   #include <pcap.h>
 }
 
-#include "config.h"
-#include "state.h"
-#include "logging/logger.h"
+#include "common.h"
 
 namespace mctop {
 

@@ -85,18 +85,20 @@ uint16_t Config::getRefreshInterval() const
 void Config::makeLessVerbose()
 {
   Level level = logger->getLevel();
-  if (level == Level::TRACE) {
+  if (level >= Level::FATAL) {
+    logger->warning(CONTEXT, "Log level already at or above FATAL");
     return;
   }
-  logger->setLevel(Level::fromValue(level.getValue() - 1));
+  adjustLoggerLevel(Level::fromValue(level.getValue() + 1));
 }
 void Config::increaseVerbosity()
 {
   Level level = logger->getLevel();
-  if (level == Level::FATAL) {
+  if (level <= Level::TRACE) {
+    logger->warning(CONTEXT, "Log level already at or below TRACE");
     return;
   }
-  logger->setLevel(Level::fromValue(level.getValue() + 1));
+  adjustLoggerLevel(Level::fromValue(level.getValue() - 1));
 }
 Level Config::verbosity() const
 {
@@ -130,5 +132,11 @@ Config::Config()
 , _snapLength(1518)
 , logger(Logger::getLogger("config"))
 {}
+
+void Config::adjustLoggerLevel(const Level &newLevel)
+{
+  logger->setLevel(newLevel);
+  Logger::getRootLogger()->setLevel(newLevel);
+}
 
 } // end namespace

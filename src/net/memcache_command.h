@@ -26,12 +26,18 @@ class MemcacheCommand
   bool isResponse() const
     { return (cmd_type == MC_RESPONSE); }
 
+  // only when isRequest is true
   std::string getCommandName() const
     { return commandName; }
+
+  // only when isResponse is true
   std::string getObjectKey() const
     { return objectKey; }
+
+  // only when isResponse is true
   uint32_t getObjectSize() const
-  { return objectSize; }
+    { return objectSize; }
+
   std::string getSourceAddress() const
     { return sourceAddress; }
 
@@ -43,11 +49,10 @@ class MemcacheCommand
   bool parseResponse(u_char *data, int dataLength);
 
   memcache_command_t cmd_type;
-  std::string payload;
   std::string sourceAddress;
   std::string commandName;
   std::string objectKey;
-  int objectSize;
+  uint32_t objectSize;
 
 };
 

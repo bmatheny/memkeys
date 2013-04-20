@@ -10,15 +10,27 @@ extern "C" {
 #include "cli.h"
 #include "mctop.h"
 
-int main(int argc, char ** argv) {
-  using namespace std;
-  using namespace mctop;
+using namespace std;
+using namespace mctop;
 
-  // FIXME: when level is INFO, doing -v -v -v doesn't help at all
-  Logger::getRootLogger()->setLevel(Level::TRACE);
-  LoggerPtr mainLogger = Logger::getLogger("main");
-  mainLogger->info(string("Starting Application ") + argv[0]);
-  mainLogger->debug(string("PID is ") + to_string((llui_t)getpid()));
+/*
+int main2(int argc, char ** argv) {
+  Mctop * app = NULL;
+  try {
+    app = Mctop::getInstance(argc, argv);
+  } catch (exception &ex) {
+    return EXIT_FAILURE;
+  }
+  try {
+    app->run();
+  } catch (exception &ex) {
+    return EXIT_FAILURE;
+  }
+  return EXIT_SUCCESS;
+} */
+
+int main(int argc, char ** argv) {
+  LoggerPtr mainLogger = NULL;
   Config * cfg = Config::instance();
   Mctop * app = NULL;
   try {
@@ -33,12 +45,17 @@ int main(int argc, char ** argv) {
     mainLogger->fatal("Unhandled error");
     return EXIT_FAILURE;
   }
+  mainLogger = Logger::getLogger("main");
+  mainLogger->setLevel(Level::INFO);
+  mainLogger->info(string("Starting Application ") + argv[0]);
+  mainLogger->debug(string("PID is ") + to_string((llui_t)getpid()));
+  Logger::getRootLogger()->setLevel(cfg->verbosity());
 
   mainLogger->debug("Configuration\n" + cfg->toString());
 
   try {
     app = Mctop::getInstance(cfg);
-  } catch (MctopConfigurationError &ex) {
+  } catch (MctopException &ex) {
     mainLogger->fatal(string("Error setting up application: ") + ex.what());
     return EXIT_FAILURE;
   }

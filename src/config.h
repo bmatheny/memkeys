@@ -43,6 +43,8 @@ class Config
 
  private:
   Config();
+  void adjustLoggerLevel(const Level &newLevel);
+
   double discardThreshold;
   std::string interface;
   bool _isPromiscuous;

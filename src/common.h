@@ -17,6 +17,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "util/state.h"
 #include "config.h"
 #include "exception.h"
 #include "logging/logger.h"

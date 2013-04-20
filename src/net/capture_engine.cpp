@@ -1,5 +1,4 @@
-#include "config.h"
-#include "state.h"
+#include "common.h"
 #include "net/pcap.h"
 #include "net/capture_engine.h"
 #include "net/memcache_command.h"

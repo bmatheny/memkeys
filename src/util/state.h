@@ -1,5 +1,5 @@
-#ifndef _STATE_H
-#define _STATE_H
+#ifndef _UTIL_STATE_H
+#define _UTIL_STATE_H
 
 #include <mutex>
 #include <string>

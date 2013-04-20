@@ -22,9 +22,12 @@ AC_TYPE_UINT16_T
 
 # Check for headers
 AC_CHECK_HEADERS([getopt.h])
+AC_CHECK_HEADERS([pcrecpp.h])
 
 # Checks for libraries
 AC_CHECK_LIB([pthread], [pthread_create])
+# FIXME fail if pcrecpp is not found
+AC_CHECK_LIB([pcrecpp], [pcre_exec])
 AC_CHECK_LIB(getopt,getopt_long)
 AC_CHECK_LIB(gnugetopt,getopt_long)
 AC_ARG_WITH(libpcap_includes,

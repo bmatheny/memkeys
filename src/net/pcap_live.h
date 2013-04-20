@@ -21,8 +21,8 @@ class PcapLive : public Pcap
   { return getDevice().getDeviceName(); }
 
   virtual void open();
-  virtual bpf_u_int32 getNetwork() const;
   virtual bpf_u_int32 getSubnetMask() const;
+  virtual bpf_u_int32 getIpAddress() const;
 
  private:
   const Config * config;

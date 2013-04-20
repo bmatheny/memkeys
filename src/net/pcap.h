@@ -30,10 +30,11 @@ class Pcap {
   // be sure to set the state to STARTING once the session is open
   // you also need to set handle
   virtual void open() = 0;
+  pcap_stat getStats() const;
   void close();
 
   virtual bpf_u_int32 getSubnetMask() const = 0;
-  virtual bpf_u_int32 getNetwork() const = 0;
+  virtual bpf_u_int32 getIpAddress() const = 0;
 
   void setFilter(const std::string &filter);
   void startCapture(PcapCallback cb, int cnt = -1 /* loop forever */, u_char *userData = NULL);

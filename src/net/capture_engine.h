@@ -5,6 +5,7 @@
 #include "state.h"
 #include "logging/logger.h"
 #include "net/memcache_command.h"
+#include "net/pcap.h"
 #include "report/report.h"
 
 extern "C" {
@@ -18,11 +19,16 @@ namespace mctop {
 class CaptureEngine {
 
  public:
-  CaptureEngine(const Config * config);
+  CaptureEngine(const Config * config, const Pcap * session);
   ~CaptureEngine();
 
   MemcacheCommand parse(const struct pcap_pkthdr *pkthdr,
                         const u_char* packet) const;
+
+  bpf_u_int32 getIpAddress() const
+    { return session->getIpAddress(); }
+  pcap_stat getStats() const
+  { return session->getStats(); }
 
   bool isShutdown() const;
   void shutdown();
@@ -30,6 +36,7 @@ class CaptureEngine {
 
  protected:
   const Config* config;
+  const Pcap* session;
   Report* report;
   State state;
 

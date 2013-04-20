@@ -16,7 +16,8 @@ enum memcache_command_t {
 class MemcacheCommand
 {
  public:
-  MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char* packet);
+  MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char* packet,
+                  const bpf_u_int32 captureAddress);
 
   bool isCommand() const
     { return (isRequest() || isResponse()); }
@@ -27,8 +28,10 @@ class MemcacheCommand
 
   std::string getCommandName() const
     { return commandName; }
-  std::string getKey() const;
-  uint32_t getObjectSize() const;
+  std::string getObjectKey() const
+    { return objectKey; }
+  uint32_t getObjectSize() const
+  { return objectSize; }
   std::string getSourceAddress() const
     { return sourceAddress; }
 
@@ -36,10 +39,16 @@ class MemcacheCommand
   void setSourceAddress(const void * src);
   void setCommandName(const std::string &name);
 
+  bool parseRequest(u_char *data, int dataLength);
+  bool parseResponse(u_char *data, int dataLength);
+
   memcache_command_t cmd_type;
   std::string payload;
   std::string sourceAddress;
   std::string commandName;
+  std::string objectKey;
+  int objectSize;
+
 };
 
 } // end namespace mctop

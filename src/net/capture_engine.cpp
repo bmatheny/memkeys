@@ -1,5 +1,6 @@
 #include "config.h"
 #include "state.h"
+#include "net/pcap.h"
 #include "net/capture_engine.h"
 #include "net/memcache_command.h"
 #include "report/report.h"
@@ -7,9 +8,10 @@
 
 namespace mctop {
 
-CaptureEngine::CaptureEngine(const Config * config)
+CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
     : logger(Logger::getLogger("capture-engine")),
       config(config),
+      session(session),
       report(new TextReport(config)),
       state()
 {}
@@ -17,7 +19,7 @@ CaptureEngine::CaptureEngine(const Config * config)
 MemcacheCommand CaptureEngine::parse(const struct pcap_pkthdr *pkthdr,
                                      const u_char *packet) const
 {
-  return MemcacheCommand(pkthdr, packet);
+  return MemcacheCommand(pkthdr, packet, getIpAddress());
 }
 
 bool CaptureEngine::isShutdown() const

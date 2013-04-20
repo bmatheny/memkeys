@@ -65,6 +65,14 @@ void Pcap::startCapture(PcapCallback cb,
   }
 }
 
+pcap_stat Pcap::getStats() const
+{
+  pcap_stat stat;
+  if (state.isRunning()) {
+    pcap_stats(handle, &stat);
+  }
+  return stat;
+}
 void Pcap::stopCapture()
 {
   if (handle != NULL && state.checkAndSet(state_RUNNING, state_STOPPING)) {

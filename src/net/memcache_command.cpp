@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <pcrecpp.h>
 
 #include "net/memcache_command.h"
 
@@ -18,7 +19,9 @@ namespace mctop {
 using namespace std;
 
 // constructor
-MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char* packet)
+MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr,
+                                 const u_char* packet,
+                                 const bpf_u_int32 captureAddress)
     : cmd_type(MC_UNKNOWN),
       payload(""),
       sourceAddress("")
@@ -29,9 +32,9 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char*
   static ssize_t ip_sz = sizeof(struct ip);
   const struct tcphdr* tcpHeader;
   static ssize_t tcphdr_sz = sizeof(struct tcphdr);
+  bool possible_request = false;
   u_char *data;
   int dataLength = 0;
-  string dataStr = "";
 
   // must be an IP packet
   ethernetHeader = (struct ether_header*)packet;
@@ -44,43 +47,64 @@ MemcacheCommand::MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char*
   if (ipHeader->ip_p != IPPROTO_TCP) {
     return;
   }
-  cout << ipHeader->ip_src.s_addr << endl;
   setSourceAddress(&(ipHeader->ip_src));
+
+  // This is a request
+  if (ipHeader->ip_dst.s_addr == captureAddress) {
+    possible_request = true;
+  }
 
   tcpHeader = (struct tcphdr*)(packet + ether_header_sz + ip_sz);
   data = (u_char*)(packet + ether_header_sz + ip_sz + tcphdr_sz);
   dataLength = pkthdr->len - (ether_header_sz + ip_sz + tcphdr_sz);
 
-  cout << getSourceAddress() << endl;
-  for (int i = 0; i < dataLength; i++) {
-    uint32_t cv = data[i];
-    //cout << setw(15) << i << setw(5) << cv << " ";
-    if ((cv >= 32 && cv <= 126) || cv == 10 || cv == 11 || cv == 13) {
-      /*
-      if (cv == 10) {
-        cout << "\\n";
-      } else if (cv == 11) {
-        cout << "\\v";
-      } else if (cv == 13) {
-        cout << "\\r";
-      } else {
-        cout << (char)cv;
-      } */
-      dataStr += (char)cv;
-    } else {
-      //cout << "<>";
-      dataStr += ".";
-    }
-    //cout << endl;
+  // FIXME needs validation
+  if (possible_request && parseRequest(data, dataLength)) {
+    cmd_type = MC_REQUEST;
+  } else if (!possible_request && parseResponse(data, dataLength)) {
+    cmd_type = MC_RESPONSE;
   }
 }
 
 // protected
+bool MemcacheCommand::parseRequest(u_char *data, int length)
+{
+  // don't care about requests right now
+  return false;
+}
+
+bool MemcacheCommand::parseResponse(u_char *data, int length)
+{
+  bool found_response = false;
+  pcrecpp::RE_Options options(PCRE_MULTILINE);
+  pcrecpp::RE re("VALUE (\\S+) \\d+ (\\d+)", options);
+  string key;
+  int size = -1;
+  string input = "";
+  for (int i = 0; i < length; i++) {
+    int cid = (int)data[i];
+    if (isprint(cid) || cid == 10 || cid == 13) {
+      input += (char)data[i];
+    }
+  }
+  re.PartialMatch(input, &key, &size);
+  if (size >= 0) {
+    objectSize = size;
+    objectKey = key;
+    found_response = true;
+  }
+  return found_response;
+}
+
 void MemcacheCommand::setSourceAddress(const void * src)
 {
   char sourceIp[INET_ADDRSTRLEN];
   inet_ntop(AF_INET, src, sourceIp, INET_ADDRSTRLEN);
   sourceAddress = sourceIp;
+}
+void MemcacheCommand::setCommandName(const std::string &name)
+{
+  commandName = name;
 }
 
 } // end namespace mctop

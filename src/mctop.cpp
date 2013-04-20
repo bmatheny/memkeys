@@ -40,7 +40,7 @@ Mctop * Mctop::getInstance(const Config * config)
   instance = new Mctop(config);
   // FIXME? This should account for offline vs live
   instance->session = new PcapLive(config);
-  instance->engine = new CaptureEngine(config);
+  instance->engine = new CaptureEngine(config, instance->session);
   return instance;
 }
 
@@ -64,7 +64,7 @@ void Mctop::run()
   signal(SIGINT, signal_cb);
   state.setState(state_STARTING);
   session->open();
-  logger->debug(to_string((long long int)session->getNetwork()));
+  logger->debug("My address: " + to_string((long long int)session->getIpAddress()));
   session->setFilter(string("port ") + config->getPortAsString());
   try {
     state.setState(state_RUNNING);
@@ -125,9 +125,23 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
     return;
   }
   pkt_count += 1;
+  if ((pkt_count % 10000) == 0) {
+    pcap_stat stats = ce->getStats();
+    long long unsigned int recv = stats.ps_recv;
+    long long unsigned int drop = stats.ps_drop;
+    long long unsigned int ifdrop = stats.ps_ifdrop;
+    string msg = string("seen = ") + to_string(recv);
+    msg.append(", dropped = ");
+    msg.append(to_string(drop));
+    msg.append(", if dropped = ");
+    msg.append(to_string(ifdrop));
+    ce->logger->debug(msg);
+  }
   MemcacheCommand mc = ce->parse(pkthdr, packet);
   if (!mc.isCommand()) {
+#ifdef SUPER_DEBUG
     ce->logger->debug("Not a memcache command");
+#endif
     return;
   }
   cmd_count += 1;
@@ -135,6 +149,8 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
     ce->logger->trace(string("memcache request: ") + mc.getCommandName());
     req_count += 1;
   } else {
+    ce->logger->trace(string("memcache response: ") + mc.getObjectKey() + " " +
+                      to_string((long long unsigned int)mc.getObjectSize()));
     res_count += 1;
   }
 }

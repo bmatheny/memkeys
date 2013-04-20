@@ -19,6 +19,8 @@ AC_PROG_LIBTOOL
 
 # Check for typedefs, structures, and compiler characteristics
 AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
 
 # Check for headers
 AC_CHECK_HEADERS([getopt.h])
@@ -26,16 +28,19 @@ AC_CHECK_HEADERS([pcrecpp.h])
 
 # Checks for libraries
 AC_CHECK_LIB([pthread], [pthread_create])
-# FIXME fail if pcrecpp is not found
-AC_CHECK_LIB([pcrecpp], [pcre_exec])
+# Fail if pcrecpp is not found
+AC_CHECK_LIB([pcrecpp], [pcre_exec],,
+             [AC_MSG_ERROR([libpcrecpp not found but required])])
 AC_CHECK_LIB(getopt,getopt_long)
 AC_CHECK_LIB(gnugetopt,getopt_long)
 AC_ARG_WITH(libpcap_includes,
-  [  --with-libpcap-includes=DIR    libpcap include directory],
-  [with_libpcap_includes="$withval"],[with_libpcap_includes="no"])
+            AS_HELP_STRING([--with-libpcap-includes=DIR], [libpcap include directory]),
+            [with_libpcap_includes="$withval"],
+            [with_libpcap_includes="no"])
 AC_ARG_WITH(libpcap_libraries,
-  [  --with-libpcap-libraries=DIR   libpcap library directory],
-  [with_libpcap_libraries="$withval"],[with_libpcap_libraries="no"])
+            AS_HELP_STRING([--with-libpcap-libraries=DIR], [libpcap library directory]),
+            [with_libpcap_libraries="$withval"],
+            [with_libpcap_libraries="no"])
 if test "x$with_libpcap_includes" != "xno"; then
    CPPFLAGS="${CPPFLAGS} -I${with_libpcap_includes}"
 fi
@@ -55,20 +60,34 @@ if test "x$LPCAP" = "xno"; then
 fi
 
 # Enable debugging
+AC_MSG_CHECKING(whether to create a debug build)
 AC_ARG_ENABLE(debug,
-AS_HELP_STRING([--enable-debug],
-               [enable debugging, default: no]),
-[case "${enableval}" in
-             yes) debug=true ;;
-             no)  debug=false ;;
-             *)   AC_MSG_ERROR([bad value ${enableval} for --enable-debug]) ;;
-esac],
-[debug=false])
-
-AM_CONDITIONAL(DEBUG, test x"$debug" = x"true")
+              AS_HELP_STRING([--enable-debug], [Turn on debugging (default=no)]),
+[ case "${enableval}" in
+  yes)
+    AC_MSG_RESULT(yes)
+    # Created in mconfig.h for use as #ifdef DEBUG
+    AC_DEFINE([DEBUGGING], 1, [Defined if you are debugging])
+    debug=true
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    debug=false
+    ;;
+  *)
+    AC_MSG_ERROR([bad value ${enableval} for --enable-debug])
+    ;;
+  esac],
+[
+  AC_MSG_RESULT(no)
+  debug=false
+])
+# For use in Makefile.am as if DEBUG
+AM_CONDITIONAL([DEBUGGING], [test x$debug = xtrue])
 
 # Check functions
-AC_CHECK_FUNCS([getopt_long])
+AC_CHECK_FUNCS([getopt_long], ,
+               [AC_MSG_ERROR([no getopt_long function found])])
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile])

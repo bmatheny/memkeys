@@ -15,8 +15,8 @@ static NameMap nameMap;
 
 // protected constructor
 Level::Level(const string &name, const uint32_t value)
-    : name(name)
-      , value(value)
+    : name(name),
+      value(value)
 {}
 
 // static values
@@ -68,6 +68,14 @@ Level Level::fromValue(const uint32_t value)
 bool Level::operator==(const Level &other) const
 {
   return (getValue() == other.getValue());
+}
+bool Level::operator<=(const Level &other) const
+{
+  return (getValue() <= other.getValue());
+}
+bool Level::operator>=(const Level &other) const
+{
+  return (getValue() >= other.getValue());
 }
 
 string Level::getName() const

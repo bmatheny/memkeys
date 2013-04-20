@@ -24,6 +24,8 @@ class Level
   uint32_t getValue() const;
 
   bool operator==(const Level &other) const;
+  bool operator<=(const Level &other) const;
+  bool operator>=(const Level &other) const;
  protected:
   std::string name;
   uint32_t value;

@@ -6,15 +6,13 @@ AM_CPPFLAGS = -D_GNU_SOURCE
 AM_CFLAGS = -Wall -pedantic-errors
 AM_CXXFLAGS = -Wall -pedantic-errors
 
-if DEBUG
+if DEBUGGING
 AM_CFLAGS += -g3 -O0
 AM_CXXFLAGS += -g3 -O0
 else
 AM_CFLAGS += -O2
 AM_CXXFLAGS += -O2
 endif
-
-#AM_LDFLAGS = -lm -lpthread -rdynamic
 
 bin_PROGRAMS = mctop
 

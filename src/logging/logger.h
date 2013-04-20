@@ -46,6 +46,12 @@ class Logger
   bool getUseParent() const;
 
   bool isRootLogger() const;
+  bool isTrace() const { return getLevel() <= Level::TRACE; }
+  bool isDebug() const { return getLevel() <= Level::DEBUG; }
+  bool isInfo() const { return getLevel() <= Level::INFO; }
+  bool isWarning() const { return getLevel() <= Level::WARNING; }
+  bool isError() const { return getLevel() <= Level::ERROR; }
+  bool isFatal() const { return getLevel() <= Level::FATAL; }
 
   void log(const Level &level, const std::string &msg);
   void log(const Level &level, const Record &rec);

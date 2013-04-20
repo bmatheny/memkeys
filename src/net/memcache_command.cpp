@@ -75,9 +75,9 @@ bool MemcacheCommand::parseRequest(u_char *data, int length)
 
 bool MemcacheCommand::parseResponse(u_char *data, int length)
 {
+  static pcrecpp::RE re("VALUE (\\S+) \\d+ (\\d+)",
+                        pcrecpp::RE_Options(PCRE_MULTILINE));
   bool found_response = false;
-  pcrecpp::RE_Options options(PCRE_MULTILINE);
-  pcrecpp::RE re("VALUE (\\S+) \\d+ (\\d+)", options);
   string key;
   int size = -1;
   string input = "";

@@ -110,7 +110,7 @@ bool Logger::isRootLogger() const
  */
 void Logger::log(const Level &level, const string &msg)
 {
-  if (level.getValue() >= getLevel().getValue()) {
+  if (level >= getLevel()) {
     Record rec = Record();
     rec.setLevel(level);
     rec.setLoggerName(getName());
@@ -120,7 +120,7 @@ void Logger::log(const Level &level, const string &msg)
 }
 void Logger::log(const Level &level, const Record &record)
 {
-  if (level.getValue() >= getLevel().getValue()) {
+  if (level >= getLevel()) {
     cout << format(record) << endl;
     LoggerPtr logger = getParent();
     if (logger != NULL && logger->getUseParent()) {

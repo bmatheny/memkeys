@@ -3,11 +3,10 @@
 
 #include <string>
 
-#include "config.h"
+#include "common.h"
 #include "state.h"
 #include "net/pcap.h"
 #include "net/capture_engine.h"
-#include "logging/logger.h"
 #include "report/report.h"
 
 namespace mctop {

@@ -48,6 +48,9 @@ LoggerPtr Logger::getRootLogger()
   }
 }
 
+/**
+ * Destructor. Delete logger from the map.
+ */
 Logger::~Logger() {
   trace("~Logger destroyed");
   Loggers::iterator it = loggers.find(getName());
@@ -102,6 +105,9 @@ bool Logger::getUseParent() const
   return _useParent;
 }
 
+/**
+ * True if this logger is the root logger, false otherwise.
+ */
 bool Logger::isRootLogger() const
 {
   return (getName() == ROOT_LOGGER_NAME);
@@ -123,6 +129,8 @@ void Logger::log(const Level &level, const string &msg)
 void Logger::log(const Level &level, const Record &record)
 {
   if (level >= getLevel()) {
+    // TODO this should support writing via an appender so users can log to a
+    // file while seeing stats on their display
     cout << format(record) << endl;
     LoggerPtr logger = getParent();
     if (logger != NULL && logger->getUseParent()) {
@@ -189,6 +197,7 @@ void Logger::fatal(Record record, const string &fmt, ...)
 Logger::Logger(const string &name) : _name(name), _level(Level::WARNING)
 {}
 
+// TODO make this configurable
 string Logger::format(const Record &rec)
 {
   ostringstream out;

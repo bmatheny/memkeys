@@ -1,6 +1,4 @@
-#include <iostream>
 #include <string>
-#include <mutex>
 #include <stdexcept>
 
 #include "cli.h"
@@ -128,7 +126,7 @@ Mctop::Mctop(const Config * config)
 static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
                     const u_char* packet)
 {
-  static uint64_t pkt_count = 0;
+  static int64_t pkt_count = 0;
   static long long unsigned int mc_resp = 0;
 
   CaptureEngine * ce = (CaptureEngine*)userData;

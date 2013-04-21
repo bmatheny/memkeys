@@ -33,8 +33,8 @@ class CaptureEngine {
   const Pcap* session;
   Report* report;
   State state;
-
 };
+
 } // end namespace mctop
 
 #endif

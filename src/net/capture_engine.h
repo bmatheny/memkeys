@@ -18,6 +18,7 @@ class CaptureEngine {
 
   MemcacheCommand parse(const struct pcap_pkthdr *pkthdr,
                         const u_char* packet) const;
+  void enqueue(const MemcacheCommand &mc);
 
   bpf_u_int32 getIpAddress() const
     { return session->getIpAddress(); }
@@ -31,7 +32,9 @@ class CaptureEngine {
  protected:
   const Config* config;
   const Pcap* session;
+  mqueue<Elem> *barrier;
   Report* report;
+  Stats* stats;
   State state;
 };
 

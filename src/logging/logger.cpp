@@ -131,7 +131,11 @@ void Logger::log(const Level &level, const Record &record)
   if (level >= getLevel()) {
     // TODO this should support writing via an appender so users can log to a
     // file while seeing stats on their display
-    cout << format(record) << endl;
+    string out = format(record);
+    _writeMutex.lock();
+    cout << out << endl;
+    cout.flush();
+    _writeMutex.unlock();
     LoggerPtr logger = getParent();
     if (logger != NULL && logger->getUseParent()) {
       logger->log(level, record);
@@ -194,7 +198,10 @@ void Logger::fatal(Record record, const string &fmt, ...)
 }
 
 // protected
-Logger::Logger(const string &name) : _name(name), _level(Level::WARNING)
+Logger::Logger(const string &name)
+  : _name(name),
+    _level(Level::WARNING),
+    _writeMutex()
 {}
 
 // TODO make this configurable

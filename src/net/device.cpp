@@ -37,6 +37,7 @@ Device Device::getDevice(const string &name)
       }
     }
   }
+  pcap_freealldevs(alldevs);
   if (pcap_lookupnet(name.c_str(), &network, &mask, errbuf) < 0) {
     throw MctopException(string("Invalid device ") + name + ": " + errbuf);
   }

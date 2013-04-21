@@ -8,7 +8,8 @@ This is a clone of https://github.com/etsy/mctop written in C.
 
  1. Finish Stats implementation (getLeaders) - Done?
  2. mqueue is shared by CaptureEngine and Stats (ce produces, stats consumes)
-   * Will need to change Stats/CaptureEngine constructor for the shared mqueue
+   * Will need to change Stats/CaptureEngine constructor for the shared mqueue - Done
+   * Thread for reading from mqueue in Stats class - Done
  3. Report gets a handle on Stats, also thread safe
    * Will need to change up CE constructor again to hand Stats to Report
  4. Thread for pruning periodically (driven from report)
@@ -26,6 +27,15 @@ accuracy over speed of display.
 ## Command line options
 
 Docs here.
+
+## Development
+
+Install gperftools and gperftools-devel if you want to build with
+`--enable-profiling`.
+
+You will need libpcap-devel.
+
+You will need libpcrecpp.
 
 # License
 

@@ -9,14 +9,28 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
     : logger(Logger::getLogger("capture-engine")),
       config(config),
       session(session),
+      barrier(new mqueue<Elem>()),
       report(new TextReport(config)),
+      stats(new Stats(config, barrier)),
       state()
-{}
+{
+  stats->start();
+}
 
 MemcacheCommand CaptureEngine::parse(const struct pcap_pkthdr *pkthdr,
                                      const u_char *packet) const
 {
   return MemcacheCommand(pkthdr, packet, getIpAddress());
+}
+
+void CaptureEngine::enqueue(const MemcacheCommand &mc)
+{
+  Elem e(mc.getObjectKey(), mc.getObjectSize());
+#ifdef _DEBUG
+  logger->trace(CONTEXT,
+               "Produced stat: %s, %d", e.first.c_str(), e.second);
+#endif
+  barrier->produce(e);
 }
 
 bool CaptureEngine::isShutdown() const
@@ -27,13 +41,16 @@ bool CaptureEngine::isShutdown() const
 void CaptureEngine::shutdown()
 {
   state.setState(state_TERMINATED);
+  stats->shutdown();
 }
 
 CaptureEngine::~CaptureEngine()
 {
   logger->debug("Shutting down capture engine");
-  delete logger;
   delete report;
+  delete stats;
+  delete barrier;
+  delete logger;
 }
 
 } // end namespace mctop

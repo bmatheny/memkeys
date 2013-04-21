@@ -80,3 +80,4 @@ Makefile.in
 src/mctop
 
 *.dirstamp
+*.prof

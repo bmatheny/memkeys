@@ -59,6 +59,20 @@ if test "x$LPCAP" = "xno"; then
   exit 1
 fi
 
+AC_MSG_CHECKING(whether to create a profiled build)
+AC_ARG_ENABLE(profiling,
+              AS_HELP_STRING([--enable-profiling], [Turn on profiling (default=no)]),
+[ case "${enableval}" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_CHECK_LIB([profiler], [ProfilerStop])
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac],
+[AC_MSG_RESULT(no)])
+
 # Enable debugging
 AC_MSG_CHECKING(whether to create a debug build)
 AC_ARG_ENABLE(debug,
@@ -84,6 +98,32 @@ AC_ARG_ENABLE(debug,
 ])
 # For use in Makefile.am as if DEBUG
 AM_CONDITIONAL([DEBUGGING], [test x$debug = xtrue])
+
+# Enable development
+AC_MSG_CHECKING(whether to create a development build)
+AC_ARG_ENABLE(development,
+              AS_HELP_STRING([--enable-development], [Turn on development (default=no)]),
+[ case "${enableval}" in
+  yes)
+    AC_MSG_RESULT(yes)
+    # Created in mconfig.h for use as #ifdef DEVELOPMENT
+    AC_DEFINE([DEVELOPMENT], 1, [Defined if you are development])
+    development=true
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    development=false
+    ;;
+  *)
+    AC_MSG_ERROR([bad value ${enableval} for --enable-development])
+    ;;
+  esac],
+[
+  AC_MSG_RESULT(no)
+  development=false
+])
+# For use in Makefile.am as if DEVELOPMENT
+AM_CONDITIONAL([DEVELOPMENT], [test x$development = xtrue])
 
 # Check functions
 AC_CHECK_FUNCS([getopt_long], ,

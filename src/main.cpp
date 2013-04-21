@@ -47,6 +47,7 @@ int main(int argc, char ** argv) {
     logger->fatal(CONTEXT, "Error running application: %s", ex.what());
     rc = EXIT_FAILURE;
   }
+  logger->info(CONTEXT, "Shutting down");
 
   // handle cleanup
   delete logger;

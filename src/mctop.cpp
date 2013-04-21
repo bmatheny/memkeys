@@ -143,7 +143,7 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
     string msg = string("total seen = ") + to_string(recv);
     msg.append(", dropped = ");
     msg.append(to_string(drop));
-    msg.append(", if dropped = ");
+    msg.append(", if_dropped = ");
     msg.append(to_string(ifdrop));
     msg.append(", memcache replies = ");
     msg.append(to_string(mc_resp));
@@ -154,18 +154,19 @@ static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
 #ifdef _DEBUG
   if (mc.isRequest()) {
     ce->logger->trace(string("memcache request: ") + mc.getCommandName());
-  } else {
+  } else if (mc.isResponse()) {
     ce->logger->trace(string("memcache response: ") + mc.getObjectKey() + " " +
                       to_string((llui_t)mc.getObjectSize()));
   }
 #endif
 
   if (!mc.isResponse()) {
-#ifdef _DEBUG
-    ce->logger->debug("Not a memcache command");
+#ifdef _DEVEL
+    ce->logger->trace("Not a memcache command");
 #endif
     return;
   }
+  ce->enqueue(mc);
   mc_resp += 1;
 }
 

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <mutex>
 #include <sstream>
 #include <cstdarg>
 #include "logging/level.h"
@@ -79,6 +80,7 @@ class Logger
   LoggerPtr _parent;
   bool _useParent;
   Level _level;
+  std::mutex _writeMutex;
 };
 
 typedef std::map<std::string,LoggerPtr> Loggers;

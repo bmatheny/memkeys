@@ -28,7 +28,7 @@ class MemcacheCommand
   std::string getCommandName() const
     { return commandName; }
 
-  // only when isResponse is true
+  // sometimes when isResponse is true, sometimes when isRequest is true
   std::string getObjectKey() const
     { return objectKey; }
 

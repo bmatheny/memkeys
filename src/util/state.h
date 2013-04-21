@@ -12,6 +12,9 @@ enum state_t {
 
 class State;
 
+// FIXME - profiling shows that we may want to use a std::atomic instead of a
+// mutex
+
 // thread safe state representation
 class State
 {

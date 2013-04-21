@@ -21,8 +21,8 @@ bin_PROGRAMS = mctop
 mctop_SOURCES =			\
 	util/util.h \
 	util/exceptions.h \
+	util/mqueue.h \
 	util/options.h \
-	util/mqueue.h util/mqueue.cpp \
 	util/stat.h util/stat.cpp \
 	util/stats.h util/stats.cpp \
 	util/state.h util/state.cpp \

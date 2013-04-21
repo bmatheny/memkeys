@@ -15,10 +15,18 @@
 #define PACKAGE_BUGREPORT "bmatheny@mobocracy.net"
 #endif
 
+// Define _DEBUG if appropriate
 #ifdef DEBUGGING
-  #if DEBUGGING
-    #define _DEBUG 1
-  #endif
+#if DEBUGGING
+#define _DEBUG 1
+#endif
+#endif
+
+// Define _DEVEL if appropriate
+#ifdef DEVELOPMENT
+#if DEVELOPMENT
+#define _DEVEL 1
+#endif
 #endif
 
 #include <iomanip>

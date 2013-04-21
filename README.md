@@ -6,7 +6,7 @@ This is a clone of https://github.com/etsy/mctop written in C.
 
 ## Do on Sunday
 
- 1. Finish Stats implementation (getLeaders)
+ 1. Finish Stats implementation (getLeaders) - Done?
  2. mqueue is shared by CaptureEngine and Stats (ce produces, stats consumes)
    * Will need to change Stats/CaptureEngine constructor for the shared mqueue
  3. Report gets a handle on Stats, also thread safe

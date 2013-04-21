@@ -4,11 +4,18 @@
 #include <string>
 #include <mutex>
 #include <queue>
-#include <list>
+#include <vector>
 #include "config.h"
 #include "util/stat.h"
 
 namespace mctop {
+
+class SortByRequestRate {
+ public:
+  bool operator() (const Stat &first, const Stat &second) {
+    return (first.requestRate() <= second.requestRate());
+  }
+};
 
 // Keep track of a collection of Stat items
 class Stats
@@ -19,7 +26,8 @@ class Stats
 
   void increment(const std::string &key, const uint32_t size);
   void prune(const double threshold);
-  std::priority_queue<Stat> getLeaders(const uint16_t size);
+  template<class T>
+  std::priority_queue<Stat,std::vector<Stat>,T> getLeaders(const uint16_t size);
 
  private:
   const Config * config;

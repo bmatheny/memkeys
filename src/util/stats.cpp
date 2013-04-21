@@ -1,4 +1,5 @@
 #include "util/stats.h"
+#include <algorithm>
 
 namespace mctop {
 
@@ -13,12 +14,18 @@ Stats::~Stats() {}
 
 // This will want to take a sort mode (what value to sort on) and a sort order
 // (asc,desc) as arguments
-queue<Stat> getLeaders(const uint16_t size) {
-  //priority_queue<Stat, vector<Stat>, CompareStats> pq;
-  // iterate over map putting stuff into the pq
-  // if the queue_size is > size, pop off the end
-  queue<Stat> q;
-  return q;
+template<class T>
+priority_queue<Stat,vector<Stat>,T> Stats::getLeaders(const uint16_t size) {
+  priority_queue<Stat, vector<Stat>, T> pq;
+  for (StatCollection::iterator it = _collection.begin();
+       it != _collection.end(); it++)
+  {
+    pq.push(it->second);
+    if (pq.size() > size) {
+      pq.pop();
+    }
+  }
+  return pq;
 }
 
 void Stats::increment(const string &key, const uint32_t size) {

@@ -35,7 +35,11 @@ class Stat {
 
   Stat(const std::string &key, const uint32_t size);
   ~Stat();
-  Stat(const Stat &stat); // required for StatCollection
+  // std::atomic member variables require that your class implement a copy
+  // constructor and the assignment operator, if you want to use the Stat class
+  // with most STL collections
+  Stat(const Stat& stat);
+  Stat& operator=(const Stat& rhs);
 
   uint64_t getCreated() const;
   const std::string getKey() const;
@@ -73,6 +77,7 @@ class Stat {
 };
 
 typedef std::unordered_map<ssize_t, Stat> StatCollection;
+typedef std::pair<ssize_t, Stat> StatPair;
 
 } // end namespace mctop
 

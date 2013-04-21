@@ -11,13 +11,25 @@ Stat::Stat(const string &key, const uint32_t size)
       _count(1)
 {}
 Stat::~Stat() {}
-// Copy constructor needed for StatCollection
+// std::atomic member variables require that your class implement a copy
+// constructor and the assignment operator, if you want to use the Stat class
+// with most STL collections
 Stat::Stat(const Stat &stat)
   : key(stat.getKey()),
     _created(stat.getCreated()),
     _size(stat.getSize()),
     _count(stat.getCount())
 {}
+Stat& Stat::operator=(const Stat& rhs)
+{
+  if (this != &rhs) {
+    key = rhs.getKey();
+    _created = rhs.getCreated();
+    setSize(rhs.getSize());
+    _count.store(rhs.getCount());
+  }
+  return *this;
+}
 
 uint64_t Stat::getCreated() const {
   return _created;

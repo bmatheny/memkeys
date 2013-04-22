@@ -52,6 +52,7 @@ Packet::Data* Packet::copyData(Data* in, const bpf_u_int32 len) {
   }
   void * d = reinterpret_cast<void*>(in);
   void * nd = malloc(len);
+  memset(nd, 0, len);
   memcpy(nd, const_cast<void const*>(d), len);
   return reinterpret_cast<Data*>(nd);
 }

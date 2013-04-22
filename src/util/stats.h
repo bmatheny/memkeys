@@ -2,6 +2,7 @@
 #define _UTIL_STATS_H
 
 #include <algorithm>
+#include <deque>
 #include <mutex>
 #include <queue>
 #include <string>
@@ -44,6 +45,7 @@ class Stats
   std::deque<Stat> getLeaders(const uint16_t size) {
     std::priority_queue<Stat, std::vector<Stat>, T> pq;
     std::deque<Stat> holder;
+    _mutex.lock();
     for (StatCollection::iterator it = _collection.begin();
          it != _collection.end(); ++it)
     {
@@ -52,6 +54,7 @@ class Stats
         pq.pop();
       }
     }
+    _mutex.unlock();
     while(!pq.empty()) {
       holder.push_front(pq.top());
       pq.pop();

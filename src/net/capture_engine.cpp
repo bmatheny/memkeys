@@ -35,7 +35,6 @@ CaptureEngine::~CaptureEngine()
   } else {
     logger->error(CONTEXT, "Capture engine not successfully shut down");
   }
-  stats->printStats(100);
   delete report;
   delete stats;
   delete barrier;

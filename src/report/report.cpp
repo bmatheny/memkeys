@@ -32,9 +32,7 @@ Report::~Report()
 Report::Report(const Config* cfg, const LoggerPtr logger)
   : config(cfg),
     logger(logger),
-    state(state_STARTING)
-{
-  report_thread = thread(&Report::render, this);
-}
+    state(state_NEW)
+{}
 
 } // end namespace top

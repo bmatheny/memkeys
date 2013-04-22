@@ -133,7 +133,6 @@ void Stats::prune() {
   logger->info(CONTEXT, "Starting prune with threshold %0.2f", threshold);
   while (state.isRunning()) {
     _mutex.lock();
-    //printStats(50);
     it = _collection.begin();
     size_pre = _collection.size();
     while (it != _collection.end()) {

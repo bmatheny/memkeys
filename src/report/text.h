@@ -9,8 +9,11 @@ namespace mckeys {
 class TextReport : public Report
 {
  public:
-  TextReport(const Config * cfg);
+  TextReport(const Config* cfg, const Stats* stats);
   virtual void render();
+
+ private:
+  const Stats* stats;
 };
 
 } // end namespace

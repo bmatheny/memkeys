@@ -4,8 +4,25 @@
 
 namespace mckeys {
 
+using namespace std;
+
+bool Report::isShutdown() const {
+  return state.isTerminated();
+}
+void Report::shutdown() {
+  if (state.checkAndSet(state_RUNNING, state_STOPPING)) {
+    logger->info(CONTEXT, "Shutting down");
+  } else {
+    logger->warning(CONTEXT, "Could not shutdown, state is %s",
+                    state.getName().c_str());
+  }
+}
+
 Report::~Report()
 {
+  // FIXME this should have a timer
+  report_thread.join();
+  logger->debug(CONTEXT, "Report thread shut down");
   if (logger != NULL) {
     delete logger;
   }
@@ -14,7 +31,10 @@ Report::~Report()
 // protected
 Report::Report(const Config* cfg, const LoggerPtr logger)
   : config(cfg),
-    logger(logger)
-{}
+    logger(logger),
+    state(state_STARTING)
+{
+  report_thread = thread(&Report::render, this);
+}
 
 } // end namespace top

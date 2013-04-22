@@ -30,6 +30,7 @@ void Stats::start() {
     logger->warning(CONTEXT, "Stats engine already started");
   }
 }
+
 void Stats::shutdown() {
   if (state.checkAndSet(state_RUNNING, state_STOPPING)) {
     // FIXME we should wrap these joins in a timer
@@ -113,8 +114,7 @@ void Stats::collect() {
       backoffMs = backoff.getNextBackOffMillis();
       waitTime = UtilTime::millisToTimespec(backoffMs);
 #ifdef _DEVEL
-      // FIXME should be trace
-      logger->debug(CONTEXT,
+      logger->trace(CONTEXT,
                     "No stat to consume, will sleep %lu ms", backoffMs);
 #endif
     }

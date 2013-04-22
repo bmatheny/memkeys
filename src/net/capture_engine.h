@@ -48,8 +48,8 @@ class CaptureEngine {
   const Config* config;
   const Pcap* session;
   mqueue<Elem> *barrier;
-  Report* report;
   Stats* stats;
+  Report* report;
   volatile bool _is_terminated;
   // there is one worker thread per queue
   uint8_t queue_count;

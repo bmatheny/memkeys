@@ -14,8 +14,8 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       config(config),
       session(session),
       barrier(new mqueue<Elem>()),
-      report(new TextReport(config)),
       stats(new Stats(config, barrier)),
+      report(new TextReport(config, stats)),
       _is_terminated(false),
       barrier_lock()
 {
@@ -87,6 +87,7 @@ void CaptureEngine::shutdown()
 {
   _is_terminated = true;
   stats->shutdown();
+  report->shutdown();
 }
 
 const LoggerPtr CaptureEngine::getLogger() const {

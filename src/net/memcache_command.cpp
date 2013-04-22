@@ -36,7 +36,7 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
 
   bool possible_request = false;
   u_char *data;
-  int dataLength = 0;
+  uint32_t dataLength = 0;
 
   // must be an IP packet
   ethernetHeader = (struct ether_header*)packet;

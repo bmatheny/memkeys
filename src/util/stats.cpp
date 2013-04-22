@@ -53,11 +53,40 @@ void Stats::increment(const string &key, const uint32_t size) {
     // since it is unlikely to change very often
     stat.setSize(size);
     stat.increment();
+#ifdef _DEBUG
+    uint64_t ssize = stat.getCount();
+    if (ssize >= 2) {
+      logger->trace(CONTEXT,
+                    "Incremented stat: %s, %d -> %ld", key.c_str(), size, ssize);
+    }
+#endif
     _collection[_key] = stat;
   } else {
     _collection.insert(it, StatCollection::value_type(_key, Stat(key, size)));
   }
   _mutex.unlock();
+}
+
+void Stats::printStats(const uint16_t size) {
+  deque<Stat> q = getLeaders<SortByCount>(size);
+  uint32_t qsize = q.size();
+  if (qsize > 0) {
+    cout << setw(110) << "Key" << ", ";
+    cout << setw(10) << "Count" << ", ";
+    cout << setw(10) << "Elapsed" << ", ";
+    cout << setw(10) << "Rate" << ", ";
+    cout << setw(10) << "Size" << ", ";
+    cout << setw(10) << "BW" << endl;
+  }
+  for (deque<Stat>::iterator it = q.begin(); it != q.end(); ++it) {
+    Stat stat = *it;
+    cout << setw(110) << stat.getKey() << ", ";
+    cout << setw(10) << stat.getCount() << ", ";
+    cout << setw(10) << stat.elapsed() << ", ";
+    cout << setw(10) << std::setprecision(2) << stat.requestRate() << ", ";
+    cout << setw(10) << stat.getSize() << ", ";
+    cout << setw(10) << std::setprecision(2) << stat.bandwidth() << endl;
+  }
 }
 
 // protected
@@ -90,6 +119,7 @@ void Stats::prune() {
   logger->info(CONTEXT, "Starting prune with threshold %0.2f", threshold);
   while (state.isRunning()) {
     _mutex.lock();
+    printStats(50);
     it = _collection.begin();
     size_pre = _collection.size();
     while (it != _collection.end()) {

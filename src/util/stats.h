@@ -14,13 +14,15 @@
 
 namespace mctop {
 
-class SortByRequestRate {
+class SortByCount {
  public:
   bool operator() (const Stat &first, const Stat &second) {
-    return (first.requestRate() <= second.requestRate());
+    if (first.getCount() > second.getCount()) return true;
+    return false;
   }
 };
 
+typedef std::priority_queue<Stat,std::vector<Stat>,SortByCount> CountQueue;
 typedef std::pair<std::string,uint32_t> Elem;
 
 // Keep track of a collection of Stat items
@@ -34,21 +36,27 @@ class Stats
   void shutdown();
 
   void increment(const std::string &key, const uint32_t size);
+  void printStats(const uint16_t size);
   // This will want to take a sort mode (what value to sort on) and a sort order
   // (asc,desc) as arguments
+  // FIXME this sucks big time
   template<class T>
-  std::priority_queue<Stat,std::vector<Stat>,T> getLeaders(const uint16_t size)
-  {
+  std::deque<Stat> getLeaders(const uint16_t size) {
     std::priority_queue<Stat, std::vector<Stat>, T> pq;
+    std::deque<Stat> holder;
     for (StatCollection::iterator it = _collection.begin();
-         it != _collection.end(); it++)
+         it != _collection.end(); ++it)
     {
       pq.push(it->second);
       if (pq.size() > size) {
         pq.pop();
       }
     }
-    return pq;
+    while(!pq.empty()) {
+      holder.push_front(pq.top());
+      pq.pop();
+    }
+    return holder;
   }
 
  protected:

@@ -9,8 +9,6 @@ namespace mctop {
 
 using namespace std;
 
-typedef std::priority_queue<Stat,std::vector<Stat>,SortByRequestRate> RequestRates;
-
 CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
     : logger(Logger::getLogger("capture-engine")),
       config(config),
@@ -37,17 +35,7 @@ CaptureEngine::~CaptureEngine()
   } else {
     logger->error(CONTEXT, "Capture engine not successfully shut down");
   }
-  RequestRates q = stats->getLeaders<SortByRequestRate>(50);
-  for (uint32_t i = 0; i < q.size(); i++) {
-    Stat stat = q.top();
-    cout << setw(110) << stat.getKey() << ", ";
-    cout << stat.getCount() << ", ";
-    cout << stat.elapsed() << ", ";
-    cout << stat.requestRate() << ", ";
-    cout << stat.getSize() << ", ";
-    cout << stat.bandwidth() << endl;
-    q.pop();
-  }
+  stats->printStats(100);
   delete report;
   delete stats;
   delete barrier;
@@ -65,7 +53,7 @@ CaptureEngine::~CaptureEngine()
 
 void CaptureEngine::enqueue(const Packet &packet)
 {
-#ifdef _DEBUG
+#ifdef _DEVEL
   logger->trace(CONTEXT,
                 "Produced packet: %ld", packet.id());
 #endif
@@ -131,7 +119,7 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
     Packet packet;
     if (work_queue->consume(packet)) {
       pktCount += 1;
-#ifdef _DEBUG
+#ifdef _DEVEL
       logger->trace(CONTEXT,
                     "worker %d Consumed packet %ld", worker_id, packet.id());
 #endif

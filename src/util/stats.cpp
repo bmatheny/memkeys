@@ -89,8 +89,13 @@ void Stats::printStats(const uint16_t size) {
   }
 }
 
-// protected
+///////////////////////////////////////////////////////////////////////////////
+//                      Protected Methods                                    //
+///////////////////////////////////////////////////////////////////////////////
 void Stats::collect() {
+  static Backoff backoff;
+  static uint64_t backoffMs;
+  static struct timespec waitTime;
   logger->info(CONTEXT, "Starting stats collection");
   Elem e;
   while (state.isRunning()) {
@@ -100,13 +105,22 @@ void Stats::collect() {
                    "Consumed stat: %s, %d", e.first.c_str(), e.second);
 #endif
       increment(e.first, e.second);
+      if (backoffMs > 0) {
+        backoffMs = 0;
+        backoff.reset();
+      }
     } else { // did not get one
+      backoffMs = backoff.getNextBackOffMillis();
+      waitTime = UtilTime::millisToTimespec(backoffMs);
 #ifdef _DEVEL
-      // FIXME this is useless without sampling it
-      logger->trace(CONTEXT, "No stat to consume");
+      // FIXME should be trace
+      logger->debug(CONTEXT,
+                    "No stat to consume, will sleep %lu ms", backoffMs);
 #endif
     }
-    // FIXME this should usleep (backoff style) if needed
+    if (backoffMs > 0) {
+      nanosleep(&waitTime, NULL);
+    }
   }
   logger->info(CONTEXT, "Stats collect thread stopped");
 }
@@ -119,7 +133,7 @@ void Stats::prune() {
   logger->info(CONTEXT, "Starting prune with threshold %0.2f", threshold);
   while (state.isRunning()) {
     _mutex.lock();
-    printStats(50);
+    //printStats(50);
     it = _collection.begin();
     size_pre = _collection.size();
     while (it != _collection.end()) {

@@ -113,12 +113,23 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
   static int64_t pktCount = 0;
   static llui_t resCount = 0;
   static bool isDebug = logger->isDebug();
+
+  Backoff backoff;
+  backoff.setMaxElapsedTimeMillis(10);
+  backoff.setMaxIntervalMillis(10);
+  uint64_t backoffMs = 0;
+  struct timespec waitTime;
+
   logger->info(CONTEXT, "Worker %d starting capture processing", worker_id);
 
   while(!isShutdown()) {
     Packet packet;
     if (work_queue->consume(packet)) {
       pktCount += 1;
+      if (backoffMs > 0) {
+        backoffMs = 0;
+        backoff.reset();
+      }
 #ifdef _DEVEL
       logger->trace(CONTEXT,
                     "worker %d Consumed packet %ld", worker_id, packet.id());
@@ -134,7 +145,7 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
 #endif
       } else {
 #ifdef _DEVEL
-        logger->trace("Not a memcache response");
+        logger->trace(CONTEXT, "worker %d not a memcache response", worker_id);
 #endif
       }
       if ((pktCount % 10000) == 0 && isDebug) {
@@ -148,9 +159,16 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
         logger->debug(out);
       }
     } else {
+      backoffMs = backoff.getNextBackOffMillis();
+      waitTime = UtilTime::millisToTimespec(backoffMs);
 #ifdef _DEVEL
-      logger->trace(CONTEXT, "No packet to consume");
+      logger->trace(CONTEXT,
+                    "worker %d no packet to consume, will sleep %lu ms",
+                    worker_id, backoffMs);
 #endif
+    }
+    if (backoffMs > 0) {
+      nanosleep(&waitTime, NULL);
     }
   }
   logger->info(CONTEXT, "Worker %d stopped processing packets", worker_id);

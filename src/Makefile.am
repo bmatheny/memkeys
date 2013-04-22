@@ -20,6 +20,7 @@ bin_PROGRAMS = memkeys
 
 memkeys_SOURCES =			\
 	util/util.h \
+	util/backoff.h util/backoff.cpp \
 	util/exceptions.h \
 	util/mqueue.h \
 	util/options.h \

@@ -75,7 +75,6 @@ class Stats
   std::thread poller_thread;
 };
 
-
 }
 
 #endif

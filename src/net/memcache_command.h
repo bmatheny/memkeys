@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "net/packet.h"
 #include "net/pcap.h"
 
 namespace mctop {
@@ -14,7 +15,7 @@ enum memcache_command_t {
 class MemcacheCommand
 {
  public:
-  MemcacheCommand(const struct pcap_pkthdr* pkthdr, const u_char* packet,
+  MemcacheCommand(const Packet &packet,
                   const bpf_u_int32 captureAddress);
 
   bool isCommand() const
@@ -51,7 +52,6 @@ class MemcacheCommand
   std::string commandName;
   std::string objectKey;
   uint32_t objectSize;
-
 };
 
 } // end namespace mctop

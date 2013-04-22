@@ -6,7 +6,7 @@ using namespace std;
 
 Stat::Stat(const string &key, const uint32_t size)
     : key(key),
-      _created(Stat::now()),
+      _created(UtilTime::currentTimeMillis()),
       _size(size),
       _count(1)
 {}
@@ -20,6 +20,7 @@ Stat::Stat(const Stat &stat)
     _size(stat.getSize()),
     _count(stat.getCount())
 {}
+// TODO implement copy/destroy
 Stat& Stat::operator=(const Stat& rhs)
 {
   if (this != &rhs) {

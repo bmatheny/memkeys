@@ -8,6 +8,7 @@ extern "C" {
 #include "net/device.h"
 #include "net/memcache_command.h"
 #include "net/capture_engine.h"
+#include "net/packet.h"
 #include "net/pcap.h"
 #include "net/pcap_live.h"
 

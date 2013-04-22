@@ -1,12 +1,13 @@
 #ifndef _UTIL_STAT_H
 #define _UTIL_STAT_H
 
-#include <ctime>
 #include <cstdint>
 #include <cstdatomic>
 #include <functional>
 #include <unordered_map>
 #include <string>
+
+#include "util/util_time.h"
 
 namespace mctop {
 
@@ -26,11 +27,6 @@ class Stat {
   static inline size_t hashKey(const std::string &key) {
     std::hash<std::string> hash_fn;
     return hash_fn(key);
-  }
-
-  static inline uint64_t now() {
-    time_t t = time(NULL);
-    return (1000L * t);
   }
 
   Stat(const std::string &key, const uint32_t size);
@@ -56,7 +52,7 @@ class Stat {
   }
 
   inline uint64_t elapsed() const {
-    return Stat::now() - _created;
+    return UtilTime::currentTimeMillis() - _created;
   }
 
   void increment();
@@ -66,10 +62,7 @@ class Stat {
     return requestRate(elapsed());
   }
 
- protected:
-
  private:
-
   std::string key;
   uint64_t _created;
   mutable std::atomic_uint_fast32_t _size;

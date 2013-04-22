@@ -1,6 +1,7 @@
 #ifndef _UTIL_STATS_H
 #define _UTIL_STATS_H
 
+#include <algorithm>
 #include <mutex>
 #include <queue>
 #include <string>
@@ -33,8 +34,22 @@ class Stats
   void shutdown();
 
   void increment(const std::string &key, const uint32_t size);
+  // This will want to take a sort mode (what value to sort on) and a sort order
+  // (asc,desc) as arguments
   template<class T>
-  std::priority_queue<Stat,std::vector<Stat>,T> getLeaders(const uint16_t size);
+  std::priority_queue<Stat,std::vector<Stat>,T> getLeaders(const uint16_t size)
+  {
+    std::priority_queue<Stat, std::vector<Stat>, T> pq;
+    for (StatCollection::iterator it = _collection.begin();
+         it != _collection.end(); it++)
+    {
+      pq.push(it->second);
+      if (pq.size() > size) {
+        pq.pop();
+      }
+    }
+    return pq;
+  }
 
  protected:
   // These are run in threads

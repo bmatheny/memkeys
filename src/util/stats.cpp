@@ -1,5 +1,4 @@
 #include "common.h"
-#include <algorithm>
 
 namespace mctop {
 
@@ -44,22 +43,6 @@ void Stats::shutdown() {
   }
 }
 
-// This will want to take a sort mode (what value to sort on) and a sort order
-// (asc,desc) as arguments
-template<class T>
-priority_queue<Stat,vector<Stat>,T> Stats::getLeaders(const uint16_t size) {
-  priority_queue<Stat, vector<Stat>, T> pq;
-  for (StatCollection::iterator it = _collection.begin();
-       it != _collection.end(); it++)
-  {
-    pq.push(it->second);
-    if (pq.size() > size) {
-      pq.pop();
-    }
-  }
-  return pq;
-}
-
 void Stats::increment(const string &key, const uint32_t size) {
   ssize_t _key = Stat::hashKey(key);
   _mutex.lock();
@@ -89,6 +72,7 @@ void Stats::collect() {
       increment(e.first, e.second);
     } else { // did not get one
 #ifdef _DEVEL
+      // FIXME this is useless without sampling it
       logger->trace(CONTEXT, "No stat to consume");
 #endif
     }
@@ -99,16 +83,14 @@ void Stats::collect() {
 
 // FIXME this should be in getLeaders I think?
 void Stats::prune() {
-  const double threshold = config->getDiscardThreshold();
+  static const double threshold = config->getDiscardThreshold();
+  int size_pre = 0, size_post = 0;
   StatCollection::iterator it;
   logger->info(CONTEXT, "Starting prune with threshold %0.2f", threshold);
   while (state.isRunning()) {
     _mutex.lock();
     it = _collection.begin();
-#ifdef _DEBUG
-    logger->debug(CONTEXT,
-                 "Stats collection has %d elements", _collection.size());
-#endif
+    size_pre = _collection.size();
     while (it != _collection.end()) {
       Stat stat = it->second;
       if (stat.requestRate() < threshold) {
@@ -119,10 +101,9 @@ void Stats::prune() {
     }
     // FIXME not sure what this rehash param does
     _collection.rehash(0);
-#ifdef _DEBUG
+    size_post = _collection.size();
     logger->debug(CONTEXT,
-                 "Stats collection now has %d elements", _collection.size());
-#endif
+                 "Stats collection size: %d -> %d", size_pre, size_post);
     _mutex.unlock();
     // FIXME this should sleep for the UI refresh interval
     sleep(5);

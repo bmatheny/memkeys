@@ -23,6 +23,7 @@ mctop_SOURCES =			\
 	util/exceptions.h \
 	util/mqueue.h \
 	util/options.h \
+	util/util_time.h \
 	util/stat.h util/stat.cpp \
 	util/stats.h util/stats.cpp \
 	util/state.h util/state.cpp \
@@ -32,6 +33,7 @@ mctop_SOURCES =			\
 	config.h config.cpp \
 	net/device.h net/device.cpp \
 	net/pcap.h net/pcap.cpp \
+	net/packet.h net/packet.cpp \
 	net/pcap_live.h net/pcap_live.cpp \
 	report/report.h report/report.cpp \
 	report/text.h report/text.cpp \

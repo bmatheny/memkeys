@@ -22,10 +22,12 @@ class mqueue
     last = first;
   }
   ~mqueue() {
+    uint32_t deleted = 0;
     while(first != NULL)                                      // release the list
     {
       Node* tmp = first;
       first = tmp->next;
+      deleted += 1;
       delete tmp;
     }
   }
@@ -54,6 +56,8 @@ class mqueue
     }
     return false;                                           // else report empty
   }
+
+  // TODO add count for use in shutdown
 
  private:
   struct Node

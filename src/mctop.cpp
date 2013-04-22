@@ -1,3 +1,4 @@
+#include <cstring>
 #include <string>
 #include <stdexcept>
 
@@ -75,7 +76,7 @@ void Mctop::run()
   state.setState(state_STARTING);
   session->open();
   logger->debug("My address: " + to_string((llsi_t)session->getIpAddress()));
-  session->setFilter(string("port ") + config->getPortAsString());
+  session->setFilter(string("tcp port ") + config->getPortAsString());
   try {
     state.setState(state_RUNNING);
     session->startCapture(process, -1, (u_char*)engine);
@@ -90,10 +91,15 @@ void Mctop::run()
 void Mctop::tryShutdown()
 {
   if (state.checkAndSet(state_RUNNING, state_STOPPING)) {
+    if (engine != NULL) {
+      logger->info(engine->getStatsString());
+    }
+
     if (engine != NULL && !engine->isShutdown()) {
       logger->info(CONTEXT, "Shutting down engine");
       engine->shutdown();
     }
+
     if (session != NULL) {
       logger->info(CONTEXT, "Stopping packet capture");
       session->stopCapture();
@@ -123,51 +129,20 @@ Mctop::Mctop(const Config * config)
 // Process packets as they come in
 // Make sure this avoids blocking and stays as fast as possible
 // Any real work needs to be delegated to a thread
-static void process(u_char *userData, const struct pcap_pkthdr* pkthdr,
+static void process(u_char *userData, const struct pcap_pkthdr* header,
                     const u_char* packet)
 {
-  static int64_t pkt_count = 0;
-  static long long unsigned int mc_resp = 0;
+  // FIXME just make this a global static to avoid the weird casting issues
+  static CaptureEngine * ce = (CaptureEngine*)userData;
 
-  CaptureEngine * ce = (CaptureEngine*)userData;
+  /* FIXME need to include this
   if (ce->isShutdown()) {
     ce->logger->info("Shutting down");
     return;
-  }
-  pkt_count += 1;
-  if ((pkt_count % 10000) == 0 && ce->logger->isDebug()) {
-    pcap_stat stats = ce->getStats();
-    long long unsigned int recv = stats.ps_recv;
-    long long unsigned int drop = stats.ps_drop;
-    long long unsigned int ifdrop = stats.ps_ifdrop;
-    string msg = string("total seen = ") + to_string(recv);
-    msg.append(", dropped = ");
-    msg.append(to_string(drop));
-    msg.append(", if_dropped = ");
-    msg.append(to_string(ifdrop));
-    msg.append(", memcache replies = ");
-    msg.append(to_string(mc_resp));
-    ce->logger->debug(msg);
-  }
-  MemcacheCommand mc = ce->parse(pkthdr, packet);
+  } */
 
-#ifdef _DEBUG
-  if (mc.isRequest()) {
-    ce->logger->trace(string("memcache request: ") + mc.getCommandName());
-  } else if (mc.isResponse()) {
-    ce->logger->trace(string("memcache response: ") + mc.getObjectKey() + " " +
-                      to_string((llui_t)mc.getObjectSize()));
-  }
-#endif
-
-  if (!mc.isResponse()) {
-#ifdef _DEVEL
-    ce->logger->trace("Not a memcache command");
-#endif
-    return;
-  }
-  ce->enqueue(mc);
-  mc_resp += 1;
+  Packet p(*header, packet);
+  ce->enqueue(p);
 }
 
 // Signal handler for handling shutdowns

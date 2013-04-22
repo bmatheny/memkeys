@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -184,4 +184,4 @@ void CaptureEngine::enqueue(const MemcacheCommand &mc)
   barrier_lock.unlock();
 }
 
-} // end namespace mctop
+} // end namespace

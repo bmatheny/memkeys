@@ -4,7 +4,7 @@
 #include "report/report.h"
 #include "config.h"
 
-namespace mctop {
+namespace mckeys {
 
 class TextReport : public Report
 {
@@ -13,6 +13,6 @@ class TextReport : public Report
   virtual void render();
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

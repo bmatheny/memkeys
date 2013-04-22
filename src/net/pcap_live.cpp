@@ -1,7 +1,7 @@
 #include "common.h"
 #include "net/net.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -45,8 +45,8 @@ void PcapLive::open()
     string msg = "Could not open device " + getInterface() + " for reading: " + errorBuffer;
     logger->error(CONTEXT, msg.c_str());
     state.setState(state_NEW);
-    throw MctopException(msg);
+    throw MemkeysException(msg);
   }
 }
 
-} // end namespace mctop
+} // end namespace

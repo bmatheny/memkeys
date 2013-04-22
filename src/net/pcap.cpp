@@ -3,7 +3,7 @@
 #include "net/net.h"
 #include "util/util.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -24,7 +24,7 @@ void Pcap::setFilter(const string &filter)
   if (!state.isStarting()) {
     string emsg = "No pcap session open, can't apply filter";
     logger->error(CONTEXT, emsg.c_str());
-    throw MctopException(emsg);
+    throw MemkeysException(emsg);
   }
   logger->info(CONTEXT,
                "Applying filter (%s) to pcap session", filter.c_str());
@@ -35,13 +35,13 @@ void Pcap::setFilter(const string &filter)
   if (rc == -1) {
     string msg = "Couldn't parse pcap filter " + filter + ": " + getPcapError();
     logger->error(CONTEXT, msg.c_str());
-    throw MctopException(msg);
+    throw MemkeysException(msg);
   }
   rc = pcap_setfilter(handle, &bpf);
   if (rc == -1) {
     string msg = "Couldn't install pcap filter " + filter + ": " + getPcapError();
     logger->error(CONTEXT, msg.c_str());
-    throw MctopException(msg);
+    throw MemkeysException(msg);
   }
   pcap_freecode(&bpf);
 }
@@ -53,7 +53,7 @@ void Pcap::startCapture(PcapCallback cb,
   if (!state.isStarting()) {
     string msg = "No pcap session available";
     logger->error(CONTEXT, msg.c_str());
-    throw MctopException(msg);
+    throw MemkeysException(msg);
   }
   state.setState(state_RUNNING);
   // FIXME I don't think this is really needed
@@ -66,7 +66,7 @@ void Pcap::startCapture(PcapCallback cb,
     string msg = "Could not start capture loop: ";
     msg.append(getPcapError());
     logger->error(CONTEXT, msg.c_str());
-    throw MctopException(msg);
+    throw MemkeysException(msg);
   }
 }
 
@@ -119,4 +119,4 @@ std::string Pcap::getPcapError() const
   return err;
 }
 
-} // end namespace mctop
+} // end namespace

@@ -6,10 +6,10 @@
 #endif
 
 #ifndef PACKAGE_NAME
-#define PACKAGE_NAME "mctop"
+#define PACKAGE_NAME "memkeys"
 #endif
 #ifndef PACKAGE_STRING
-#define PACKAGE_STRING "mctop (unknown version)"
+#define PACKAGE_STRING "memkeys (unknown version)"
 #endif
 #ifndef PACKAGE_BUGREPORT
 #define PACKAGE_BUGREPORT "bmatheny@mobocracy.net"

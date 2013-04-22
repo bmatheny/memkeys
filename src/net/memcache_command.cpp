@@ -13,7 +13,7 @@ extern "C" {
 #include <netinet/if_ether.h>
 }
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -113,4 +113,4 @@ void MemcacheCommand::setCommandName(const std::string &name)
   commandName = name;
 }
 
-} // end namespace mctop
+} // end namespace

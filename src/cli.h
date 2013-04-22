@@ -3,7 +3,7 @@
 
 #include "config.h"
 
-namespace mctop {
+namespace mckeys {
 
 class Cli
 {

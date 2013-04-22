@@ -4,7 +4,7 @@
 #include "config.h"
 #include "logging/logger.h"
 
-namespace mctop {
+namespace mckeys {
 
 class Report {
  public:
@@ -18,6 +18,6 @@ class Report {
   const LoggerPtr logger;
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

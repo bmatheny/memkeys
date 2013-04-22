@@ -4,20 +4,20 @@
 #include <string>
 #include <stdexcept>
 
-namespace mctop {
+namespace mckeys {
 
-class MctopException : public std::runtime_error
+class MemkeysException : public std::runtime_error
 {
  public:
-  MctopException(const std::string &msg) : std::runtime_error(msg) {}
+  MemkeysException(const std::string &msg) : std::runtime_error(msg) {}
 };
 
-class MctopConfigurationError : public MctopException
+class MemkeysConfigurationError : public MemkeysException
 {
  public:
-  MctopConfigurationError(const std::string &msg) : MctopException(msg) {}
+  MemkeysConfigurationError(const std::string &msg) : MemkeysException(msg) {}
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

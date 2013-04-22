@@ -12,7 +12,7 @@
 #include "util/stat.h"
 #include "util/state.h"
 
-namespace mctop {
+namespace mckeys {
 
 class SortByCount {
  public:

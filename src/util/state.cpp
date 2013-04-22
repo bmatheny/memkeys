@@ -1,7 +1,7 @@
 #include "util/state.h"
 #include <mutex>
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -59,4 +59,4 @@ string State::getName() const
   }
 }
 
-} // end namespace mctop
+} // end namespace

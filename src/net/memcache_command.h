@@ -6,7 +6,7 @@
 #include "net/packet.h"
 #include "net/pcap.h"
 
-namespace mctop {
+namespace mckeys {
 
 enum memcache_command_t {
   MC_UNKNOWN, MC_REQUEST, MC_RESPONSE
@@ -54,6 +54,6 @@ class MemcacheCommand
   uint32_t objectSize;
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

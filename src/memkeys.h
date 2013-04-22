@@ -1,5 +1,5 @@
-#ifndef _MCTOP_MCTOP_H
-#define _MCTOP_MCTOP_H
+#ifndef _MEMKEYS_MEMKEYS_H
+#define _MEMKEYS_MEMKEYS_H
 
 #include <string>
 
@@ -7,13 +7,13 @@
 #include "net/net.h"
 #include "report/report.h"
 
-namespace mctop {
+namespace mckeys {
 
-class Mctop {
+class Memkeys {
  public:
-  static Mctop * getInstance(const Config * config);
-  static Mctop * getInstance(int argc, char ** argv);
-  virtual ~Mctop();
+  static Memkeys * getInstance(const Config * config);
+  static Memkeys * getInstance(int argc, char ** argv);
+  virtual ~Memkeys();
 
   virtual void run();
 
@@ -30,7 +30,7 @@ class Mctop {
     { return state.getName(); }
 
  protected:
-  Mctop(const Config * config);
+  Memkeys(const Config * config);
 
   const Config * config;
   const LoggerPtr logger;

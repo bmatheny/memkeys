@@ -1,6 +1,6 @@
 #include "common.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -142,4 +142,4 @@ void Stats::prune() {
   logger->info(CONTEXT, "Stats prune thread stopped");
 }
 
-} // end namespace mctop
+} // end namespace

@@ -4,7 +4,7 @@
 #include "logging/level.h"
 #include "util/util.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -88,4 +88,4 @@ uint32_t Level::getValue() const
   return value;
 }
 
-} // end namespace mctop
+} // end namespace mckeys

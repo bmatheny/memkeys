@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace mctop {
+namespace mckeys {
 
 class Device;
 
@@ -31,6 +31,6 @@ class Device {
   const bpf_u_int32 _ipAddress;
 };
 
-} // end of mctop namespace
+} // end of namespace
 
 #endif

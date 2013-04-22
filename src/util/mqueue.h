@@ -12,7 +12,7 @@
 #include <mutex>
 #include <condition_variable>
 
-namespace mctop {
+namespace mckeys {
 
 template <typename T>
 class Queue
@@ -126,6 +126,6 @@ class mqueue
   Node* last;                                             // shared
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

@@ -7,7 +7,7 @@ extern "C" {
 #include <sys/time.h>
 }
 
-namespace mctop {
+namespace mckeys {
 
 class UtilTime {
  public:
@@ -18,6 +18,6 @@ class UtilTime {
   }
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

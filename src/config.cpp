@@ -1,6 +1,6 @@
 #include "common.h"
 
-namespace mctop {
+namespace mckeys {
 
 static Config * instance = NULL;
 

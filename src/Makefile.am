@@ -16,9 +16,9 @@ AM_CFLAGS += -O2
 AM_CXXFLAGS += -O2
 endif
 
-bin_PROGRAMS = mctop
+bin_PROGRAMS = memkeys
 
-mctop_SOURCES =			\
+memkeys_SOURCES =			\
 	util/util.h \
 	util/exceptions.h \
 	util/mqueue.h \
@@ -40,5 +40,5 @@ mctop_SOURCES =			\
 	net/memcache_command.h net/memcache_command.cpp \
 	net/capture_engine.h net/capture_engine.cpp \
 	cli.h cli.cpp \
-	mctop.h mctop.cpp \
+	memkeys.h memkeys.cpp \
 	main.cpp

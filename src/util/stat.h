@@ -9,7 +9,7 @@
 
 #include "util/util_time.h"
 
-namespace mctop {
+namespace mckeys {
 
 /**
  * A Stat is part of a collection of stats.
@@ -73,6 +73,6 @@ class Stat {
 typedef std::unordered_map<ssize_t, Stat> StatCollection;
 typedef std::pair<ssize_t, Stat> StatPair;
 
-} // end namespace mctop
+} // end namespace
 
 #endif

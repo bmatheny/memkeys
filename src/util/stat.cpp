@@ -1,6 +1,6 @@
 #include "util/stat.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -60,4 +60,4 @@ void Stat::increment() {
   _count += 1;
 }
 
-} // end namespace mctop
+} // end namespace

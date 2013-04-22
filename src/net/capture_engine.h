@@ -13,7 +13,7 @@
 // Basic holder for userdata when processing packets. Provides a logger, report
 // instance, and a config
 
-namespace mctop {
+namespace mckeys {
 class CaptureEngine {
 
  public:
@@ -62,6 +62,6 @@ class CaptureEngine {
 
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

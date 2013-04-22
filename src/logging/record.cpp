@@ -7,7 +7,7 @@ extern "C" {
 
 #include "logging/record.h"
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -146,4 +146,4 @@ string Record::getTimestamp() const
   return result;
 }
 
-} // end namespace mctop
+} // end namespace

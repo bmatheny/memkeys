@@ -4,7 +4,7 @@
 #include <mutex>
 #include <string>
 
-namespace mctop {
+namespace mckeys {
 
 enum state_t {
   state_NEW, state_STARTING, state_RUNNING, state_STOPPING, state_TERMINATED
@@ -46,6 +46,6 @@ class State
   State(const State &state); // no copy constructor
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

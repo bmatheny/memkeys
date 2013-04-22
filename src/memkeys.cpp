@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 #include "cli.h"
-#include "mctop.h"
+#include "memkeys.h"
 
 extern "C" { // need for signal handling
 #include <signal.h>
@@ -13,50 +13,50 @@ extern "C" { // need for signal handling
 
 using namespace std;
 
-namespace mctop {
+namespace mckeys {
 
 // forward declarations
 static void process(u_char *userData, const struct pcap_pkthdr* pkthdr, const u_char* packet);
 static void signal_cb(int signum);
 
 // Compilation unit values
-static Mctop * instance = NULL;
+static Memkeys * instance = NULL;
 
 // Static initializer
-Mctop * Mctop::getInstance(const Config * config)
+Memkeys * Memkeys::getInstance(const Config * config)
 {
   if (instance != NULL) {
     return instance;
   }
   if (config->getInterface().empty()) {
-    throw MctopConfigurationError("No interface was specified");
+    throw MemkeysConfigurationError("No interface was specified");
   }
-  instance = new Mctop(config);
+  instance = new Memkeys(config);
   // FIXME? This should account for offline vs live
   instance->session = new PcapLive(config);
   instance->engine = new CaptureEngine(config, instance->session);
   return instance;
 }
 // Used for initializing app main()
-Mctop * Mctop::getInstance(int argc, char ** argv)
+Memkeys * Memkeys::getInstance(int argc, char ** argv)
 {
   Config * cfg = Config::getInstance();
   LoggerPtr mainLogger = Logger::getLogger("main");
   try {
     Cli::parse(argc, argv, cfg);
   } catch (const exception &ex) {
-    throw MctopConfigurationError(ex.what());
+    throw MemkeysConfigurationError(ex.what());
   }
   mainLogger->setLevel(Level::INFO);
   mainLogger->info(CONTEXT,
                    "Starting application %s. PID %d", argv[0], getpid());
   Logger::getRootLogger()->setLevel(cfg->verbosity());
   mainLogger->debug("Configuration\n" + cfg->toString());
-  return Mctop::getInstance(cfg);
+  return Memkeys::getInstance(cfg);
 }
 
 // Destructor
-Mctop::~Mctop()
+Memkeys::~Memkeys()
 {
   if (session != NULL) {
     logger->trace(CONTEXT, "Deleting pcap session");
@@ -70,7 +70,7 @@ Mctop::~Mctop()
 }
 
 // Run the capture loop
-void Mctop::run()
+void Memkeys::run()
 {
   signal(SIGINT, signal_cb);
   state.setState(state_STARTING);
@@ -88,7 +88,7 @@ void Mctop::run()
 }
 
 // Call engine and capture shutdown
-void Mctop::tryShutdown()
+void Memkeys::tryShutdown()
 {
   if (state.checkAndSet(state_RUNNING, state_STOPPING)) {
     if (engine != NULL) {
@@ -109,7 +109,7 @@ void Mctop::tryShutdown()
   }
 }
 
-void Mctop::forceShutdown()
+void Memkeys::forceShutdown()
 {
   if (session != NULL && state.isStopping()) {
     logger->warning(CONTEXT, "Forcibly closing capture session");
@@ -118,9 +118,9 @@ void Mctop::forceShutdown()
 }
 
 // protected, see getInstance
-Mctop::Mctop(const Config * config)
+Memkeys::Memkeys(const Config * config)
     : config(config),
-      logger(Logger::getLogger("mctop")),
+      logger(Logger::getLogger("memkeys")),
       session(NULL),
       engine(NULL),
       state()
@@ -168,4 +168,4 @@ static void signal_cb(int signum)
   }
 }
 
-} // end namespace mctop
+} // end namespace

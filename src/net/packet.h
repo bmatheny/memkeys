@@ -8,7 +8,7 @@ extern "C" {
 #include <stdlib.h>
 }
 
-namespace mctop {
+namespace mckeys {
 
 class Packet {
  public:
@@ -44,6 +44,6 @@ class Packet {
 
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

@@ -2,7 +2,7 @@
 #include "config.h"
 #include "logging/logger.h"
 
-namespace mctop {
+namespace mckeys {
 
 TextReport::TextReport(const Config * cfg)
   : Report(cfg, Logger::getLogger("report.txt"))
@@ -14,4 +14,4 @@ void TextReport::render()
   logger->info("Rendering report");
 }
 
-} // end namespace mctop
+} // end namespace

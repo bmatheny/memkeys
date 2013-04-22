@@ -8,7 +8,7 @@ extern "C" {
 #include <arpa/inet.h>
 }
 
-namespace mctop {
+namespace mckeys {
 
 using namespace std;
 
@@ -25,7 +25,7 @@ Device Device::getDevice(const string &name)
   bpf_u_int32 mask = 0;
   int status = pcap_findalldevs(&alldevs, errbuf);
   if (status != 0) {
-    throw MctopException(string("No readable devices: ") + errbuf);
+    throw MemkeysException(string("No readable devices: ") + errbuf);
   }
   // TODO -> move to find_address_iface(name);
   for (pcap_if_t *d = alldevs; d != NULL; d = d->next) {
@@ -39,7 +39,7 @@ Device Device::getDevice(const string &name)
   }
   pcap_freealldevs(alldevs);
   if (pcap_lookupnet(name.c_str(), &network, &mask, errbuf) < 0) {
-    throw MctopException(string("Invalid device ") + name + ": " + errbuf);
+    throw MemkeysException(string("Invalid device ") + name + ": " + errbuf);
   }
   return Device(name, network, mask, address);
 }
@@ -55,4 +55,4 @@ Device::Device(const string &name,
     _ipAddress(address)
 {}
 
-} //end namespace mctop
+} //end namespace

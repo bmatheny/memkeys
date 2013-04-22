@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include "logging/level.h"
 
-namespace mctop {
+namespace mckeys {
 
 class Record
 {
@@ -53,6 +53,6 @@ class Record
   std::string _thrownMessage;
 };
 
-} // end namespace mctop
+} // end namespace
 
 #endif

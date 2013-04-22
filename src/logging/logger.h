@@ -9,8 +9,8 @@
 #include "logging/level.h"
 #include "logging/record.h"
 
-#define CONTEXT mctop::Record(__FILE__, __LINE__, __FUNCTION__)
-#define CONTEXT_EX(ex) mctop::Record(__FILE__, __LINE__, __FUNCTION__, ex)
+#define CONTEXT mckeys::Record(__FILE__, __LINE__, __FUNCTION__)
+#define CONTEXT_EX(ex) mckeys::Record(__FILE__, __LINE__, __FUNCTION__, ex)
 
 #define LOG_WITH_VARARGS(level, rec, fmt, logger) { \
     va_list argp; \
@@ -24,7 +24,7 @@
     va_end(argp); \
 }
 
-namespace mctop {
+namespace mckeys {
 
 class Logger;
 typedef Logger* LoggerPtr;
@@ -85,6 +85,6 @@ class Logger
 
 typedef std::map<std::string,LoggerPtr> Loggers;
 
-} // end namespace mctop
+} // end namespace
 
 #endif

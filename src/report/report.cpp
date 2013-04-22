@@ -2,7 +2,7 @@
 #include "config.h"
 #include "logging/logger.h"
 
-namespace mctop {
+namespace mckeys {
 
 Report::~Report()
 {

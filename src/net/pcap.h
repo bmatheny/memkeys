@@ -7,7 +7,7 @@ extern "C" {
 
 #include "common.h"
 
-namespace mctop {
+namespace mckeys {
 
 typedef pcap_t * PcapPtr;
 typedef pcap_handler PcapCallback;

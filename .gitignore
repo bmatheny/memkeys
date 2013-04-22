@@ -77,7 +77,7 @@ nutcracker
 Makefile
 Makefile.in
 
-src/mctop
+src/memkeys
 
 *.dirstamp
 *.prof

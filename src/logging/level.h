@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-namespace mctop {
+namespace mckeys {
 
 class Level
 {
@@ -35,6 +35,6 @@ class Level
 typedef std::map<uint32_t,Level> ValueMap;
 typedef std::map<std::string,Level> NameMap;
 
-} // end namespace mctop
+} // end namespace
 
 #endif

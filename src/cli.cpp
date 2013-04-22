@@ -7,7 +7,7 @@ extern "C" {
 #include "common.h"
 #include "cli.h"
 
-namespace mctop {
+namespace mckeys {
 
 static const struct option longopts[] = {
   {"discard", required_argument, 0, 'd'},

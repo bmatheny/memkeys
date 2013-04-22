@@ -1,8 +1,9 @@
-# mCtop
+# memkeys
 
-A top like tool for inspecting memcache key values in realtime.
-
-This is a clone of https://github.com/etsy/mctop written in C.
+Show your memcache key usage in realtime. This was originally inspired by
+[mctop](https://github.com/etsy/mctop) which is written in Ruby. I found that
+under load mctop would drop between 50 and 75 percent of packets. Under the same
+load memkeys will typically drop less than 3 percent of packets.
 
 ## Do on Monday
 

@@ -1,6 +1,6 @@
 #include "net/packet.h"
 
-namespace mctop {
+namespace mckeys {
 using namespace std;
 
 Packet::Packet() : header(), data(NULL), _timestamp(0)
@@ -96,4 +96,4 @@ void Packet::destroy() {
   }
 }
 
-} // end namespace mctop
+} // end namespace

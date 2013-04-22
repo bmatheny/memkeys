@@ -5,7 +5,7 @@
 #include "net/device.h"
 #include "common.h"
 
-namespace mctop {
+namespace mckeys {
 
 class PcapLive : public Pcap
 {

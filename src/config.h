@@ -4,7 +4,7 @@
 #include <string>
 #include "logging/logger.h"
 
-namespace mctop {
+namespace mckeys {
 
 class Config
 {

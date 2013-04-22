@@ -56,11 +56,6 @@ void Pcap::startCapture(PcapCallback cb,
     throw MemkeysException(msg);
   }
   state.setState(state_RUNNING);
-  // FIXME I don't think this is really needed
-  if (pcap_setnonblock(handle, true, errorBuffer) < 0) {
-    logger->error(CONTEXT, "Could not set interface to be non blocking: %s",
-                  errorBuffer);
-  }
   int rc = pcap_loop(handle, cnt, cb, userData);
   if (rc == -1 && !(state.isStopping() || state.isTerminated())) {
     string msg = "Could not start capture loop: ";

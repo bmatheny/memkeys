@@ -37,13 +37,17 @@ CaptureEngine::~CaptureEngine()
   } else {
     logger->error(CONTEXT, "Capture engine not successfully shut down");
   }
-  /*
-  RequestRates q = stats->getLeaders<SortByRequestRate>(100);
+  RequestRates q = stats->getLeaders<SortByRequestRate>(50);
   for (uint32_t i = 0; i < q.size(); i++) {
     Stat stat = q.top();
-    cout << stat.getKey() << endl;
+    cout << setw(110) << stat.getKey() << ", ";
+    cout << stat.getCount() << ", ";
+    cout << stat.elapsed() << ", ";
+    cout << stat.requestRate() << ", ";
+    cout << stat.getSize() << ", ";
+    cout << stat.bandwidth() << endl;
     q.pop();
-  } */
+  }
   delete report;
   delete stats;
   delete barrier;

@@ -30,6 +30,7 @@ class Stat {
   }
 
   Stat(const std::string &key, const uint32_t size);
+  Stat(); // needed for updating a map. fucking hell.
   ~Stat();
   // std::atomic member variables require that your class implement a copy
   // constructor and the assignment operator, if you want to use the Stat class
@@ -52,7 +53,7 @@ class Stat {
   }
 
   inline uint64_t elapsed() const {
-    return UtilTime::currentTimeMillis() - _created;
+    return (UtilTime::currentTimeMillis() - _created)/1000;
   }
 
   void increment();

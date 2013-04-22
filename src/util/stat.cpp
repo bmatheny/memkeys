@@ -4,6 +4,9 @@ namespace mctop {
 
 using namespace std;
 
+Stat::Stat()
+    : key(), _created(0), _size(0), _count(0)
+{}
 Stat::Stat(const string &key, const uint32_t size)
     : key(key),
       _created(UtilTime::currentTimeMillis()),
@@ -50,11 +53,11 @@ double Stat::bandwidth(const uint64_t elapsed_t) const {
 }
 
 double Stat::requestRate(const uint64_t elapsed_t) const {
-  return getCount() / (double)elapsed_t;
+  return (getCount() / (double)elapsed_t);
 }
 
 void Stat::increment() {
-  _count++;
+  _count += 1;
 }
 
 } // end namespace mctop

@@ -46,13 +46,14 @@ void Stats::shutdown() {
 void Stats::increment(const string &key, const uint32_t size) {
   ssize_t _key = Stat::hashKey(key);
   _mutex.lock();
-  StatCollection::const_iterator it = _collection.find(_key);
+  StatCollection::iterator it = _collection.find(_key);
   if (it != _collection.end()) {
     Stat stat = it->second;
     // FIXME this should probably only be done periodically, not every time
     // since it is unlikely to change very often
     stat.setSize(size);
     stat.increment();
+    _collection[_key] = stat;
   } else {
     _collection.insert(it, StatCollection::value_type(_key, Stat(key, size)));
   }

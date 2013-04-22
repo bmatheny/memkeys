@@ -135,11 +135,11 @@ static void process(u_char *userData, const struct pcap_pkthdr* header,
   // FIXME just make this a global static to avoid the weird casting issues
   static CaptureEngine * ce = (CaptureEngine*)userData;
 
-  /* FIXME need to include this
+  // FIXME need to include this
   if (ce->isShutdown()) {
-    ce->logger->info("Shutting down");
+    ce->getLogger()->info("Refusing packet capture, in shutdown");
     return;
-  } */
+  }
 
   Packet p(*header, packet);
   ce->enqueue(p);

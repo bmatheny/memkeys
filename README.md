@@ -4,17 +4,14 @@ A top like tool for inspecting memcache key values in realtime.
 
 This is a clone of https://github.com/etsy/mctop written in C.
 
-## Do on Sunday
+## Do on Monday
 
- 1. Finish Stats implementation (getLeaders) - Done?
- 2. mqueue is shared by CaptureEngine and Stats (ce produces, stats consumes)
-   * Will need to change Stats/CaptureEngine constructor for the shared mqueue - Done
-   * Thread for reading from mqueue in Stats class - Done
- 3. Report gets a handle on Stats, also thread safe - Done
-   * Will need to change up CE constructor again to hand Stats to Report - Done
- 4. Thread for pruning periodically (driven from report) - Done
- 5. Thread for main report interface
- 6. Tear down threads in destructor - Done
+ 1. Thread for main report interface
+ 2. Implement text (CSV) report as variation on printStats logic
+ 3. Implement very simple file based logging so we don't mess up the curses UI
+   * CLI specified -l /path/to/file
+   * If so, update the Logger::log method
+ 4. Start on curses UI
 
 This keeps packet captures fast since the mqueue implementation allows fast
 buffering of data points. Stats can read from it as quickly as it can.

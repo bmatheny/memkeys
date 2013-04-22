@@ -14,12 +14,18 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       config(config),
       session(session),
       barrier(new mqueue<Elem>()),
-      packets(new mqueue<Packet>()),
       report(new TextReport(config)),
       stats(new Stats(config, barrier)),
-      _isTerminated(false)
+      _is_terminated(false),
+      barrier_lock()
 {
-  worker_thread = thread(&CaptureEngine::processPackets, this);
+  queue_count = 2;
+  packets.reserve(queue_count);
+  worker_threads = new thread[queue_count];
+  for (int i = 0; i < queue_count; i++) {
+    packets.insert(packets.begin() + i, new mqueue<Packet>());
+    worker_threads[i] = thread(&CaptureEngine::processPackets, this, i, packets.at(i));
+  }
   stats->start();
 }
 CaptureEngine::~CaptureEngine()
@@ -40,9 +46,14 @@ CaptureEngine::~CaptureEngine()
   delete stats;
   delete barrier;
   // FIXME we should wrap these joins in a timer
-  worker_thread.join();
-  logger->info(CONTEXT, "Worker thread dead");
-  delete packets;
+  for (int i = 0; i < queue_count; i++) {
+    worker_threads[i].join();
+    logger->info(CONTEXT, "Worker thread %d dead", i);
+  }
+  while (!packets.empty()) {
+    delete packets.back(), packets.pop_back();
+  }
+  delete[] worker_threads;
   delete logger;
 }
 
@@ -52,7 +63,7 @@ void CaptureEngine::enqueue(const Packet &packet)
   logger->trace(CONTEXT,
                 "Produced packet: %ld", packet.id());
 #endif
-  packets->produce(packet);
+  packets.at(packet.id() % queue_count)->produce(packet);
 }
 
 string CaptureEngine::getStatsString() const
@@ -75,12 +86,12 @@ string CaptureEngine::getStatsString() const
 }
 bool CaptureEngine::isShutdown() const
 {
-  return (_isTerminated == true);
+  return (_is_terminated == true);
 }
 
 void CaptureEngine::shutdown()
 {
-  _isTerminated = true;
+  _is_terminated = true;
   stats->shutdown();
 }
 
@@ -109,25 +120,30 @@ inline llsi_t tdiff(struct timeval start, struct timeval end) {
           - (start.tv_sec * 1000000 + start.tv_usec));
 }
 
-void CaptureEngine::processPackets() {
+void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
   static int64_t pktCount = 0;
   static llui_t resCount = 0;
   bool isDebug = logger->isDebug();
-  logger->info(CONTEXT, "Starting capture processing");
+  logger->info(CONTEXT, "Worker %d starting capture processing", worker_id);
 
   while(!isShutdown()) {
     Packet packet;
-    if (packets->consume(packet)) {
+    if (work_queue->consume(packet)) {
       pktCount += 1;
 #ifdef _DEBUG
-      logger->trace(CONTEXT, "Consumed packet %ld", packet.id());
+      logger->trace(CONTEXT,
+                    "worker %d Consumed packet %ld", worker_id, packet.id());
 #endif
       MemcacheCommand mc = parse(packet);
       if (mc.isResponse()) {
+        barrier_lock.lock();
         enqueue(mc);
+        barrier_lock.unlock();
         resCount += 1;
 #ifdef _DEBUG
-        logger->trace(string("mc response: ") + mc.getObjectKey());
+        logger->trace(CONTEXT,
+                      "worker %d, packet %ld, key %s", worker_id, packet.id(),
+                      mc.getObjectKey().c_str());
 #endif
       } else {
 #ifdef _DEVEL
@@ -150,7 +166,7 @@ void CaptureEngine::processPackets() {
 #endif
     }
   }
-  logger->info(CONTEXT, "Engine stopped processing packets");
+  logger->info(CONTEXT, "Worker %d stopped processing packets", worker_id);
 }
 
 /**

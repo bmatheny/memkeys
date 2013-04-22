@@ -2,6 +2,7 @@
 #define _NET_CAPTURE_ENGINE_H
 
 #include <thread>
+#include <mutex>
 
 #include "common.h"
 #include "net/memcache_command.h"
@@ -16,6 +17,7 @@ namespace mctop {
 class CaptureEngine {
 
  public:
+  typedef std::vector<mqueue<Packet>*> Packets;
   CaptureEngine(const Config * config, const Pcap * session);
   ~CaptureEngine();
 
@@ -34,7 +36,7 @@ class CaptureEngine {
 
  protected:
   // run in threads
-  void processPackets();
+  void processPackets(int worker_id, mqueue<Packet> *work_queue);
 
   // called by processPackets to parse an enqueued packet
   MemcacheCommand parse(const Packet &mc) const;
@@ -45,11 +47,14 @@ class CaptureEngine {
   const Config* config;
   const Pcap* session;
   mqueue<Elem> *barrier;
-  mqueue<Packet> *packets;
   Report* report;
   Stats* stats;
-  volatile bool _isTerminated;
-  std::thread worker_thread;
+  volatile bool _is_terminated;
+  // there is one worker thread per queue
+  uint8_t queue_count;
+  Packets packets;
+  std::thread *worker_threads;
+  std::mutex barrier_lock;
 
  private:
   CaptureEngine(); // no default constructor

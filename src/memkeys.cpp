@@ -134,9 +134,13 @@ static void process(u_char *userData, const struct pcap_pkthdr* header,
 {
   // FIXME just make this a global static to avoid the weird casting issues
   static CaptureEngine * ce = (CaptureEngine*)userData;
+  static Backoff backoff; // used for not killing the logger
 
   if (ce->isShutdown()) {
+    uint64_t backoffMs = backoff.getNextBackOffMillis();
+    struct timespec waitTime = UtilTime::millisToTimespec(backoffMs);
     ce->getLogger()->info("Refusing packet capture, in shutdown");
+    nanosleep(&waitTime, NULL);
     return;
   }
 

@@ -1,11 +1,13 @@
 #ifndef _LOGGING_LOGGER_H
 #define _LOGGING_LOGGER_H
 
-#include <string>
+#include <cstdarg>
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <mutex>
 #include <sstream>
-#include <cstdarg>
+#include <string>
 #include "logging/level.h"
 #include "logging/record.h"
 
@@ -48,6 +50,8 @@ class Logger
   void setUseParent(const bool use_parent);
   bool getUseParent() const;
 
+  void setHandler(std::ostream* handler);
+
   bool isRootLogger() const;
   bool isTrace() const { return getLevel() <= Level::TRACE; }
   bool isDebug() const { return getLevel() <= Level::DEBUG; }
@@ -74,6 +78,7 @@ class Logger
  protected:
   Logger(const std::string &name);
   std::string format(const Record &rec);
+  std::ostream& getHandler();
 
  private:
   const std::string _name;
@@ -81,6 +86,7 @@ class Logger
   bool _useParent;
   Level _level;
   std::mutex _writeMutex;
+  static std::ostream* _handler;
 };
 
 typedef std::map<std::string,LoggerPtr> Loggers;

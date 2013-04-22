@@ -1,4 +1,6 @@
 #include "common.h"
+#include <fstream>
+#include <iostream>
 
 namespace mckeys {
 
@@ -47,6 +49,21 @@ void Config::setInterface(const string &value)
 string Config::getInterface() const
 {
   return interface;
+}
+
+void Config::setLogfile(const string &value) {
+  logger->debug(CONTEXT, "Setting logfile to %s", value.c_str());
+  ofstream* ofs = new ofstream(value.c_str(), std::ofstream::out);
+  if (ofs->fail()) {
+    delete ofs;
+    throw MemkeysConfigurationError("Can't open " + value + " for writing");
+  }
+  logfile = value;
+  logger->setHandler(ofs);
+}
+string Config::getLogfile() const
+{
+  return logfile;
 }
 
 /**
@@ -109,6 +126,12 @@ Level Config::verbosity() const
 string Config::toString() const
 {
   ostringstream configs;
+  string lfile;
+  if (logfile.empty()) {
+    lfile = "stdout";
+  } else {
+    lfile = logfile;
+  }
   configs << setw(20) << "Discard Threshold";
   configs << ": " << getDiscardThreshold() << endl;
   configs << setw(20) << "Interface";
@@ -118,20 +141,23 @@ string Config::toString() const
   configs << setw(20) << "Refresh Interval";
   configs << ": " << getRefreshInterval() << "ms" << endl;
   configs << setw(20) << "Verbosity";
-  configs << ": " << verbosity().getName();
+  configs << ": " << verbosity().getName() << endl;
+  configs << setw(20) << "Logfile";
+  configs << ": " << lfile;
   return configs.str();
 }
 
 // private constructor
 Config::Config()
-: discardThreshold(0.0)
-, interface("")
-, _isPromiscuous(true)
-, port(11211)
-, _readTimeout(1000)
-, refreshInterval(500)
-, _snapLength(1518)
-, logger(Logger::getLogger("config"))
+  : discardThreshold(0.0),
+    interface(""),
+    _isPromiscuous(true),
+    port(11211),
+    _readTimeout(1000),
+    refreshInterval(500),
+    _snapLength(1518),
+    logger(Logger::getLogger("config")),
+    logfile()
 {}
 
 void Config::adjustLoggerLevel(const Level &newLevel)

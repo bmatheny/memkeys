@@ -18,6 +18,9 @@ class Config
   void setInterface(const std::string &value);
   std::string getInterface() const;
 
+  void setLogfile(const std::string &value);
+  std::string getLogfile() const;
+
   void setPort(const int port);
   uint16_t getPort() const;
   std::string getPortAsString() const;
@@ -52,6 +55,7 @@ class Config
   uint16_t refreshInterval;
   int _snapLength;
   LoggerPtr logger;
+  std::string logfile;
 };
 
 } // end namespace

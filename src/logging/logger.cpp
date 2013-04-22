@@ -16,6 +16,8 @@ static string ROOT_LOGGER_NAME = "";
 /**
  * Static methods. This is how you get a handle on a logger.
  */
+ostream* Logger::_handler = NULL;
+
 LoggerPtr Logger::getLogger(const string &name)
 {
   Loggers::iterator it = loggers.find(name);
@@ -53,6 +55,7 @@ LoggerPtr Logger::getRootLogger()
  */
 Logger::~Logger() {
   trace("~Logger destroyed");
+  // FIXME need to close handler
   Loggers::iterator it = loggers.find(getName());
   if (it != loggers.end()) {
     loggers.erase(it);
@@ -105,6 +108,10 @@ bool Logger::getUseParent() const
   return _useParent;
 }
 
+void Logger::setHandler(std::ostream* handler) {
+  _handler = handler;
+}
+
 /**
  * True if this logger is the root logger, false otherwise.
  */
@@ -133,8 +140,8 @@ void Logger::log(const Level &level, const Record &record)
     // file while seeing stats on their display
     string out = format(record);
     _writeMutex.lock();
-    cout << out << endl;
-    cout.flush();
+    getHandler() << out << endl;
+    getHandler().flush();
     _writeMutex.unlock();
     LoggerPtr logger = getParent();
     if (logger != NULL && logger->getUseParent()) {
@@ -202,7 +209,11 @@ Logger::Logger(const string &name)
   : _name(name),
     _level(Level::WARNING),
     _writeMutex()
-{}
+{
+  if (_handler == NULL) {
+    _handler = &cout;
+  }
+}
 
 // TODO make this configurable
 string Logger::format(const Record &rec)
@@ -224,6 +235,10 @@ string Logger::format(const Record &rec)
   }
   out << rec.getMessage();
   return out.str();
+}
+
+ostream& Logger::getHandler() {
+  return (*_handler);
 }
 
 } // end namespace

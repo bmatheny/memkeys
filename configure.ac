@@ -22,6 +22,20 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
+# Platform specific setup
+AC_CANONICAL_HOST
+case "$host" in
+  *linux*)
+    # getconf LEVEL1_DCACHE_LINESIZE
+    AC_DEFINE([linux], 1, [Linux])
+    ;;
+  darwin*)
+    # sysctl -a hw.cachelinesize
+    AC_DEFINE([__APPLE__], 1, [Apple Hardware])
+    ;;
+esac
+
+    
 # Check for headers
 AC_CHECK_HEADERS([getopt.h])
 AC_CHECK_HEADERS([pcrecpp.h])

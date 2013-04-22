@@ -18,6 +18,7 @@ class CaptureEngine {
 
  public:
   typedef std::vector<mqueue<Packet>*> Packets;
+
   CaptureEngine(const Config * config, const Pcap * session);
   ~CaptureEngine();
 

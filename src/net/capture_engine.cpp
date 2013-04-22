@@ -3,6 +3,8 @@
 #include "report/report.h"
 #include "report/text.h"
 
+#include <vector>
+
 namespace mctop {
 
 using namespace std;
@@ -19,7 +21,7 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       _is_terminated(false),
       barrier_lock()
 {
-  queue_count = 2;
+  queue_count = 3;
   packets.reserve(queue_count);
   worker_threads = new thread[queue_count];
   for (int i = 0; i < queue_count; i++) {
@@ -115,15 +117,10 @@ const LoggerPtr CaptureEngine::getLogger() const {
  * @TODO create several worker threads to process packets in parallel
  * @protected
  */
-inline llsi_t tdiff(struct timeval start, struct timeval end) {
-  return ((end.tv_sec * 1000000 + end.tv_usec)
-          - (start.tv_sec * 1000000 + start.tv_usec));
-}
-
 void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
   static int64_t pktCount = 0;
   static llui_t resCount = 0;
-  bool isDebug = logger->isDebug();
+  static bool isDebug = logger->isDebug();
   logger->info(CONTEXT, "Worker %d starting capture processing", worker_id);
 
   while(!isShutdown()) {
@@ -136,9 +133,7 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
 #endif
       MemcacheCommand mc = parse(packet);
       if (mc.isResponse()) {
-        barrier_lock.lock();
         enqueue(mc);
-        barrier_lock.unlock();
         resCount += 1;
 #ifdef _DEBUG
         logger->trace(CONTEXT,
@@ -192,7 +187,9 @@ void CaptureEngine::enqueue(const MemcacheCommand &mc)
   logger->trace(CONTEXT,
                "Produced stat: %s, %d", e.first.c_str(), e.second);
 #endif
+  barrier_lock.lock();
   barrier->produce(e);
+  barrier_lock.unlock();
 }
 
 } // end namespace mctop

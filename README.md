@@ -7,11 +7,11 @@ load memkeys will typically drop less than 3 percent of packets.
 
 ## Do on Monday
 
- 1. Thread for main report interface
- 2. Implement text (CSV) report as variation on printStats logic
- 3. Implement very simple file based logging so we don't mess up the curses UI
-   * CLI specified -l /path/to/file
-   * If so, update the Logger::log method
+ 1. Thread for main report interface - Done
+ 2. Implement text (CSV) report as variation on printStats logic - Done
+ 3. Implement very simple file based logging so we don't mess up the curses UI - Done
+   * CLI specified -l /path/to/file - Done
+   * If so, update the Logger::log method - Done
  4. Start on curses UI
 
 This keeps packet captures fast since the mqueue implementation allows fast

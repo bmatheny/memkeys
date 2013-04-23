@@ -54,6 +54,9 @@ typedef std::pair<std::string,uint32_t> Elem;
 class Stats
 {
  public:
+  static std::string getSortModeString(const SortMode& sortMode);
+  static std::string getSortOrderString(const SortOrder& sortOrder);
+
   Stats(const Config *config, mqueue<Elem> *mq);
   ~Stats();
 

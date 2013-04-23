@@ -126,7 +126,13 @@ void CursesReport::renderStats(deque<Stat> q, uint32_t qsize) {
   setpos(LINES-2, 0);
   attrset(COLOR_PAIR(2));
 
-  summary << left << setw(28) << "sort mode: reqsec (desc)";
+  string smd = "sort mode: ";
+  smd.append(Stats::getSortModeString(sortMode));
+  smd.append(" (");
+  smd.append(Stats::getSortOrderString(sortOrder));
+  smd.append(")");
+
+  summary << left << setw(28) << smd;
   summary << "keys: " << setw(14) << stats->getStatCount();
   summary << setw(40) << pstats;
 

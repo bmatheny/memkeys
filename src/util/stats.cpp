@@ -5,6 +5,27 @@ namespace mckeys {
 
 using namespace std;
 
+// Static methods
+string Stats::getSortOrderString(const SortOrder& sortOrder) {
+  if (sortOrder == sort_ASC) {
+    return "asc";
+  } else {
+    return "desc";
+  }
+}
+string Stats::getSortModeString(const SortMode& sortMode) {
+  switch(sortMode) {
+    case mode_REQRATE:
+      return "reqrate";
+    case mode_CALLS:
+      return "calls";
+    case mode_SIZE:
+      return "size";
+    default:
+      return "bw";
+  }
+}
+
 Stats::Stats(const Config *config, mqueue<Elem> *mq)
     : config(config),
       barrier(mq),

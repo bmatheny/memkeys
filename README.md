@@ -31,8 +31,8 @@ specify a discard threshold, otherwise the memory footprint will grow quite
 large.
 
     memkeys -i eth0 -d 10.0
-   
-## Development
+
+## Development/Build
 
 Install gperftools and gperftools-devel if you want to build with
 `--enable-profiling`. You will typically want to configure with
@@ -40,6 +40,25 @@ Install gperftools and gperftools-devel if you want to build with
 options will enable additional error logging.
 
 You will need libpcap-devel, libpcrecpp, and libncurses-devel.
+
+memkeys was developed on CentOS 5.8 with the following software tools:
+
+    GCC version    : g++44 (GCC) 4.4.6 20110731 (Red Hat 4.4.6-3)
+    GNU gmake      : 3.81
+    ld             : 2.17.50.0.6-20
+    coreutils      : 5.97
+    libtool        : 1.5.22
+    autoconf       : 2.61
+    automake       : 1.9.6
+
+The following library versions were used:
+
+    libpcap-devel  : 0.9.4-15
+    pcre-devel     : 6.6-6
+    ncurses-devel  : 5.5-24.20060715
+
+This should build fine against newer versions of the above tools. Different
+libraries are untested.
 
 # License
 

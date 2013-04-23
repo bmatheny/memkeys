@@ -24,13 +24,17 @@ This is on a machine saturating a 1Gb network link.
 
 You will most likely want to run with something like:
 
-    memkeys -i eth0
+    memkeys -i eth0 -l /tmp/memkeys.log
 
 If you are running memkeys on a very high traffic machine you will want to
 specify a discard threshold, otherwise the memory footprint will grow quite
 large.
 
-    memkeys -i eth0 -d 10.0
+    memkeys -i eth0 -d 10.0 -l /tmp/memkeys.log
+
+## Screenshot
+
+![Screenshot](https://raw.github.com/wiki/bmatheny/memkeys/misc/screenshot.png)
 
 ## Development/Build
 

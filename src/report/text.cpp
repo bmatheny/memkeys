@@ -22,7 +22,6 @@ static void printHeader() {
 
 void TextReport::render()
 {
-  const uint16_t size = 50;
   static bool first = false;
 
   if (!state.checkAndSet(state_STARTING, state_RUNNING)) {
@@ -31,7 +30,7 @@ void TextReport::render()
   }
 
   while(state.isRunning()) {
-    deque<Stat> q = stats->getLeaders<SortByCount>(size);
+    deque<Stat> q = stats->getLeaders<SortByCount>();
     uint32_t qsize = q.size();
     logger->debug(CONTEXT, "Rendering report with %u data points", qsize);
     if (qsize > 0) {

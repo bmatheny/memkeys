@@ -1,4 +1,5 @@
 #include <string>
+#include <iomanip>
 
 #include "net/net.h"
 #include "util/util.h"
@@ -71,14 +72,34 @@ void Pcap::startCapture(PcapCallback cb,
   }
 }
 
-pcap_stat Pcap::getStats() const
+PcapStats Pcap::getStats() const
 {
   pcap_stat stat;
+  PcapStats stats;
+  memset(&stat, 0, sizeof(stat));
+  memset(&stats, 0, sizeof(stats));
   if (state.isRunning()) {
     pcap_stats(handle, &stat);
   }
-  return stat;
+  stats.received = stat.ps_recv;
+  stats.dropped = stat.ps_drop;
+  stats.if_dropped = stat.ps_ifdrop;
+  stats.drop_pct = 100.0 * (stats.dropped / (double)(stats.received + 1.0));
+  return stats;
 }
+
+string Pcap::getStatsString() const
+{
+  ostringstream statout;
+  PcapStats stats = getStats();
+  statout << "packets (recv/dropped): ";
+  statout << stats.received << " / ";
+  statout << stats.dropped << " (";
+  statout << std::fixed << std::setprecision(2) << stats.drop_pct;
+  statout << "%)";
+  return statout.str();
+}
+
 void Pcap::stopCapture()
 {
   if (handle != NULL && state.checkAndSet(state_RUNNING, state_STOPPING)) {

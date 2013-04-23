@@ -14,6 +14,7 @@
 // instance, and a config
 
 namespace mckeys {
+
 class CaptureEngine {
 
  public:
@@ -26,9 +27,10 @@ class CaptureEngine {
 
   bpf_u_int32 getIpAddress() const
     { return session->getIpAddress(); }
-  pcap_stat getStats() const
+  PcapStats getStats() const
   { return session->getStats(); }
-  std::string getStatsString() const;
+  std::string getStatsString() const
+  { return session->getStatsString(); }
 
   bool isShutdown() const;
   void shutdown();

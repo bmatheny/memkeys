@@ -52,7 +52,6 @@ string Config::getInterface() const
 }
 
 void Config::setLogfile(const string &value) {
-  logger->debug(CONTEXT, "Setting logfile to %s", value.c_str());
   ofstream* ofs = new ofstream(value.c_str(), std::ofstream::out);
   if (ofs->fail()) {
     delete ofs;
@@ -60,6 +59,7 @@ void Config::setLogfile(const string &value) {
   }
   logfile = value;
   logger->setHandler(ofs);
+  logger->info(CONTEXT, "Now logging to %s", value.c_str());
 }
 string Config::getLogfile() const
 {

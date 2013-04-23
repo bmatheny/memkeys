@@ -38,6 +38,7 @@ memkeys_SOURCES =			\
 	net/pcap_live.h net/pcap_live.cpp \
 	report/report.h report/report.cpp \
 	report/text.h report/text.cpp \
+	report/curses.h report/curses.cpp \
 	net/memcache_command.h net/memcache_command.cpp \
 	net/capture_engine.h net/capture_engine.cpp \
 	cli.h cli.cpp \

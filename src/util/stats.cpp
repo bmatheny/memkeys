@@ -1,4 +1,5 @@
 #include "common.h"
+#include <algorithm>
 
 namespace mckeys {
 
@@ -68,9 +69,32 @@ void Stats::increment(const string &key, const uint32_t size) {
   _mutex.unlock();
 }
 
+deque<Stat> Stats::getLeaders(const SortMode mode, const SortOrder order) {
+  deque<Stat> holder;
+  switch (mode) {
+    case mode_CALLS:
+      holder = getLeaders<SortByCount>();
+      break;
+    case mode_SIZE:
+      holder = getLeaders<SortBySize>();
+      break;
+    case mode_REQRATE:
+      holder = getLeaders<SortByReqRate>();
+      break;
+    case mode_BANDWIDTH:
+      holder = getLeaders<SortByBandwidth>();
+      break;
+  }
+  if (order == sort_ASC) {
+    reverse(holder.begin(), holder.end());
+  }
+  return holder;
+}
+
 void Stats::printStats(const uint16_t size) {
-  deque<Stat> q = getLeaders<SortByCount>(size);
+  deque<Stat> q = getLeaders<SortByCount>();
   uint32_t qsize = q.size();
+  uint32_t i = 0;
   if (qsize > 0) {
     cout << setw(110) << "Key" << ", ";
     cout << setw(10) << "Count" << ", ";
@@ -79,7 +103,7 @@ void Stats::printStats(const uint16_t size) {
     cout << setw(10) << "Size" << ", ";
     cout << setw(10) << "BW" << endl;
   }
-  for (deque<Stat>::iterator it = q.begin(); it != q.end(); ++it) {
+  for (deque<Stat>::iterator it = q.begin(); it != q.end() && i < size; ++it, ++i) {
     Stat stat = *it;
     cout << setw(110) << stat.getKey() << ", ";
     cout << setw(10) << stat.getCount() << ", ";
@@ -88,6 +112,10 @@ void Stats::printStats(const uint16_t size) {
     cout << setw(10) << stat.getSize() << ", ";
     cout << setw(10) << std::setprecision(2) << stat.bandwidth() << endl;
   }
+}
+
+uint32_t Stats::getStatCount() {
+  return _collection.size();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -125,12 +153,18 @@ void Stats::collect() {
   logger->info(CONTEXT, "Stats collect thread stopped");
 }
 
-// FIXME this should be in getLeaders I think?
 void Stats::prune() {
   static const double threshold = config->getDiscardThreshold();
   int size_pre = 0, size_post = 0;
   StatCollection::iterator it;
   logger->info(CONTEXT, "Starting prune with threshold %0.2f", threshold);
+  // don't do work if we don't need to
+  if (threshold == 0.0) {
+    while(state.isRunning()) {
+      sleep(1);
+    }
+    return;
+  }
   while (state.isRunning()) {
     _mutex.lock();
     it = _collection.begin();
@@ -143,13 +177,11 @@ void Stats::prune() {
         ++it;
       }
     }
-    // FIXME not sure what this rehash param does
     _collection.rehash(0);
     size_post = _collection.size();
     logger->debug(CONTEXT,
                  "Stats collection size: %d -> %d", size_pre, size_post);
     _mutex.unlock();
-    // FIXME this should sleep for the UI refresh interval
     sleep(5);
   }
   logger->info(CONTEXT, "Stats prune thread stopped");

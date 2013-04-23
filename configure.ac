@@ -73,6 +73,16 @@ if test "x$LPCAP" = "xno"; then
   exit 1
 fi
 
+CURSES=""
+AC_CHECK_LIB(ncurses, initscr,, CURSES="no")
+AC_CHECK_HEADERS([ncurses.h])
+if test "x$CURSES" = "xno"; then
+  echo
+  echo "   ERROR!  ncurses library/headers (libncurses.a (or .so)/ncurses.h)"
+  echo "   not found."
+  exit 1
+fi
+
 AC_MSG_CHECKING(whether to create a profiled build)
 AC_ARG_ENABLE(profiling,
               AS_HELP_STRING([--enable-profiling], [Turn on profiling (default=no)]),

@@ -1,5 +1,7 @@
 #include "util/stat.h"
 
+#include <cmath>
+
 namespace mckeys {
 
 using namespace std;
@@ -53,7 +55,12 @@ double Stat::bandwidth(const uint64_t elapsed_t) const {
 }
 
 double Stat::requestRate(const uint64_t elapsed_t) const {
-  return (getCount() / (double)elapsed_t);
+  double rate = (getCount() / (double)elapsed_t);
+  if (isinf(rate)) {
+    return 1.0;
+  } else {
+    return rate;
+  }
 }
 
 void Stat::increment() {

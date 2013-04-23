@@ -11,6 +11,12 @@ namespace mckeys {
 
 typedef pcap_t * PcapPtr;
 typedef pcap_handler PcapCallback;
+typedef struct {
+  llui_t received;
+  llui_t dropped;
+  llui_t if_dropped;
+  double drop_pct;
+} PcapStats;
 
 // Pcap is not intended to be directly instantiated. Concrete implementations
 // should be used as:
@@ -28,7 +34,8 @@ class Pcap {
   // be sure to set the state to STARTING once the session is open
   // you also need to set handle
   virtual void open() = 0;
-  pcap_stat getStats() const;
+  PcapStats getStats() const;
+  std::string getStatsString() const;
   void close();
 
   virtual bpf_u_int32 getSubnetMask() const = 0;

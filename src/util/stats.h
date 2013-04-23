@@ -15,15 +15,39 @@
 
 namespace mckeys {
 
+typedef enum {
+  sort_DESC, sort_ASC
+} SortOrder;
+
+typedef enum {
+  mode_CALLS, mode_SIZE, mode_REQRATE, mode_BANDWIDTH
+} SortMode;
+
 class SortByCount {
  public:
   bool operator() (const Stat &first, const Stat &second) {
-    if (first.getCount() > second.getCount()) return true;
-    return false;
+    return (first.getCount() > second.getCount());
+  }
+};
+class SortBySize {
+ public:
+  bool operator() (const Stat &first, const Stat &second) {
+    return (first.getSize() > second.getSize());
+  }
+};
+class SortByReqRate {
+ public:
+  bool operator() (const Stat &first, const Stat &second) {
+    return (first.requestRate() > second.requestRate());
+  }
+};
+class SortByBandwidth {
+ public:
+  bool operator() (const Stat &first, const Stat &second) {
+    return (first.bandwidth() > second.bandwidth());
   }
 };
 
-typedef std::priority_queue<Stat,std::vector<Stat>,SortByCount> CountQueue;
 typedef std::pair<std::string,uint32_t> Elem;
 
 // Keep track of a collection of Stat items
@@ -38,11 +62,13 @@ class Stats
 
   void increment(const std::string &key, const uint32_t size);
   void printStats(const uint16_t size);
+  uint32_t getStatCount();
+
   // This will want to take a sort mode (what value to sort on) and a sort order
   // (asc,desc) as arguments
   // FIXME this sucks big time
   template<class T>
-  std::deque<Stat> getLeaders(const uint16_t size) {
+  std::deque<Stat> getLeaders() {
     std::priority_queue<Stat, std::vector<Stat>, T> pq;
     std::deque<Stat> holder;
     _mutex.lock();
@@ -50,9 +76,6 @@ class Stats
          it != _collection.end(); ++it)
     {
       pq.push(it->second);
-      if (pq.size() > size) {
-        pq.pop();
-      }
     }
     _mutex.unlock();
     while(!pq.empty()) {
@@ -61,6 +84,7 @@ class Stats
     }
     return holder;
   }
+  std::deque<Stat> getLeaders(const SortMode mode, const SortOrder order);
 
  protected:
   // These are run in threads

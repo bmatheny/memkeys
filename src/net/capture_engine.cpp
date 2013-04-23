@@ -1,6 +1,7 @@
 #include "common.h"
 #include "net/net.h"
 #include "report/report.h"
+#include "report/curses.h"
 #include "report/text.h"
 
 #include <vector>
@@ -15,7 +16,7 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       session(session),
       barrier(new mqueue<Elem>()),
       stats(new Stats(config, barrier)),
-      report(new TextReport(config, stats)),
+      report(new CursesReport(config, session, stats)), // FIXME this should be configurable
       _is_terminated(false),
       barrier_lock()
 {
@@ -59,24 +60,6 @@ void CaptureEngine::enqueue(const Packet &packet)
   packets.at(packet.id() % queue_count)->produce(packet);
 }
 
-string CaptureEngine::getStatsString() const
-{
-  pcap_stat stats = getStats();
-  llui_t recv = stats.ps_recv;
-  llui_t drop = stats.ps_drop;
-  llui_t ifdrop = stats.ps_ifdrop;
-  double pct = 100.0 * ((drop) / (double)(recv+1));
-  string msg = string("total seen = ") + to_string(recv);
-  msg.append(", dropped = ");
-  msg.append(to_string(drop));
-  msg.append(", if_dropped = ");
-  msg.append(to_string(ifdrop));
-  msg.append(", drop % = ");
-  char pcts[8];
-  snprintf(pcts, 8, "%.2f", pct);
-  msg.append(pcts);
-  return msg;
-}
 bool CaptureEngine::isShutdown() const
 {
   return (_is_terminated == true);

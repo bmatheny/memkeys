@@ -9,6 +9,7 @@ CsvReport::CsvReport(const Config* cfg, const Pcap* session, Stats* stats)
   : Report(cfg, Logger::getLogger("csvReport")),
     stats(stats)
 {
+  (void)session;
   if (state.checkAndSet(state_NEW, state_STARTING)) {
     report_thread = thread(&CsvReport::render, this);
   } else {

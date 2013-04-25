@@ -74,7 +74,7 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
 }
 
 // protected
-bool MemcacheCommand::parseRequest(u_char *data, int length)
+bool MemcacheCommand::parseRequest(u_char*, int)
 {
   // don't care about requests right now
   return false;

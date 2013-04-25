@@ -139,7 +139,6 @@ static void process(u_char *userData, const struct pcap_pkthdr* header,
   if (ce->isShutdown()) {
     uint64_t backoffMs = backoff.getNextBackOffMillis();
     struct timespec waitTime = UtilTime::millisToTimespec(backoffMs);
-    ce->getLogger()->info("Refusing packet capture, in shutdown");
     nanosleep(&waitTime, NULL);
     return;
   }

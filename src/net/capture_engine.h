@@ -35,8 +35,6 @@ class CaptureEngine {
   bool isShutdown() const;
   void shutdown();
 
-  const LoggerPtr getLogger() const;
-
  protected:
   // run in threads
   void processPackets(int worker_id, mqueue<Packet> *work_queue);

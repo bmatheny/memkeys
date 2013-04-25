@@ -1,16 +1,17 @@
-#ifndef _REPORT_TEXT_H
-#define _REPORT_TEXT_H
+#ifndef _REPORT_CSV_H
+#define _REPORT_CSV_H
 
 #include "config.h"
+#include "net/pcap.h"
 #include "report/report.h"
 #include "util/stats.h"
 
 namespace mckeys {
 
-class TextReport : public Report
+class CsvReport : public Report
 {
  public:
-  TextReport(const Config* cfg, Stats* stats);
+  CsvReport(const Config* cfg, const Pcap* session, Stats* stats);
   virtual void render();
 
  protected:

@@ -16,6 +16,11 @@ AM_CFLAGS += -O2
 AM_CXXFLAGS += -O2
 endif
 
+if DEVELOPMENT
+AM_CFLAGS += -Wextra
+AM_CXXFLAGS += -Wextra
+endif
+
 bin_PROGRAMS = memkeys
 
 memkeys_SOURCES =			\
@@ -36,8 +41,9 @@ memkeys_SOURCES =			\
 	net/pcap.h net/pcap.cpp \
 	net/packet.h net/packet.cpp \
 	net/pcap_live.h net/pcap_live.cpp \
+	report/report_type.h report/report_type.cpp \
 	report/report.h report/report.cpp \
-	report/text.h report/text.cpp \
+	report/csv.h report/csv.cpp \
 	report/curses.h report/curses.cpp \
 	net/memcache_command.h net/memcache_command.cpp \
 	net/capture_engine.h net/capture_engine.cpp \

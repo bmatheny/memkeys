@@ -17,9 +17,10 @@ static const struct option longopts[] = {
   {"help", no_argument, 0, 'h'},
   {"verbose", no_argument, 0, 'v'},
   {"version", no_argument, 0, 'V'},
-  {"logfile", required_argument, 0, 'l'}
+  {"logfile", required_argument, 0, 'l'},
+  {"report", required_argument, 0, 'R'}
 };
-static const char * argp = "d:i:l:p:r:hvV";
+static const char * argp = "d:i:l:p:r:R:hvV";
 
 using namespace std;
 
@@ -34,6 +35,7 @@ string Cli::help(const char * progname)
   txt << mkHelpDoc(longopts[2], "Network port to capture memcache traffic on (default 11211)", "PORT");
   txt << mkHelpDoc(longopts[3], "Refresh the stats display every INTERVAL ms (default 500)", "INTERVAL");
   txt << mkHelpDoc(longopts[7], "Output logs to FILE", "FILE");
+  txt << mkHelpDoc(longopts[8], "Output data in REPORT format (CSV or curses, default curses)", "REPORT");
   txt << endl;
   txt << mkHelpDoc(longopts[4], "This help", "");
   txt << mkHelpDoc(longopts[5], "Increase verbosity. May be used multiple times.", "");
@@ -68,6 +70,9 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
         break;
       case 'r':
         cfg->setRefreshInterval(::atoi(optarg));
+        break;
+      case 'R':
+        cfg->setReportType(optarg);
         break;
       case 'h':
         cout << Cli::help(progname);

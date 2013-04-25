@@ -1,16 +1,16 @@
 #include "common.h"
-#include "report/text.h"
+#include "report/csv.h"
 
 namespace mckeys {
 
 using namespace std;
 
-TextReport::TextReport(const Config* cfg, Stats* stats)
-  : Report(cfg, Logger::getLogger("textReport")),
+CsvReport::CsvReport(const Config* cfg, const Pcap* session, Stats* stats)
+  : Report(cfg, Logger::getLogger("csvReport")),
     stats(stats)
 {
   if (state.checkAndSet(state_NEW, state_STARTING)) {
-    report_thread = thread(&TextReport::render, this);
+    report_thread = thread(&CsvReport::render, this);
   } else {
     logger->warning(CONTEXT, "Incorrect API usage");
   }
@@ -20,9 +20,10 @@ static void printHeader() {
   cout << "key,count,elapsed,rate,size,bandwidth" << endl;
 }
 
-void TextReport::render()
+void CsvReport::render()
 {
   static bool first = false;
+  struct timespec ts = UtilTime::millisToTimespec(config->getRefreshInterval());
 
   if (!state.checkAndSet(state_STARTING, state_RUNNING)) {
     logger->error(CONTEXT, "render already started");
@@ -30,7 +31,7 @@ void TextReport::render()
   }
 
   while(state.isRunning()) {
-    deque<Stat> q = stats->getLeaders<SortByCount>();
+    deque<Stat> q = stats->getLeaders(mode_REQRATE, sort_DESC);
     uint32_t qsize = q.size();
     logger->debug(CONTEXT, "Rendering report with %u data points", qsize);
     if (qsize > 0) {
@@ -42,11 +43,11 @@ void TextReport::render()
       }
       renderStats(q);
     }
-    sleep(5);
+    nanosleep(&ts, NULL);
   }
 }
 
-void TextReport::renderStats(deque<Stat> q) {
+void CsvReport::renderStats(deque<Stat> q) {
   for (deque<Stat>::iterator it = q.begin(); it != q.end(); ++it) {
     Stat stat = *it;
     cout << stat.getKey() << ",";

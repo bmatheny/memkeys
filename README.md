@@ -15,6 +15,7 @@ This is on a machine saturating a 1Gb network link.
         -p, --port=PORT             Network port to capture memcache traffic on (default 11211)
         -r, --refresh=INTERVAL      Refresh the stats display every INTERVAL ms (default 500)
         -l, --logfile=FILE          Output logs to FILE
+        -R, --report=REPORT         Output data in REPORT format (CSV or curses, default curses)
 
         -h, --help                  This help
         -v, --verbose               Increase verbosity. May be used multiple times.
@@ -51,8 +52,8 @@ memkeys was developed on CentOS 5.8 with the following software tools:
     GNU gmake      : 3.81
     ld             : 2.17.50.0.6-20
     coreutils      : 5.97
-    libtool        : 1.5.22
-    autoconf       : 2.61
+    libtool        : 2.4.2
+    autoconf       : 2.68
     automake       : 1.9.6
 
 The following library versions were used:

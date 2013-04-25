@@ -98,6 +98,16 @@ uint16_t Config::getRefreshInterval() const
 }
 
 /**
+ * Which report should be used by default?
+ */
+void Config::setReportType(const std::string &value) {
+  reportType = ReportType::fromString(value);
+}
+ReportType Config::getReportType() const {
+  return reportType;
+}
+
+/**
  * Manage how verbose we get.
  */
 void Config::makeLessVerbose()
@@ -157,7 +167,8 @@ Config::Config()
     refreshInterval(500),
     _snapLength(1518),
     logger(Logger::getLogger("config")),
-    logfile()
+    logfile(),
+    reportType(ReportType::NCURSES)
 {}
 
 void Config::adjustLoggerLevel(const Level &newLevel)

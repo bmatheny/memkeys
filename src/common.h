@@ -35,12 +35,12 @@
 #include <stdexcept>
 #include <string>
 
-#include "util/util.h"
-#include "logging/logging.h"
-#include "config.h"
-
 // Need for typecasting in to_string for older versions of g++
 typedef long long unsigned int llui_t;
 typedef long long int llsi_t;
+
+#include "util/util.h"
+#include "logging/logging.h"
+#include "config.h"
 
 #endif

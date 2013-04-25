@@ -3,6 +3,7 @@
 
 #include <string>
 #include "logging/logger.h"
+#include "report/report_type.h"
 
 namespace mckeys {
 
@@ -31,6 +32,9 @@ class Config
   void setRefreshInterval(const int interval);
   uint16_t getRefreshInterval() const;
 
+  void setReportType(const std::string &value);
+  ReportType getReportType() const;
+
   int getSnapLength() const
   { return _snapLength; }
 
@@ -56,6 +60,7 @@ class Config
   int _snapLength;
   LoggerPtr logger;
   std::string logfile;
+  ReportType reportType;
 };
 
 } // end namespace

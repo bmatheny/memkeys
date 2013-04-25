@@ -2,7 +2,6 @@
 #include "net/net.h"
 #include "report/report.h"
 #include "report/curses.h"
-#include "report/text.h"
 
 #include <vector>
 
@@ -16,7 +15,7 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       session(session),
       barrier(new mqueue<Elem>()),
       stats(new Stats(config, barrier)),
-      report(new CursesReport(config, session, stats)), // FIXME this should be configurable
+      report(config->getReportType().makeReport(config, session, stats)),
       _is_terminated(false),
       barrier_lock()
 {

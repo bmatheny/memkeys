@@ -1,8 +1,18 @@
 #ifndef _UTIL_STAT_H
 #define _UTIL_STAT_H
 
+#ifdef HAVE_CONFIG_H
+#include "mconfig.h"
+#endif
+
 #include <cstdint>
+
+#ifdef HAVE_ATOMIC
+#include <atomic>
+#else
 #include <cstdatomic>
+#endif
+
 #include <functional>
 #include <unordered_map>
 #include <string>

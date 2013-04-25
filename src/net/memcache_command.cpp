@@ -59,6 +59,7 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
   }
 
   tcpHeader = (struct tcphdr*)(packet + ether_header_sz + ip_sz);
+  (void)tcpHeader;
   data = (u_char*)(packet + ether_header_sz + ip_sz + tcphdr_sz);
   dataLength = pkthdr->len - (ether_header_sz + ip_sz + tcphdr_sz);
   if (dataLength > pkthdr->caplen) {

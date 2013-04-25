@@ -15,6 +15,8 @@ AC_LANG([C++])
 # Checks for programs
 CXXFLAGS="$CXXFLAGS -std=c++0x" # Will fail if not g++44 or later
 AC_PROG_CXX([g++44 g++ gcc cxx cc++ c++])
+AC_PROG_CXXCPP
+CXXCPP="$CXXCPP -std=c++0x" # This must come after AC_PROG_CXXCPP
 AC_PROG_LIBTOOL
 
 # Check for typedefs, structures, and compiler characteristics
@@ -39,14 +41,26 @@ esac
 # Check for headers
 AC_CHECK_HEADERS([getopt.h])
 AC_CHECK_HEADERS([pcrecpp.h])
+AC_CHECK_HEADERS([cstdatomic])
+AC_CHECK_HEADERS([atomic])
 
 # Checks for libraries
 AC_CHECK_LIB([pthread], [pthread_create])
+AC_CHECK_LIB([getopt],[getopt_long])
+AC_CHECK_LIB([gnugetopt],[getopt_long])
+
+PCRECPP=""
+AC_ARG_WITH([libpcrecpp],
+            AS_HELP_STRING([--with-libpcrecpp=DIR], [libpcre base directory]),
+            [with_libpcrecpp="$withval"],
+            [with_libpcrecpp="no"])
+if test "x$with_libpcrecpp" != "xno"; then
+  LDFLAGS="${LDFLAGS} -L${with_libpcrecpp}/lib"
+  CPPFLAGS="${CPPFLAGS} -I${with_libpcrecpp}/include"
+fi
 # Fail if pcrecpp is not found
-AC_CHECK_LIB([pcrecpp], [pcre_exec],,
-             [AC_MSG_ERROR([libpcrecpp not found but required])])
-AC_CHECK_LIB(getopt,getopt_long)
-AC_CHECK_LIB(gnugetopt,getopt_long)
+AC_CHECK_LIB([pcrecpp], [main],, [AC_MSG_ERROR([libpcrecpp not found but required])])
+
 AC_ARG_WITH(libpcap_includes,
             AS_HELP_STRING([--with-libpcap-includes=DIR], [libpcap include directory]),
             [with_libpcap_includes="$withval"],

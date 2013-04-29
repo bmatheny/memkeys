@@ -1,5 +1,5 @@
 Name:           memkeys
-Version:        0.1
+Version:        0.2
 Release:        1%{?dist}
 Summary:        Shows your memcache key usage in realtime
 
@@ -70,4 +70,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Apr 28 2013 Steve Salevan <steve@tumblr.com> 0.2-1
+- Initial specfile writeup
+
 

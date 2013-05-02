@@ -28,7 +28,7 @@ class Packet {
   uint32_t capLength() const { return getHeader().caplen; }
   int32_t id() const;
   uint32_t length() const { return getHeader().len; }
-  const uint64_t timestamp() const { return _timestamp; }
+  uint64_t timestamp() const { return _timestamp; }
 
  protected:
   Data* copyData(Data* data, const bpf_u_int32 len);

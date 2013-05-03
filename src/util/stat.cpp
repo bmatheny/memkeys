@@ -5,6 +5,7 @@
 namespace mckeys {
 
 using namespace std;
+using std::isinf;
 
 Stat::Stat()
     : key(), _created(0), _size(0), _count(0)

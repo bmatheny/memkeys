@@ -37,6 +37,10 @@ large.
 
 ![Screenshot](https://raw.github.com/wiki/bmatheny/memkeys/misc/screenshot.png)
 
+## Tests
+
+[![Build Status](https://travis-ci.org/bmatheny/memkeys.png?branch=master)](https://travis-ci.org/bmatheny/memkeys)
+
 ## Development/Build
 
 Install gperftools and gperftools-devel if you want to build with

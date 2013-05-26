@@ -1,0 +1,7 @@
+language: cpp
+compiler: gcc
+install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libpcap-devel pcre-devel ncurses-devel
+before_script:
+  - ./autogen.sh

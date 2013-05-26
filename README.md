@@ -7,6 +7,8 @@ I found that under load mctop would drop between 50 and 75 percent of packets.
 Under the same load memkeys will typically drop less than 3 percent of packets.
 This is on a machine saturating a 1Gb network link.
 
+Build Status: [![Build Status](https://travis-ci.org/bmatheny/memkeys.png?branch=master)](https://travis-ci.org/bmatheny/memkeys)
+
 ## Command line options
 
     Usage: memkeys -i NIC [options]
@@ -36,10 +38,6 @@ large.
 ## Screenshot
 
 ![Screenshot](https://raw.github.com/wiki/bmatheny/memkeys/misc/screenshot.png)
-
-## Tests
-
-[![Build Status](https://travis-ci.org/bmatheny/memkeys.png?branch=master)](https://travis-ci.org/bmatheny/memkeys)
 
 ## Development/Build
 

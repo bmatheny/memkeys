@@ -17,17 +17,19 @@ CaptureEngine::CaptureEngine(const Config * config, const Pcap * session)
       stats(new Stats(config, barrier)),
       report(config->getReportType().makeReport(config, session, stats)),
       _is_terminated(false),
+      queue_count(3),
+      packets(),
+      worker_threads(new thread[queue_count]),
       barrier_lock()
 {
-  queue_count = 3;
   packets.reserve(queue_count);
-  worker_threads = new thread[queue_count];
   for (int i = 0; i < queue_count; i++) {
     packets.insert(packets.begin() + i, new mqueue<Packet>());
     worker_threads[i] = thread(&CaptureEngine::processPackets, this, i, packets.at(i));
   }
   stats->start();
 }
+
 CaptureEngine::~CaptureEngine()
 {
   if (isShutdown()) {
@@ -50,8 +52,7 @@ CaptureEngine::~CaptureEngine()
   delete logger;
 }
 
-void CaptureEngine::enqueue(const Packet &packet)
-{
+void CaptureEngine::enqueue(const Packet& packet) {
 #ifdef _DEVEL
   logger->trace(CONTEXT,
                 "Produced packet: %ld", packet.id());
@@ -158,9 +159,9 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
  * @return MemcacheCommand the command representation of the packet
  * @protected
  */
-MemcacheCommand CaptureEngine::parse(const Packet &packet) const
+MemcacheCommand CaptureEngine::parse(const Packet& packet) const
 {
-  return MemcacheCommand(packet, getIpAddress());
+  return MemcacheCommand::parse(packet, getIpAddress());
 }
 
 /**
@@ -168,7 +169,7 @@ MemcacheCommand CaptureEngine::parse(const Packet &packet) const
  * @param MemcacheCommand mc the command to enqueue
  * @protected
  */
-void CaptureEngine::enqueue(const MemcacheCommand &mc)
+void CaptureEngine::enqueue(const MemcacheCommand& mc)
 {
   Elem e(mc.getObjectKey(), mc.getObjectSize());
 #ifdef _DEBUG

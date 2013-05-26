@@ -15,8 +15,8 @@ enum memcache_command_t {
 class MemcacheCommand
 {
  public:
-  MemcacheCommand(const Packet &packet,
-                  const bpf_u_int32 captureAddress);
+  static MemcacheCommand parse(const Packet& packet,
+                               const bpf_u_int32 captureAddress);
 
   bool isCommand() const
     { return (isRequest() || isResponse()); }
@@ -41,6 +41,12 @@ class MemcacheCommand
     { return sourceAddress; }
 
  protected:
+  // no assignment operator
+  MemcacheCommand& operator=(const MemcacheCommand& mc) = delete;
+
+  MemcacheCommand(const Packet &packet,
+                  const bpf_u_int32 captureAddress);
+
   void setSourceAddress(const void * src);
   void setCommandName(const std::string &name);
 

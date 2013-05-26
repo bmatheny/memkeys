@@ -17,7 +17,14 @@ namespace mckeys {
 
 using namespace std;
 
-// constructor
+// Like getInstance. Used for parsing packets.
+MemcacheCommand MemcacheCommand::parse(const Packet& pkt,
+                                       const bpf_u_int32 captureAddress)
+{
+  return MemcacheCommand(pkt, captureAddress);
+}
+
+// protected constructor
 MemcacheCommand::MemcacheCommand(const Packet& _packet,
                                  const bpf_u_int32 captureAddress)
     : cmd_type(MC_UNKNOWN), sourceAddress(),
@@ -41,7 +48,9 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
   // must be an IP packet
   // TODO add support for dumping localhost
   ethernetHeader = (struct ether_header*)packet;
-  if (ntohs(ethernetHeader->ether_type) != ETHERTYPE_IP) {
+  auto etype = ntohs(ethernetHeader->ether_type);
+  std::printf("Ethernet type hex:%x dec:%d\n", etype, etype);
+  if (etype != ETHERTYPE_IP) {
     return;
   }
 

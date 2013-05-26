@@ -20,10 +20,10 @@ class CaptureEngine {
  public:
   typedef std::vector<mqueue<Packet>*> Packets;
 
-  CaptureEngine(const Config * config, const Pcap * session);
+  CaptureEngine(const Config* config, const Pcap* session);
   ~CaptureEngine();
 
-  void enqueue(const Packet &packet);
+  void enqueue(const Packet& packet);
 
   bpf_u_int32 getIpAddress() const
     { return session->getIpAddress(); }
@@ -37,12 +37,12 @@ class CaptureEngine {
 
  protected:
   // run in threads
-  void processPackets(int worker_id, mqueue<Packet> *work_queue);
+  void processPackets(int worker_id, mqueue<Packet>* work_queue);
 
   // called by processPackets to parse an enqueued packet
-  MemcacheCommand parse(const Packet &mc) const;
+  MemcacheCommand parse(const Packet& mc) const;
   // called by processPackets if appropriate
-  void enqueue(const MemcacheCommand &mc);
+  void enqueue(const MemcacheCommand& mc);
 
   const LoggerPtr logger;
   const Config* config;

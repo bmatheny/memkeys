@@ -39,6 +39,7 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
   uint32_t dataLength = 0;
 
   // must be an IP packet
+  // TODO add support for dumping localhost
   ethernetHeader = (struct ether_header*)packet;
   if (ntohs(ethernetHeader->ether_type) != ETHERTYPE_IP) {
     return;

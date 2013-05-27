@@ -1,6 +1,6 @@
 # Initialize autoconf
 AC_PREREQ([2.63])
-AC_INIT([memkeys], [0.1], [bmatheny@mobocracy.net])
+AC_INIT([memkeys], [0.2], [bmatheny@mobocracy.net])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([mconfig.h:mconfig.h.in])

@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 
 SUBDIRS = src
 
-dist_noinst_SCRIPTS = autogen.sh
+dist_noinst_SCRIPTS = build-aux/*
 
 EXTRA_DIST = README.md NOTICE LICENSE
 

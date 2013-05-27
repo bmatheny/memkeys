@@ -48,7 +48,7 @@ export CC=gcc44
 export CXX=g++44
 %endif
 
-./autogen.sh
+./build-eng/autogen.sh
 %configure
 
 make %{?_smp_mflags}

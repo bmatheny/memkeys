@@ -1,10 +1,10 @@
 # Initialize autoconf
-AC_PREREQ([2.63])
 AC_INIT([memkeys], [0.2], [bmatheny@mobocracy.net])
+AC_PREREQ([2.63])
 AC_CONFIG_SRCDIR([src/main.cpp])
-AC_CONFIG_AUX_DIR([config])
-AC_CONFIG_HEADERS([mconfig.h:mconfig.h.in])
 AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_HEADERS([build-aux/mconfig.h:build-aux/mconfig.h.in])
 
 # Initialize automake
 AM_INIT_AUTOMAKE([1.9.6 foreign])

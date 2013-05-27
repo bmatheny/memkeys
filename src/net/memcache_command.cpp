@@ -66,6 +66,8 @@ MemcacheCommand MemcacheCommand::create(const Packet& pkt,
   if (ipHeader->ip_dst.s_addr == captureAddress) {
     possible_request = true;
   }
+  // FIXME will remove once we add back the direction parsing
+  (void)possible_request;
 
   tcpHeader = (struct tcphdr*)(packet + ether_header_sz + ip_sz);
   (void)tcpHeader;

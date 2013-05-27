@@ -167,6 +167,9 @@ AM_CONDITIONAL([DEVELOPMENT], [test x$development = xtrue])
 AC_CHECK_FUNCS([getopt_long], ,
                [AC_MSG_ERROR([no getopt_long function found])])
 
+# Build gtest
+AC_CONFIG_SUBDIRS([gtest])
+
 AC_CONFIG_FILES([Makefile
                  src/Makefile])
 AC_OUTPUT

@@ -161,7 +161,8 @@ void CaptureEngine::processPackets(int worker_id, mqueue<Packet>* work_queue) {
  */
 MemcacheCommand CaptureEngine::parse(const Packet& packet) const
 {
-  return MemcacheCommand::parse(packet, getIpAddress());
+  static const auto address = getIpAddress();
+  return MemcacheCommand::create(packet, address);
 }
 
 /**

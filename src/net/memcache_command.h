@@ -12,52 +12,59 @@ enum memcache_command_t {
   MC_UNKNOWN, MC_REQUEST, MC_RESPONSE
 };
 
+/**
+ * Usage: auto mc = MemcacheCommand::create(pkt, captureAddress);
+ */
 class MemcacheCommand
 {
  public:
-  static MemcacheCommand parse(const Packet& packet,
-                               const bpf_u_int32 captureAddress);
+  static MemcacheCommand create(const Packet& pkt,
+                                const bpf_u_int32 captureAddress);
 
   bool isCommand() const
     { return (isRequest() || isResponse()); }
   bool isRequest() const
-    { return (cmd_type == MC_REQUEST); }
+    { return (cmdType_ == MC_REQUEST); }
   bool isResponse() const
-    { return (cmd_type == MC_RESPONSE); }
+    { return (cmdType_ == MC_RESPONSE); }
 
   // only when isRequest is true
-  std::string getCommandName() const
-    { return commandName; }
+  std::string getCommandName() const { return commandName_; }
 
   // sometimes when isResponse is true, sometimes when isRequest is true
-  std::string getObjectKey() const
-    { return objectKey; }
+  std::string getObjectKey() const { return objectKey_; }
 
   // only when isResponse is true
-  uint32_t getObjectSize() const
-    { return objectSize; }
+  uint32_t getObjectSize() const { return objectSize_; }
 
-  std::string getSourceAddress() const
-    { return sourceAddress; }
+  // source address for request
+  std::string getSourceAddress() const { return sourceAddress_; }
 
  protected:
   // no assignment operator
   MemcacheCommand& operator=(const MemcacheCommand& mc) = delete;
 
-  MemcacheCommand(const Packet &packet,
-                  const bpf_u_int32 captureAddress);
+  // Default constructor is protected
+  MemcacheCommand();
 
-  void setSourceAddress(const void * src);
-  void setCommandName(const std::string &name);
+  MemcacheCommand(const memcache_command_t cmdType,
+                  const std::string sourceAddress,
+                  const std::string commandName,
+                  const std::string objectKey,
+                  uint32_t objectSize);
 
-  bool parseRequest(u_char *data, int dataLength);
-  bool parseResponse(u_char *data, int dataLength);
+  static MemcacheCommand makeRequest(u_char *data,
+                                     int dataLength,
+                                     std::string sourceAddress);
+  static MemcacheCommand makeResponse(u_char *data,
+                                      int dataLength,
+                                      std::string sourceAddress);
 
-  memcache_command_t cmd_type;
-  std::string sourceAddress;
-  std::string commandName;
-  std::string objectKey;
-  uint32_t objectSize;
+  const memcache_command_t cmdType_;
+  const std::string sourceAddress_;
+  const std::string commandName_;
+  const std::string objectKey_;
+  const uint32_t objectSize_;
 };
 
 } // end namespace

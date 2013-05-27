@@ -13,22 +13,19 @@ extern "C" {
 #include <netinet/if_ether.h>
 }
 
+static inline std::string ipv4addressToString(const void * src) {
+  char ip[INET_ADDRSTRLEN];
+  inet_ntop(AF_INET, src, ip, INET_ADDRSTRLEN);
+  return std::string(ip);
+}
+
 namespace mckeys {
 
 using namespace std;
 
-// Like getInstance. Used for parsing packets.
-MemcacheCommand MemcacheCommand::parse(const Packet& pkt,
-                                       const bpf_u_int32 captureAddress)
-{
-  return MemcacheCommand(pkt, captureAddress);
-}
-
-// protected constructor
-MemcacheCommand::MemcacheCommand(const Packet& _packet,
-                                 const bpf_u_int32 captureAddress)
-    : cmd_type(MC_UNKNOWN), sourceAddress(),
-      commandName(), objectKey(), objectSize(0)
+// Like getInstance. Used for creating commands from packets.
+MemcacheCommand MemcacheCommand::create(const Packet& pkt,
+                                        const bpf_u_int32 captureAddress)
 {
   static ssize_t ether_header_sz = sizeof(struct ether_header);
   static ssize_t ip_sz = sizeof(struct ip);
@@ -38,28 +35,30 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
   const struct ip* ipHeader;
   const struct tcphdr* tcpHeader;
 
-  const Packet::Header* pkthdr = &_packet.getHeader();
-  const Packet::Data* packet = _packet.getData();
+  const Packet::Header* pkthdr = &pkt.getHeader();
+  const Packet::Data* packet = pkt.getData();
 
   bool possible_request = false;
   u_char *data;
   uint32_t dataLength = 0;
 
+  string sourceAddress = "";
+
   // must be an IP packet
   // TODO add support for dumping localhost
   ethernetHeader = (struct ether_header*)packet;
   auto etype = ntohs(ethernetHeader->ether_type);
-  std::printf("Ethernet type hex:%x dec:%d\n", etype, etype);
   if (etype != ETHERTYPE_IP) {
-    return;
+    return MemcacheCommand();
   }
 
   // must be TCP - TODO add support for UDP
   ipHeader = (struct ip*)(packet + ether_header_sz);
-  if (ipHeader->ip_p != IPPROTO_TCP) {
-    return;
+  auto itype = ipHeader->ip_p;
+  if (itype != IPPROTO_TCP) {
+    return MemcacheCommand();
   }
-  setSourceAddress(&(ipHeader->ip_src));
+  sourceAddress = ipv4addressToString(&(ipHeader->ip_src));
 
   // The packet was destined for our capture address, this is a request
   // This bit of optimization lets us ignore a reasonably large percentage of
@@ -76,25 +75,45 @@ MemcacheCommand::MemcacheCommand(const Packet& _packet,
     dataLength = pkthdr->caplen;
   }
 
-  if (possible_request && parseRequest(data, dataLength)) {
-    cmd_type = MC_REQUEST;
-  } else if (!possible_request && parseResponse(data, dataLength)) {
-    cmd_type = MC_RESPONSE;
-  }
+  // TODO revert to detecting request/response and doing the right thing
+  return MemcacheCommand::makeResponse(data, dataLength, sourceAddress);
 }
 
-// protected
-bool MemcacheCommand::parseRequest(u_char*, int)
+// protected default constructor
+MemcacheCommand::MemcacheCommand()
+  : cmdType_(MC_UNKNOWN),
+    sourceAddress_(),
+    commandName_(),
+    objectKey_(),
+    objectSize_(0)
+{}
+
+// protected constructor
+MemcacheCommand::MemcacheCommand(const memcache_command_t cmdType,
+                                 const string sourceAddress,
+                                 const string commandName,
+                                 const string objectKey,
+                                 uint32_t objectSize)
+    : cmdType_(cmdType),
+      sourceAddress_(sourceAddress),
+      commandName_(commandName),
+      objectKey_(objectKey),
+      objectSize_(objectSize)
+{}
+
+// static protected
+MemcacheCommand MemcacheCommand::makeRequest(u_char*, int, string)
 {
   // don't care about requests right now
-  return false;
+  return MemcacheCommand();
 }
 
-bool MemcacheCommand::parseResponse(u_char *data, int length)
+// static protected
+MemcacheCommand MemcacheCommand::makeResponse(u_char *data, int length,
+                                              string sourceAddress)
 {
   static pcrecpp::RE re("VALUE (\\S+) \\d+ (\\d+)",
                         pcrecpp::RE_Options(PCRE_MULTILINE));
-  bool found_response = false;
   string key;
   int size = -1;
   string input = "";
@@ -104,24 +123,15 @@ bool MemcacheCommand::parseResponse(u_char *data, int length)
       input += (char)data[i];
     }
   }
+  if (input.length() < 11) {
+    return MemcacheCommand();
+  }
   re.PartialMatch(input, &key, &size);
   if (size >= 0) {
-    objectSize = size;
-    objectKey = key;
-    found_response = true;
+    return MemcacheCommand(MC_RESPONSE, sourceAddress, "", key, size);
+  } else {
+    return MemcacheCommand();
   }
-  return found_response;
-}
-
-void MemcacheCommand::setSourceAddress(const void * src)
-{
-  char sourceIp[INET_ADDRSTRLEN];
-  inet_ntop(AF_INET, src, sourceIp, INET_ADDRSTRLEN);
-  sourceAddress = sourceIp;
-}
-void MemcacheCommand::setCommandName(const std::string &name)
-{
-  commandName = name;
 }
 
 } // end namespace

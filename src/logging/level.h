@@ -22,15 +22,19 @@ class Level
   std::string getName() const;
   uint32_t getValue() const;
 
-  bool operator==(const Level &other) const;
-  bool operator<=(const Level &other) const;
-  bool operator>=(const Level &other) const;
  protected:
   std::string name;
   uint32_t value;
 
   Level(const std::string &name, const uint32_t value);
 };
+
+bool operator==(const Level& lhs, const Level& rhs);
+bool operator<(const Level& lhs, const Level& rhs);
+bool operator<=(const Level& lhs, const Level& rhs);
+bool operator>=(const Level& lhs, const Level& rhs);
+bool operator>(const Level& lhs, const Level& rhs);
+bool operator!=(const Level& lhs, const Level& rhs);
 
 typedef std::map<uint32_t,Level> ValueMap;
 typedef std::map<std::string,Level> NameMap;

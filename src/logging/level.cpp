@@ -66,19 +66,6 @@ Level Level::fromValue(const uint32_t value)
   }
 }
 
-bool Level::operator==(const Level &other) const
-{
-  return (getValue() == other.getValue());
-}
-bool Level::operator<=(const Level &other) const
-{
-  return (getValue() <= other.getValue());
-}
-bool Level::operator>=(const Level &other) const
-{
-  return (getValue() >= other.getValue());
-}
-
 string Level::getName() const
 {
   return name;
@@ -87,5 +74,26 @@ uint32_t Level::getValue() const
 {
   return value;
 }
+
+/* Comparison Operators */
+bool operator==(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() == rhs.getValue());
+}
+bool operator<(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() < rhs.getValue());
+}
+bool operator<=(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() <= rhs.getValue());
+}
+bool operator>(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() >= rhs.getValue());
+}
+bool operator>=(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() >= rhs.getValue());
+}
+bool operator!=(const Level& lhs, const Level& rhs) {
+  return (lhs.getValue() != rhs.getValue());
+}
+
 
 } // end namespace mckeys

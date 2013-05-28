@@ -132,12 +132,16 @@ bool Record::hasThrown() const {
 
 string Record::getTimestamp() const
 {
-  time_t now = time(NULL);
-  struct tm *timeinfo = localtime(&now);
   struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return Record::getTimestamp(tv);
+}
+
+string Record::getTimestamp(struct timeval tv) const {
+  struct tm *timeinfo = NULL;
   char buffer[80] = {0};
 
-  gettimeofday(&tv, NULL);
+  timeinfo = localtime(&(tv.tv_sec));
 
   strftime(buffer, 80, "%Y%m%d-%H:%M:%S", timeinfo);
 

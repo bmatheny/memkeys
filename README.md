@@ -35,6 +35,9 @@ large.
 
     memkeys -i eth0 -d 10.0 -l /tmp/memkeys.log
 
+If you are running memkeys on a proxy you may want to use `-i lo` to listen on
+localhost.
+
 ## Screenshot
 
 ![Screenshot](https://raw.github.com/wiki/bmatheny/memkeys/misc/screenshot.png)
@@ -44,9 +47,13 @@ large.
 Install gperftools and gperftools-devel if you want to build with
 `--enable-profiling`. You will typically want to configure with
 `--enable-debug`, and possibly with `--enable-development`. The latter two
-options will enable additional error logging.
+options will enable additional error logging. If you are actually doing
+development you should definitely add `--enable-development` as doing so will
+add some additional compiler flags to help catch errors.
 
-You will need libpcap-devel, libpcrecpp, and libncurses-devel.
+You will need libpcap-devel, libpcrecpp, and libncurses-devel. On Ubuntu I found
+that these packages were libpcap-dev, libpcre3-dev, and lib32ncurses5-dev (on a
+32-bit machine).
 
 memkeys was developed on CentOS 5.8 with the following software tools:
 

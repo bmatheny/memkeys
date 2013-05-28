@@ -42,6 +42,7 @@ class Record
   bool hasThrown() const;
 
   std::string getTimestamp() const;
+  std::string getTimestamp(struct timeval ts) const;
 
  private:
   std::string _filename;

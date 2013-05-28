@@ -168,6 +168,8 @@ AC_CHECK_FUNCS([getopt_long], ,
                [AC_MSG_ERROR([no getopt_long function found])])
 
 # Build gtest
+export CFLAGS
+export CXXFLAGS
 AC_CONFIG_SUBDIRS([gtest])
 
 AC_CONFIG_FILES([Makefile

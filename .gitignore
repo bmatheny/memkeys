@@ -71,3 +71,4 @@ src/memkeys
 
 *.dirstamp
 *.prof
+src/testall

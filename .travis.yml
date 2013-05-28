@@ -5,7 +5,7 @@ install:
   - sudo apt-get install -qq libpcap-dev libpcre3-dev lib32ncurses5-dev
 before_script:
   - ./build-eng/autogen.sh
-script:
   - ./configure
   - make
+script:
   - make check

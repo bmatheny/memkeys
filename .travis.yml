@@ -6,4 +6,6 @@ install:
 before_script:
   - ./build-eng/autogen.sh
 script:
-  - ./configure && make && make check
+  - ./configure
+  - make
+  - make check

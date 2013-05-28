@@ -29,7 +29,7 @@ TEST(Record, Timestamp) {
   Record rec1;
   struct timeval tv = {1369615982, 123000};
   auto actual = rec1.getTimestamp(tv);
-  std::string expected("20130526-17:53:02.123");
+  std::string expected("20130527-00:53:02.123");
   EXPECT_EQ(expected, actual);
 }
 

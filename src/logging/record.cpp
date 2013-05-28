@@ -138,10 +138,8 @@ string Record::getTimestamp() const
 }
 
 string Record::getTimestamp(struct timeval tv) const {
-  struct tm *timeinfo = NULL;
+  struct tm *timeinfo = localtime(&(tv.tv_sec));
   char buffer[80] = {0};
-
-  timeinfo = localtime(&(tv.tv_sec));
 
   strftime(buffer, 80, "%Y%m%d-%H:%M:%S", timeinfo);
 

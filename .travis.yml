@@ -6,6 +6,7 @@ install:
 before_script:
   - ./build-eng/autogen.sh
   - ./configure
+  - cd gtest && make && cd ..
   - make
 script:
   - make check

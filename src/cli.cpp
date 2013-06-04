@@ -1,9 +1,12 @@
-#include <cstdlib>
-
+/**
+ * Copyright 2013 Blake Matheny
+ */
 extern "C" {
   #include <getopt.h>
 }
 
+#include <cstdlib>
+#include <string>
 #include "common.h"
 #include "cli.h"
 
@@ -22,23 +25,35 @@ static const struct option longopts[] = {
 };
 static const char * argp = "d:i:l:p:r:R:hvV";
 
-using namespace std;
+using std::cout;            using std::endl;
+using std::string;          using std::ostringstream;
 
-string Cli::help(const char * progname)
-{
+string Cli::help(const char * progname) {
   ostringstream txt;
   string pname = progname;
   string tab = "    ";
   txt << "Usage: " << pname << " -i NIC [options]" << endl;
-  txt << mkHelpDoc(longopts[0], "Discard keys where req/s rate is below THRESH", "THRESH");
-  txt << mkHelpDoc(longopts[1], "Network interface to capture traffic on (required)", "NIC");
-  txt << mkHelpDoc(longopts[2], "Network port to capture memcache traffic on (default 11211)", "PORT");
-  txt << mkHelpDoc(longopts[3], "Refresh the stats display every INTERVAL ms (default 500)", "INTERVAL");
+  txt << mkHelpDoc(longopts[0],
+                   "Discard keys where req/s rate is below THRESH", "THRESH");
+  txt << mkHelpDoc(longopts[1],
+                   "Network interface to capture traffic on (required)", "NIC");
+  txt << mkHelpDoc(
+          longopts[2],
+          "Network port to capture memcache traffic on (default 11211)",
+          "PORT");
+  txt << mkHelpDoc(
+          longopts[3],
+          "Refresh the stats display every INTERVAL ms (default 500)",
+          "INTERVAL");
   txt << mkHelpDoc(longopts[7], "Output logs to FILE", "FILE");
-  txt << mkHelpDoc(longopts[8], "Output data in REPORT format (CSV or curses, default curses)", "REPORT");
+  txt << mkHelpDoc(
+          longopts[8],
+          "Output data in REPORT format (CSV or curses, default curses)",
+          "REPORT");
   txt << endl;
   txt << mkHelpDoc(longopts[4], "This help", "");
-  txt << mkHelpDoc(longopts[5], "Increase verbosity. May be used multiple times.", "");
+  txt << mkHelpDoc(longopts[5],
+                   "Increase verbosity. May be used multiple times.", "");
   txt << mkHelpDoc(longopts[6], "Show program info and exit.", "");
   return txt.str();
 }
@@ -46,8 +61,7 @@ string Cli::help(const char * progname)
 /**
  * Parse the command line arguments, updating a config as appropriate.
  */
-void Cli::parse(int argc, char ** argv, Config * cfg)
-{
+void Cli::parse(int argc, char ** argv, Config * cfg) {
   int c;
   char * progname = argv[0];
   while (1) {
@@ -97,12 +111,12 @@ void Cli::parse(int argc, char ** argv, Config * cfg)
   }
 }
 
-string Cli::mkHelpLead(const struct option opt, const string &key)
-{
+string Cli::mkHelpLead(const struct option opt, const string &key) {
   ostringstream txt;
+  static const char c = 0;
   ssize_t len = 0, alloc = 33;
   char * os = NULL;
-  txt << "    -" << ((char)opt.val) << ", --" << opt.name;
+  txt << "    -" << static_cast<char>(opt.val) << ", --" << opt.name;
   if (opt.has_arg == 1) {
     txt << "=" << key;
   } else if (opt.has_arg == 2) {
@@ -110,17 +124,17 @@ string Cli::mkHelpLead(const struct option opt, const string &key)
   }
   len = txt.str().length();
   alloc += len;
-  os = (char*)malloc(sizeof(char)*alloc);
+  os = reinterpret_cast<char*>(malloc(sizeof(c)*alloc));
   snprintf(os, alloc, "%-32s", txt.str().c_str());
   return string(os);
 }
 
-string Cli::mkHelpDoc(const struct option opt, const string &desc, const string &key)
-{
+string Cli::mkHelpDoc(const struct option opt, const string &desc,
+                      const string &key) {
   ostringstream txt;
   string lead = mkHelpLead(opt, key);
   txt << lead << desc << endl;
   return txt.str();
 }
 
-} // end namespace
+}  // namespace mckeys

@@ -1,12 +1,16 @@
-#ifndef CLI_H
-#define CLI_H
+#ifndef SRC_CLI_H_
+#define SRC_CLI_H_
 
-#include "config.h"
+/**
+ * Copyright 2013 Blake Matheny
+ */
+#include <string>
 
 namespace mckeys {
 
-class Cli
-{
+class Config;
+
+class Cli {
  public:
   static void parse(int argc, char ** argv, Config * cfg);
   static std::string help(const char * progname);
@@ -19,5 +23,5 @@ class Cli
                                const std::string &key);
 };
 
-} // end namespace
-#endif
+}  // namespace mckeys
+#endif  // SRC_CLI_H_

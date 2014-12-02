@@ -1,9 +1,14 @@
 #ifndef _LOGGING_RECORD_H
 #define _LOGGING_RECORD_H
 
+#include "logging/level.h"
+
 #include <string>
 #include <stdexcept>
-#include "logging/level.h"
+
+extern "C" {
+#include <sys/time.h>
+}
 
 namespace mckeys {
 

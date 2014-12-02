@@ -64,17 +64,17 @@ class Logger
   void log(const Level &level, const Record &rec);
 
   void trace(const std::string &msg);
-  void trace(Record rec, const std::string &fmt, ...);
+  void trace(Record rec, std::string fmt, ...);
   void debug(const std::string &msg);
-  void debug(Record rec, const std::string &fmt, ...);
+  void debug(Record rec, std::string fmt, ...);
   void info(const std::string &msg);
-  void info(Record rec, const std::string &fmt, ...);
+  void info(Record rec, std::string fmt, ...);
   void warning(const std::string &msg);
-  void warning(Record rec, const std::string &fmt, ...);
+  void warning(Record rec, std::string fmt, ...);
   void error(const std::string &msg);
-  void error(Record rec, const std::string &fmt, ...);
+  void error(Record rec, std::string fmt, ...);
   void fatal(const std::string &msg);
-  void fatal(Record rec, const std::string &fmt, ...);
+  void fatal(Record rec, std::string fmt, ...);
  protected:
   Logger(const std::string &name);
   std::string format(const Record &rec);

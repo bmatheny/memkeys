@@ -154,7 +154,7 @@ void Logger::trace(const string &msg)
 {
   log(Level::TRACE, msg);
 }
-void Logger::trace(Record record, const string &fmt, ...)
+void Logger::trace(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::TRACE, record, fmt, this);
 }
@@ -163,7 +163,7 @@ void Logger::debug(const string &msg)
 {
   log(Level::DEBUG, msg);
 }
-void Logger::debug(Record record, const string &fmt, ...)
+void Logger::debug(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::DEBUG, record, fmt, this);
 }
@@ -172,7 +172,7 @@ void Logger::info(const string &msg)
 {
   log(Level::INFO, msg);
 }
-void Logger::info(Record record, const string &fmt, ...)
+void Logger::info(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::INFO, record, fmt, this);
 }
@@ -181,7 +181,7 @@ void Logger::warning(const string &msg)
 {
   log(Level::WARNING, msg);
 }
-void Logger::warning(Record record, const string &fmt, ...)
+void Logger::warning(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::WARNING, record, fmt, this);
 }
@@ -190,7 +190,7 @@ void Logger::error(const string &msg)
 {
   log(Level::ERROR, msg);
 }
-void Logger::error(Record record, const string &fmt, ...)
+void Logger::error(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::ERROR, record, fmt, this);
 }
@@ -199,7 +199,7 @@ void Logger::fatal(const string &msg)
 {
   log(Level::FATAL, msg);
 }
-void Logger::fatal(Record record, const string &fmt, ...)
+void Logger::fatal(Record record, string fmt, ...)
 {
   LOG_WITH_VARARGS(Level::FATAL, record, fmt, this);
 }

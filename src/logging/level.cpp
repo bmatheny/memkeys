@@ -1,3 +1,4 @@
+#include "common.h"
 #include <stdexcept>
 #include <iostream>
 
@@ -62,7 +63,7 @@ Level Level::fromValue(const uint32_t value)
   if (it != valueMap.end()) {
     return it->second;
   } else {
-    throw range_error("No such level with value " + std::to_string(value));
+    throw range_error("No such level with value " + to_string((llui_t)value));
   }
 }
 

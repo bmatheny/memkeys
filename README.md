@@ -44,6 +44,8 @@ localhost.
 
 ## Development/Build
 
+Build is based on autoconf.
+
 Install gperftools and gperftools-devel if you want to build with
 `--enable-profiling`. You will typically want to configure with
 `--enable-debug`, and possibly with `--enable-development`. The latter two
@@ -51,9 +53,16 @@ options will enable additional error logging. If you are actually doing
 development you should definitely add `--enable-development` as doing so will
 add some additional compiler flags to help catch errors.
 
-You will need libpcap-devel, libpcrecpp, and libncurses-devel. On Ubuntu I found
-that these packages were libpcap-dev, libpcre3-dev, and lib32ncurses5-dev (on a
-32-bit machine).
+You will need libpcap-devel, libpcrecpp, and libncurses-devel.
+
+On Ubuntu with all packages:
+
+    sudo apt-get install autoconf libpcap-dev libpcre3-dev and lib32ncurses5-dev google-perftools libgoogle-perftools-dev
+    ./build-eng/autogen.sh
+    make
+    make check
+
+The memkeys should then be present in /usr/local/bin. 
 
 memkeys was developed on CentOS 5.8 with the following software tools:
 

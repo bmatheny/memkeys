@@ -44,7 +44,7 @@ localhost.
 
 ## Development/Build
 
-Build based on autoconf.
+Build is based on autoconf.
 
 Install gperftools and gperftools-devel if you want to build with
 `--enable-profiling`. You will typically want to configure with
